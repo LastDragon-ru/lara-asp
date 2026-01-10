@@ -121,7 +121,7 @@
       "LastDragon_ru\\GlobMatcher\\": "packages/glob-matcher/src/",
       "LastDragon_ru\\GraphQLPrinter\\": "packages/graphql-printer/src/",
       "LastDragon_ru\\GraphQLPrinter\\Testing\\": "packages/graphql-printer-testing/src/",
-      "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/graphql/src/",
+      "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/lara-asp-graphql/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\": "packages/graphql-testing/src/",
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/migrator/src/",
       "LastDragon_ru\\Path\\": "packages/path/src/",
@@ -141,7 +141,7 @@
       "packages/glob-matcher/docs/",
       "packages/graphql-printer/docs/",
       "packages/graphql-printer-testing/docs/",
-      "packages/graphql/docs/",
+      "packages/lara-asp-graphql/docs/",
       "packages/migrator/docs/",
       "packages/migrator/src/Migrations/MigratorTest/raw/",
       "packages/path/docs/",
@@ -160,7 +160,7 @@
       "LastDragon_ru\\GlobMatcher\\Docs\\": "packages/glob-matcher/docs",
       "LastDragon_ru\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
       "LastDragon_ru\\GraphQLPrinter\\Testing\\Docs\\": "packages/graphql-printer-testing/docs",
-      "LastDragon_ru\\LaraASP\\GraphQL\\Docs\\": "packages/graphql/docs",
+      "LastDragon_ru\\LaraASP\\GraphQL\\Docs\\": "packages/lara-asp-graphql/docs",
       "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Docs\\": "packages/graphql-testing/docs",
       "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "packages/migrator/docs",
       "LastDragon_ru\\Path\\Docs\\": "packages/path/docs",
@@ -210,6 +210,9 @@
         ],
         "lara-asp-formatter": [
           "formatter"
+        ],
+        "lara-asp-graphql": [
+          "graphql"
         ],
         "text-parser": [
           "diy-parser"

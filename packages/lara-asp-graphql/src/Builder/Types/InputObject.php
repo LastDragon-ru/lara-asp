@@ -173,7 +173,7 @@ abstract class InputObject implements TypeDefinition {
     ): bool {
         // Union?
         if ($field->isUnion()) {
-            // todo(graphql): Would be nice to support Unions. Maybe just use
+            // todo(lara-asp-graphql): Would be nice to support Unions. Maybe just use
             //      fields with same name and type for all members?
             return false;
         }

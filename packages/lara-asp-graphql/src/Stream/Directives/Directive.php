@@ -311,7 +311,7 @@ class Directive extends BaseDirective implements FieldResolver, FieldManipulator
         );
 
         if ($argument !== null && $arguments !== []) {
-            // todo(graphql/@stream): Move to AstManipulator + check definition.
+            // todo(lara-asp-graphql/@stream): Move to AstManipulator + check definition.
             $directiveNode = $manipulator->getDirective($argument, $directive);
             $directiveNode = $directiveNode !== null
                 ? $manipulator->getDirectiveNode($directiveNode)

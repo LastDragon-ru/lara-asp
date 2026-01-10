@@ -51,15 +51,15 @@ parameters:
         -
             message: "#^Call to protected method (getResolverRelation|getResolverModel|getResolverClass|getFieldValue)\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
             paths:
-                - packages/graphql/src/Stream/Directives/DirectiveTest.php
+                - packages/lara-asp-graphql/src/Stream/Directives/DirectiveTest.php
         -
             message: "#^Call to protected method getNulls\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Operators\\\\Sort\\.$#"
             paths:
-                - packages/graphql/src/SortBy/Operators/SortTest.php
+                - packages/lara-asp-graphql/src/SortBy/Operators/SortTest.php
         -
             message: "#^Call to protected method getBuilder\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
             paths:
-                - packages/graphql/src/Stream/Directives/DirectiveTest.php
+                - packages/lara-asp-graphql/src/Stream/Directives/DirectiveTest.php
         -
             message: "#^Call to protected method getContent\\(\\) of class LastDragon_ru\\\\LaraASP\\\\Testing\\\\Constraints\\\\FileSystem\\\\DirectoryMatchesDirectory\\.$#"
             paths:
@@ -83,19 +83,19 @@ parameters:
         -
             message: '#^Parameter \#3 \$args of method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive::getBuilder\(\) expects array<string, mixed>, array given\.$#'
             paths:
-                - packages/graphql/src/Stream/Directives/Directive.php
+                - packages/lara-asp-graphql/src/Stream/Directives/Directive.php
         -
             message: '#^Parameter \#2 \$builder of class LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Exceptions\\BuilderUnsupported constructor expects class-string, mixed given\.$#'
             paths:
-                - packages/graphql/src/Stream/Directives/Directive.php
+                - packages/lara-asp-graphql/src/Stream/Directives/Directive.php
         -
             message: '#^Parameter \#5 \$args of method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive::getFieldValue\(\) expects array<string, mixed>, array given\.$#'
             paths:
-                - packages/graphql/src/Stream/Directives/Directive.php
+                - packages/lara-asp-graphql/src/Stream/Directives/Directive.php
         -
             message: '#^Parameter \#4 \$args of method Nuwave\\Lighthouse\\Execution\\ResolveInfo::enhanceBuilder\(\) expects array<string, mixed>, array given\.$#'
             paths:
-                - packages/graphql/src/Package/Directives/ExposeBuilderDirective.php
+                - packages/lara-asp-graphql/src/Package/Directives/ExposeBuilderDirective.php
 
         # is_a(static::class, Class::class, true) false positive
         # https://github.com/phpstan/phpstan/issues/1239

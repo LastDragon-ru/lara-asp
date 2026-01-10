@@ -1,6 +1,6 @@
 # (Laravel) GraphQL Testing Assertions for Laravel/Lighthouse 🐝
 
-Useful assertions for PHPUnit to check printed/exported type/queries and more with [`lastdragon-ru/lara-asp-graphql`](../graphql/README.md) package
+Useful assertions for PHPUnit to check printed/exported type/queries and more with [`lastdragon-ru/lara-asp-graphql`](../lara-asp-graphql/README.md) package
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
 [//]: # (start: preprocess/78cfc4c7c7c55577)

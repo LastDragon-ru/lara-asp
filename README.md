@@ -66,15 +66,15 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 
 [Read more](<packages/lara-asp-eloquent/README.md>).
 
-## [(Laravel) GraphQL Extensions for Lighthouse](<packages/graphql/README.md>)
+## [(Laravel) GraphQL Extensions for Lighthouse](<packages/lara-asp-graphql/README.md>)
 
-This package provides highly powerful [`@searchBy`](packages/graphql/docs/Directives/@searchBy.md), [`@sortBy`](packages/graphql/docs/Directives/@sortBy.md), [`@stream`](packages/graphql/docs/Directives/@stream.md) directives for [lighthouse-php](https://lighthouse-php.com/). The [`@searchBy`](packages/graphql/docs/Directives/@searchBy.md) directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The [`@sortBy`](packages/graphql/docs/Directives/@sortBy.md) is not only about standard sorting by columns but also allows use relations. 😎
+This package provides highly powerful [`@searchBy`](packages/lara-asp-graphql/docs/Directives/@searchBy.md), [`@sortBy`](packages/lara-asp-graphql/docs/Directives/@sortBy.md), [`@stream`](packages/lara-asp-graphql/docs/Directives/@stream.md) directives for [lighthouse-php](https://lighthouse-php.com/). The [`@searchBy`](packages/lara-asp-graphql/docs/Directives/@searchBy.md) directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The [`@sortBy`](packages/lara-asp-graphql/docs/Directives/@sortBy.md) is not only about standard sorting by columns but also allows use relations. 😎
 
-[Read more](<packages/graphql/README.md>).
+[Read more](<packages/lara-asp-graphql/README.md>).
 
 ## [(Laravel) GraphQL Testing Assertions for Laravel/Lighthouse 🐝](<packages/graphql-testing/README.md>)
 
-Useful assertions for PHPUnit to check printed/exported type/queries and more with [`lastdragon-ru/lara-asp-graphql`](packages/graphql/README.md) package
+Useful assertions for PHPUnit to check printed/exported type/queries and more with [`lastdragon-ru/lara-asp-graphql`](packages/lara-asp-graphql/README.md) package
 
 [Read more](<packages/graphql-testing/README.md>).
 

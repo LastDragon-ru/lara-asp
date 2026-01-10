@@ -351,8 +351,8 @@ class AstManipulator {
         string $class,
         ?Closure $callback = null,
     ): ?Directive {
-        // todo(graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
-        // todo(graphql): Should we throw an error if $node has multiple directives?
+        // todo(lara-asp-graphql): Seems there is no way to attach directive to \GraphQL\Type\Definition\Type?
+        // todo(lara-asp-graphql): Should we throw an error if $node has multiple directives?
         $directives = $this->getDirectives($node);
         $found      = null;
 
@@ -860,7 +860,7 @@ class AstManipulator {
      * @return Type&T
      */
     private function toType((TypeNode&Node)|string $name, string $expected): Type {
-        // todo(graphql): Is there a better way to get Type?
+        // todo(lara-asp-graphql): Is there a better way to get Type?
         $type = null;
         $node = is_string($name) ? Parser::typeReference($name) : $name;
 

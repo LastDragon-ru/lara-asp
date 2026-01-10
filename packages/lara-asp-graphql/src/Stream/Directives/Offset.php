@@ -85,7 +85,7 @@ class Offset extends BaseDirective implements ArgManipulator, FieldArgumentDirec
                 throw new CursorInvalidPath($path, $value->path);
             }
 
-            // fixme(graphql)!: if args given, probable we need to compare hash
+            // fixme(lara-asp-graphql)!: if args given, probable we need to compare hash
             //      of them with the hash from `$cursor` and throw an error if
             //      doesn't match.
         } elseif (is_int($value)) {

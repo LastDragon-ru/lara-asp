@@ -214,7 +214,7 @@ query {
 
 # Laravel/Lighthouse
 
-It is highly recommended to use [`lastdragon-ru/lara-asp-graphql`](../graphql/README.md#printer) package to use the `Printer` within the Laravel/Lighthouse application.
+It is highly recommended to use [`lastdragon-ru/lara-asp-graphql`](../lara-asp-graphql/README.md#printer) package to use the `Printer` within the Laravel/Lighthouse application.
 
 # Testing Assertions
 

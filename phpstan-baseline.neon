@@ -70,49 +70,49 @@ parameters:
 			rawMessage: 'Static property LastDragon_ru\LaraASP\GraphQL\Package\Directives\ExposeBuilderDirective::$result (Illuminate\Database\Eloquent\Builder<Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Relations\Relation<Illuminate\Database\Eloquent\Model, covariant Illuminate\Database\Eloquent\Model, mixed>|Illuminate\Database\Query\Builder|Laravel\Scout\Builder<Illuminate\Database\Eloquent\Model>|null) does not accept Illuminate\Database\Eloquent\Builder<Illuminate\Database\Eloquent\Model>|Illuminate\Database\Eloquent\Relations\Relation<Illuminate\Database\Eloquent\Model>|Illuminate\Database\Query\Builder|Laravel\Scout\Builder.'
 			identifier: assign.propertyType
 			count: 1
-			path: packages/graphql/src/Package/Directives/ExposeBuilderDirective.php
+			path: packages/lara-asp-graphql/src/Package/Directives/ExposeBuilderDirective.php
 
 		-
-			rawMessage: 'Method Nuwave\Lighthouse\Scout\ScoutEnhancer@anonymous/packages/graphql/src/Stream/Directives/Directive.php:471::enhanceEloquentBuilder() return type with generic class Laravel\Scout\Builder does not specify its types: TModel'
+			rawMessage: 'Method Nuwave\Lighthouse\Scout\ScoutEnhancer@anonymous/packages/lara-asp-graphql/src/Stream/Directives/Directive.php:471::enhanceEloquentBuilder() return type with generic class Laravel\Scout\Builder does not specify its types: TModel'
 			identifier: missingType.generics
 			count: 1
-			path: packages/graphql/src/Stream/Directives/Directive.php
+			path: packages/lara-asp-graphql/src/Stream/Directives/Directive.php
 
 		-
 			rawMessage: 'Call to protected method getArgKey() of class LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive.'
 			identifier: method.protected
 			count: 1
-			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
+			path: packages/lara-asp-graphql/src/Stream/Directives/DirectiveTest.php
 
 		-
 			rawMessage: 'Call to protected method getResolver() of class LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive.'
 			identifier: method.protected
 			count: 4
-			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
+			path: packages/lara-asp-graphql/src/Stream/Directives/DirectiveTest.php
 
 		-
 			rawMessage: 'Call to protected method getResolverQuery() of class LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive.'
 			identifier: method.protected
 			count: 2
-			path: packages/graphql/src/Stream/Directives/DirectiveTest.php
+			path: packages/lara-asp-graphql/src/Stream/Directives/DirectiveTest.php
 
 		-
 			rawMessage: 'Method LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Database::getCollection() should return Illuminate\Support\Collection<(int|string), Illuminate\Database\Eloquent\Model|stdClass> but returns Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>|Illuminate\Support\Collection<(int|string), Illuminate\Database\Eloquent\Model|stdClass>.'
 			identifier: return.type
 			count: 1
-			path: packages/graphql/src/Stream/Streams/Database.php
+			path: packages/lara-asp-graphql/src/Stream/Streams/Database.php
 
 		-
 			rawMessage: 'Property LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Database::$collection (Illuminate\Support\Collection<(int|string), Illuminate\Database\Eloquent\Model|stdClass>|null) does not accept Illuminate\Database\Eloquent\Collection<int, Illuminate\Database\Eloquent\Model>.'
 			identifier: assign.propertyType
 			count: 1
-			path: packages/graphql/src/Stream/Streams/Database.php
+			path: packages/lara-asp-graphql/src/Stream/Streams/Database.php
 
 		-
 			rawMessage: 'Property LastDragon_ru\LaraASP\GraphQL\Stream\Streams\Database::$collection (Illuminate\Support\Collection<(int|string), Illuminate\Database\Eloquent\Model|stdClass>|null) is never assigned Illuminate\Support\Collection<(int|string), Illuminate\Database\Eloquent\Model|stdClass> so it can be removed from the property type.'
 			identifier: property.unusedType
 			count: 1
-			path: packages/graphql/src/Stream/Streams/Database.php
+			path: packages/lara-asp-graphql/src/Stream/Streams/Database.php
 
 		-
 			rawMessage: 'Parameter #2 $typesMapping of class Symfony\Component\Serializer\Mapping\ClassDiscriminatorMapping constructor expects array<string, string>, array given.'
