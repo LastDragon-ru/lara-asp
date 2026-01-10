@@ -7,20 +7,20 @@ body:
       label: Package
       description: "Please choose a package, leave blank if it is general or if you are not sure."
       options:
-        - core
-        - dev
-        - documentator
-        - eloquent
-        - formatter
+        - lara-asp-core
+        - lara-asp-dev
+        - lara-asp-documentator
+        - lara-asp-eloquent
+        - lara-asp-formatter
+        - lara-asp-graphql
+        - lara-asp-migrator
+        - lara-asp-serializer
+        - lara-asp-spa
+        - lara-asp-testing
         - glob-matcher
-        - graphql
         - graphql-printer
         - graphql-printer-testing
-        - migrator
         - path
-        - serializer
-        - spa
-        - testing
         - text-parser
   - type: input
     attributes:

@@ -8,41 +8,41 @@
         <bootstrap class="LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"/>
     </extensions>
     <testsuites>
-        <testsuite name="core">
-            <directory suffix="Test.php">./packages/core/src</directory>
-            <directory suffix="Test.php">./packages/core/docs</directory>
+        <testsuite name="lara-asp-core">
+            <directory suffix="Test.php">./packages/lara-asp-core/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-core/docs</directory>
         </testsuite>
-        <testsuite name="dev">
-            <directory suffix="Test.php">./packages/dev/src</directory>
-            <directory suffix="Test.php">./packages/dev/docs</directory>
+        <testsuite name="lara-asp-dev">
+            <directory suffix="Test.php">./packages/lara-asp-dev/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-dev/docs</directory>
         </testsuite>
-        <testsuite name="migrator">
-            <directory suffix="Test.php">./packages/migrator/src</directory>
-            <directory suffix="Test.php">./packages/migrator/docs</directory>
+        <testsuite name="lara-asp-migrator">
+            <directory suffix="Test.php">./packages/lara-asp-migrator/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-migrator/docs</directory>
         </testsuite>
-        <testsuite name="testing">
-            <directory suffix="Test.php">./packages/testing/src</directory>
-            <directory suffix="Test.php">./packages/testing/docs</directory>
+        <testsuite name="lara-asp-testing">
+            <directory suffix="Test.php">./packages/lara-asp-testing/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-testing/docs</directory>
         </testsuite>
-        <testsuite name="eloquent">
-            <directory suffix="Test.php">./packages/eloquent/src</directory>
-            <directory suffix="Test.php">./packages/eloquent/docs</directory>
+        <testsuite name="lara-asp-eloquent">
+            <directory suffix="Test.php">./packages/lara-asp-eloquent/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-eloquent/docs</directory>
         </testsuite>
-        <testsuite name="formatter">
-            <directory suffix="Test.php">./packages/formatter/src</directory>
-            <directory suffix="Test.php">./packages/formatter/docs</directory>
+        <testsuite name="lara-asp-formatter">
+            <directory suffix="Test.php">./packages/lara-asp-formatter/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-formatter/docs</directory>
         </testsuite>
-        <testsuite name="spa">
-            <directory suffix="Test.php">./packages/spa/src</directory>
-            <directory suffix="Test.php">./packages/spa/docs</directory>
+        <testsuite name="lara-asp-spa">
+            <directory suffix="Test.php">./packages/lara-asp-spa/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-spa/docs</directory>
         </testsuite>
-        <testsuite name="graphql">
-            <directory suffix="Test.php">./packages/graphql/src</directory>
-            <directory suffix="Test.php">./packages/graphql/docs</directory>
+        <testsuite name="lara-asp-graphql">
+            <directory suffix="Test.php">./packages/lara-asp-graphql/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-graphql/docs</directory>
         </testsuite>
-        <testsuite name="graphql">
-            <directory suffix="Test.php">./packages/graphql-testing/src</directory>
-            <directory suffix="Test.php">./packages/graphql-testing/docs</directory>
+        <testsuite name="lara-asp-graphql-testing">
+            <directory suffix="Test.php">./packages/lara-asp-graphql-testing/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-graphql-testing/docs</directory>
         </testsuite>
         <testsuite name="graphql-printer">
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
@@ -52,13 +52,13 @@
             <directory suffix="Test.php">./packages/graphql-printer-testing/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer-testing/docs</directory>
         </testsuite>
-        <testsuite name="serializer">
-            <directory suffix="Test.php">./packages/serializer/src</directory>
-            <directory suffix="Test.php">./packages/serializer/docs</directory>
+        <testsuite name="lara-asp-serializer">
+            <directory suffix="Test.php">./packages/lara-asp-serializer/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-serializer/docs</directory>
         </testsuite>
-        <testsuite name="documentator">
-            <directory suffix="Test.php">./packages/documentator/src</directory>
-            <directory suffix="Test.php">./packages/documentator/docs</directory>
+        <testsuite name="lara-asp-documentator">
+            <directory suffix="Test.php">./packages/lara-asp-documentator/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-documentator/docs</directory>
         </testsuite>
         <testsuite name="text-parser">
             <directory suffix="Test.php">./packages/text-parser/src</directory>
@@ -75,32 +75,32 @@
     </testsuites>
     <source ignoreIndirectDeprecations="true">
         <include>
-            <directory suffix=".php">./packages/core/src</directory>
-            <directory suffix=".php">./packages/core/docs</directory>
-            <directory suffix=".php">./packages/dev/src</directory>
-            <directory suffix=".php">./packages/dev/docs</directory>
-            <directory suffix=".php">./packages/migrator/src</directory>
-            <directory suffix=".php">./packages/migrator/docs</directory>
-            <directory suffix=".php">./packages/testing/src</directory>
-            <directory suffix=".php">./packages/testing/docs</directory>
-            <directory suffix=".php">./packages/eloquent/src</directory>
-            <directory suffix=".php">./packages/eloquent/docs</directory>
-            <directory suffix=".php">./packages/formatter/src</directory>
-            <directory suffix=".php">./packages/formatter/docs</directory>
-            <directory suffix=".php">./packages/spa/src</directory>
-            <directory suffix=".php">./packages/spa/docs</directory>
-            <directory suffix=".php">./packages/graphql/src</directory>
-            <directory suffix=".php">./packages/graphql/docs</directory>
-            <directory suffix=".php">./packages/graphql-testing/src</directory>
-            <directory suffix=".php">./packages/graphql-testing/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-core/src</directory>
+            <directory suffix=".php">./packages/lara-asp-core/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-dev/src</directory>
+            <directory suffix=".php">./packages/lara-asp-dev/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-migrator/src</directory>
+            <directory suffix=".php">./packages/lara-asp-migrator/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-testing/src</directory>
+            <directory suffix=".php">./packages/lara-asp-testing/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-eloquent/src</directory>
+            <directory suffix=".php">./packages/lara-asp-eloquent/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-formatter/src</directory>
+            <directory suffix=".php">./packages/lara-asp-formatter/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-spa/src</directory>
+            <directory suffix=".php">./packages/lara-asp-spa/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-graphql/src</directory>
+            <directory suffix=".php">./packages/lara-asp-graphql/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-graphql-testing/src</directory>
+            <directory suffix=".php">./packages/lara-asp-graphql-testing/docs</directory>
             <directory suffix=".php">./packages/graphql-printer/src</directory>
             <directory suffix=".php">./packages/graphql-printer/docs</directory>
             <directory suffix=".php">./packages/graphql-printer-testing/src</directory>
             <directory suffix=".php">./packages/graphql-printer-testing/docs</directory>
-            <directory suffix=".php">./packages/serializer/src</directory>
-            <directory suffix=".php">./packages/serializer/docs</directory>
-            <directory suffix=".php">./packages/documentator/src</directory>
-            <directory suffix=".php">./packages/documentator/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-serializer/src</directory>
+            <directory suffix=".php">./packages/lara-asp-serializer/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-documentator/src</directory>
+            <directory suffix=".php">./packages/lara-asp-documentator/docs</directory>
             <directory suffix=".php">./packages/text-parser/src</directory>
             <directory suffix=".php">./packages/text-parser/docs</directory>
             <directory suffix=".php">./packages/glob-matcher/src</directory>
@@ -109,32 +109,32 @@
             <directory suffix=".php">./packages/path/docs</directory>
         </include>
         <exclude>
-            <directory suffix="Test.php">./packages/core/src</directory>
-            <directory suffix="Test.php">./packages/core/docs</directory>
-            <directory suffix="Test.php">./packages/dev/src</directory>
-            <directory suffix="Test.php">./packages/dev/docs</directory>
-            <directory suffix="Test.php">./packages/migrator/src</directory>
-            <directory suffix="Test.php">./packages/migrator/docs</directory>
-            <directory suffix="Test.php">./packages/testing/src</directory>
-            <directory suffix="Test.php">./packages/testing/docs</directory>
-            <directory suffix="Test.php">./packages/eloquent/src</directory>
-            <directory suffix="Test.php">./packages/eloquent/docs</directory>
-            <directory suffix="Test.php">./packages/formatter/src</directory>
-            <directory suffix="Test.php">./packages/formatter/docs</directory>
-            <directory suffix="Test.php">./packages/spa/src</directory>
-            <directory suffix="Test.php">./packages/spa/docs</directory>
-            <directory suffix="Test.php">./packages/graphql/src</directory>
-            <directory suffix="Test.php">./packages/graphql/docs</directory>
-            <directory suffix="Test.php">./packages/graphql-testing/src</directory>
-            <directory suffix="Test.php">./packages/graphql-testing/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-core/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-core/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-dev/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-dev/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-migrator/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-migrator/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-testing/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-testing/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-eloquent/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-eloquent/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-formatter/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-formatter/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-spa/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-spa/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-graphql/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-graphql/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-graphql-testing/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-graphql-testing/docs</directory>
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer/docs</directory>
             <directory suffix="Test.php">./packages/graphql-printer-testing/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer-testing/docs</directory>
-            <directory suffix="Test.php">./packages/serializer/src</directory>
-            <directory suffix="Test.php">./packages/serializer/docs</directory>
-            <directory suffix="Test.php">./packages/documentator/src</directory>
-            <directory suffix="Test.php">./packages/documentator/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-serializer/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-serializer/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-documentator/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-documentator/docs</directory>
             <directory suffix="Test.php">./packages/text-parser/src</directory>
             <directory suffix="Test.php">./packages/text-parser/docs</directory>
             <directory suffix="Test.php">./packages/glob-matcher/src</directory>

@@ -18,11 +18,17 @@ Full-featured well-tested glob pattern parser and matcher: basic matching (`?`, 
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "glob-matcher"}})
+[//]: # (start: preprocess/d6214a05487f9759)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/glob-matcher
 ```
+
+[//]: # (end: preprocess/d6214a05487f9759)
 
 # Usage
 

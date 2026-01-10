@@ -42,7 +42,7 @@ parameters:
             exclude:
                 - Illuminate\Support\Facades\Date
             allowIn:
-                - packages/dev/src/App/*
+                - packages/lara-asp-dev/src/App/*
                 - packages/*/docs/*
     disallowedFunctionCalls:
         -
@@ -85,9 +85,9 @@ includes:
 
     # Package
     - ./phpstan-larastan.neon
-    - ./packages/dev/src/PhpStan/Container/extension.neon
-    - ./packages/dev/src/PhpStan/ClassMustBeFinal/extension.neon
-    - ./packages/dev/src/PhpStan/ClassMustBeInternal/extension.neon
+    - ./packages/lara-asp-dev/src/PhpStan/Container/extension.neon
+    - ./packages/lara-asp-dev/src/PhpStan/ClassMustBeFinal/extension.neon
+    - ./packages/lara-asp-dev/src/PhpStan/ClassMustBeInternal/extension.neon
 
     # Baseline
     - phpstan-baseline-well-known.neon

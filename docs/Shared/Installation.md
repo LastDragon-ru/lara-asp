@@ -1,5 +1,5 @@
 # Installation
 
 ```shell
-composer require lastdragon-ru/lara-asp-${package}
+composer require lastdragon-ru/${package}
 ```

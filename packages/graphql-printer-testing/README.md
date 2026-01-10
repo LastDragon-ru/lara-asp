@@ -17,11 +17,21 @@ Useful assertions for PHPUnit to check printed/exported type/queries with [`last
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
+[include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "graphql-printer-testing"}})
+[//]: # (start: preprocess/f75d139b2d525cc4)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
+> [!NOTE]
+>
+> The package intended to use in dev.
+
 ```shell
-composer require lastdragon-ru/graphql-printer-testing
+composer require --dev lastdragon-ru/graphql-printer-testing
 ```
+
+[//]: # (end: preprocess/f75d139b2d525cc4)
 
 # Usage
 
@@ -49,7 +59,7 @@ abstract class Usage extends TestCase {
 
 # Laravel/Lighthouse
 
-It is highly recommended to use [`lastdragon-ru/lara-asp-graphql-testing`](../graphql-testing/README.md) package to use assertions within the Laravel/Lighthouse application.
+It is highly recommended to use [`lastdragon-ru/lara-asp-graphql-testing`](../lara-asp-graphql-testing/README.md) package to use assertions within the Laravel/Lighthouse application.
 
 # Assertions
 

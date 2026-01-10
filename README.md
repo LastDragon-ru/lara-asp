@@ -48,69 +48,69 @@ composer require lastdragon-ru/lara-asp-<package>
 [//]: # (start: preprocess/2814e5e8c6b59bac)
 [//]: # (warning: Generated automatically. Do not edit.)
 
-## [(Laravel) Core](<packages/core/README.md>)
+## [(Laravel) Core](<packages/lara-asp-core/README.md>)
 
 This package contains useful utilities and classes.
 
-[Read more](<packages/core/README.md>).
+[Read more](<packages/lara-asp-core/README.md>).
 
-## [(Laravel) Documentator](<packages/documentator/README.md>)
+## [(Laravel) Documentator](<packages/lara-asp-documentator/README.md>)
 
 This package provides various utilities for documentation generation such as Markdown Preprocessor, Requirements Dumper and more.
 
-[Read more](<packages/documentator/README.md>).
+[Read more](<packages/lara-asp-documentator/README.md>).
 
-## [(Laravel) Eloquent Helpers](<packages/eloquent/README.md>)
+## [(Laravel) Eloquent Helpers](<packages/lara-asp-eloquent/README.md>)
 
 This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/eloquent).
 
-[Read more](<packages/eloquent/README.md>).
+[Read more](<packages/lara-asp-eloquent/README.md>).
 
-## [(Laravel) GraphQL Extensions for Lighthouse](<packages/graphql/README.md>)
+## [(Laravel) GraphQL Extensions for Lighthouse](<packages/lara-asp-graphql/README.md>)
 
-This package provides highly powerful [`@searchBy`](packages/graphql/docs/Directives/@searchBy.md), [`@sortBy`](packages/graphql/docs/Directives/@sortBy.md), [`@stream`](packages/graphql/docs/Directives/@stream.md) directives for [lighthouse-php](https://lighthouse-php.com/). The [`@searchBy`](packages/graphql/docs/Directives/@searchBy.md) directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The [`@sortBy`](packages/graphql/docs/Directives/@sortBy.md) is not only about standard sorting by columns but also allows use relations. 😎
+This package provides highly powerful [`@searchBy`](packages/lara-asp-graphql/docs/Directives/@searchBy.md), [`@sortBy`](packages/lara-asp-graphql/docs/Directives/@sortBy.md), [`@stream`](packages/lara-asp-graphql/docs/Directives/@stream.md) directives for [lighthouse-php](https://lighthouse-php.com/). The [`@searchBy`](packages/lara-asp-graphql/docs/Directives/@searchBy.md) directive provides basic conditions like `=`, `>`, `<`, etc, relations, `not (<condition>)`, enums, and custom operators support. All are strictly typed so you no need to use `Mixed` type anymore. The [`@sortBy`](packages/lara-asp-graphql/docs/Directives/@sortBy.md) is not only about standard sorting by columns but also allows use relations. 😎
 
-[Read more](<packages/graphql/README.md>).
+[Read more](<packages/lara-asp-graphql/README.md>).
 
-## [(Laravel) GraphQL Testing Assertions for Laravel/Lighthouse 🐝](<packages/graphql-testing/README.md>)
+## [(Laravel) GraphQL Testing Assertions for Laravel/Lighthouse 🐝](<packages/lara-asp-graphql-testing/README.md>)
 
-Useful assertions for PHPUnit to check printed/exported type/queries and more with [`lastdragon-ru/lara-asp-graphql`](packages/graphql/README.md) package
+Useful assertions for PHPUnit to check printed/exported type/queries and more with [`lastdragon-ru/lara-asp-graphql`](packages/lara-asp-graphql/README.md) package
 
-[Read more](<packages/graphql-testing/README.md>).
+[Read more](<packages/lara-asp-graphql-testing/README.md>).
 
-## [(Laravel) Intl Formatter](<packages/formatter/README.md>)
+## [(Laravel) Intl Formatter](<packages/lara-asp-formatter/README.md>)
 
 This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application. And also allows defining own.
 
-[Read more](<packages/formatter/README.md>).
+[Read more](<packages/lara-asp-formatter/README.md>).
 
-## [(Laravel) Raw SQL Migrator/Seeder](<packages/migrator/README.md>)
+## [(Laravel) Raw SQL Migrator/Seeder](<packages/lara-asp-migrator/README.md>)
 
 This package improves standard Laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development like [MySQL Workbench](https://www.mysql.com/products/workbench/) with Laravel 🥳
 
-[Read more](<packages/migrator/README.md>).
+[Read more](<packages/lara-asp-migrator/README.md>).
 
-## [(Laravel) SPA Helpers](<packages/spa/README.md>)
+## [(Laravel) SPA Helpers](<packages/lara-asp-spa/README.md>)
 
-[Read more](<packages/spa/README.md>).
+[Read more](<packages/lara-asp-spa/README.md>).
 
-## [(Laravel) Symfony Serializer](<packages/serializer/README.md>)
+## [(Laravel) Symfony Serializer](<packages/lara-asp-serializer/README.md>)
 
 This package provides a customizable wrapper around the [Symfony Serializer Component](https://symfony.com/doc/current/components/serializer.html) to use it inside Laravel application.
 
-[Read more](<packages/serializer/README.md>).
+[Read more](<packages/lara-asp-serializer/README.md>).
 
-## [(Laravel) Testing Helpers 🐝](<packages/testing/README.md>)
+## [(Laravel) Testing Helpers 🐝](<packages/lara-asp-testing/README.md>)
 
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and better solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 
-[Read more](<packages/testing/README.md>).
+[Read more](<packages/lara-asp-testing/README.md>).
 
-## [Dev 🐝](<packages/dev/README.md>)
+## [Dev 🐝](<packages/lara-asp-dev/README.md>)
 
 Various internal tools and helpers to develop the package itself.
 
-[Read more](<packages/dev/README.md>).
+[Read more](<packages/lara-asp-dev/README.md>).
 
 ## [DIY Parser](<packages/text-parser/README.md>)
 

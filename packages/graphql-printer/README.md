@@ -21,11 +21,17 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql-printer"}})
+[//]: # (start: preprocess/09a52ea0ed33d00a)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/graphql-printer
 ```
+
+[//]: # (end: preprocess/09a52ea0ed33d00a)
 
 # Usage
 
@@ -214,7 +220,7 @@ query {
 
 # Laravel/Lighthouse
 
-It is highly recommended to use [`lastdragon-ru/lara-asp-graphql`](../graphql/README.md#printer) package to use the `Printer` within the Laravel/Lighthouse application.
+It is highly recommended to use [`lastdragon-ru/lara-asp-graphql`](../lara-asp-graphql/README.md#printer) package to use the `Printer` within the Laravel/Lighthouse application.
 
 # Testing Assertions
 

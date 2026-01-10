@@ -1,6 +1,6 @@
 parameters:
     excludePaths:
-        - packages/testing/docs/Examples/TestCase.php
+        - packages/lara-asp-testing/docs/Examples/TestCase.php
 
     ignoreErrors:
         # Unwanted strict rules
@@ -20,16 +20,16 @@ parameters:
         -
             message: "#^Variable method call on .+?\\.$#"
             paths:
-                - packages/eloquent/src/ModelHelper.php
+                - packages/lara-asp-eloquent/src/ModelHelper.php
         -
             message: "#^Variable property access on .+?\\.$#"
             paths:
-                - packages/serializer/src/Normalizers/SerializableNormalizer.php
+                - packages/lara-asp-serializer/src/Normalizers/SerializableNormalizer.php
 
         -
             message: "#Calling putenv\\(\\) is forbidden, might overwrite existing variables\\.#"
             paths:
-                - packages/documentator/src/Processor/Tasks/Preprocess/Instructions/IncludeArtisan/Instruction.php
+                - packages/lara-asp-documentator/src/Processor/Tasks/Preprocess/Instructions/IncludeArtisan/Instruction.php
 
         # False positive
         # https://github.com/nunomaduro/larastan/issues/483
@@ -37,7 +37,7 @@ parameters:
         -
             message: "#^Dynamic call to static method Illuminate\\\\Http\\\\Response::getContent\\(\\)\\.$#"
             paths:
-                - packages/testing/src/Mixins/TestResponseMixin.php
+                - packages/lara-asp-testing/src/Mixins/TestResponseMixin.php
 
         # False positive
         # https://github.com/phpstan/phpstan-mockery/issues/34
@@ -51,19 +51,19 @@ parameters:
         -
             message: "#^Call to protected method (getResolverRelation|getResolverModel|getResolverClass|getFieldValue)\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
             paths:
-                - packages/graphql/src/Stream/Directives/DirectiveTest.php
+                - packages/lara-asp-graphql/src/Stream/Directives/DirectiveTest.php
         -
             message: "#^Call to protected method getNulls\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\SortBy\\\\Operators\\\\Sort\\.$#"
             paths:
-                - packages/graphql/src/SortBy/Operators/SortTest.php
+                - packages/lara-asp-graphql/src/SortBy/Operators/SortTest.php
         -
             message: "#^Call to protected method getBuilder\\(\\) of class LastDragon_ru\\\\LaraASP\\\\GraphQL\\\\Stream\\\\Directives\\\\Directive\\.$#"
             paths:
-                - packages/graphql/src/Stream/Directives/DirectiveTest.php
+                - packages/lara-asp-graphql/src/Stream/Directives/DirectiveTest.php
         -
             message: "#^Call to protected method getContent\\(\\) of class LastDragon_ru\\\\LaraASP\\\\Testing\\\\Constraints\\\\FileSystem\\\\DirectoryMatchesDirectory\\.$#"
             paths:
-                - packages/testing/src/Constraints/FileSystem/DirectoryMatchesDirectoryTest.php
+                - packages/lara-asp-testing/src/Constraints/FileSystem/DirectoryMatchesDirectoryTest.php
 
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149
@@ -72,40 +72,40 @@ parameters:
         -
             message: "#^PHPDoc tag @var with type Illuminate\\\\Database\\\\Eloquent\\\\Builder\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\> is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Eloquent\\\\Mixins\\\\EloquentBuilderMixin\\)\\.$#"
             paths:
-                - packages/eloquent/src/Mixins/EloquentBuilderMixin.php
+                - packages/lara-asp-eloquent/src/Mixins/EloquentBuilderMixin.php
         -
             message: "#^PHPDoc tag @var with type Illuminate\\\\Testing\\\\TestResponse\\<Symfony\\\\Component\\\\HttpFoundation\\\\Response\\> is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\TestResponseMixin\\)\\.$#"
             paths:
-                - packages/testing/src/Mixins/TestResponseMixin.php
+                - packages/lara-asp-testing/src/Mixins/TestResponseMixin.php
 
         # Closure parameters cannot be inferred from return type yet
         # https://github.com/phpstan/phpstan/issues/11317
         -
             message: '#^Parameter \#3 \$args of method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive::getBuilder\(\) expects array<string, mixed>, array given\.$#'
             paths:
-                - packages/graphql/src/Stream/Directives/Directive.php
+                - packages/lara-asp-graphql/src/Stream/Directives/Directive.php
         -
             message: '#^Parameter \#2 \$builder of class LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Exceptions\\BuilderUnsupported constructor expects class-string, mixed given\.$#'
             paths:
-                - packages/graphql/src/Stream/Directives/Directive.php
+                - packages/lara-asp-graphql/src/Stream/Directives/Directive.php
         -
             message: '#^Parameter \#5 \$args of method LastDragon_ru\\LaraASP\\GraphQL\\Stream\\Directives\\Directive::getFieldValue\(\) expects array<string, mixed>, array given\.$#'
             paths:
-                - packages/graphql/src/Stream/Directives/Directive.php
+                - packages/lara-asp-graphql/src/Stream/Directives/Directive.php
         -
             message: '#^Parameter \#4 \$args of method Nuwave\\Lighthouse\\Execution\\ResolveInfo::enhanceBuilder\(\) expects array<string, mixed>, array given\.$#'
             paths:
-                - packages/graphql/src/Package/Directives/ExposeBuilderDirective.php
+                - packages/lara-asp-graphql/src/Package/Directives/ExposeBuilderDirective.php
 
         # is_a(static::class, Class::class, true) false positive
         # https://github.com/phpstan/phpstan/issues/1239
         -
             message: '#^Parameter \#2 \$value of static method LastDragon_ru\\LaraASP\\Documentator\\Markdown\\Data\\Data<T>::set\(\) expects T, \(null&T\)\|null given\.$#'
             paths:
-                - packages/documentator/src/Markdown/Data/Data.php
+                - packages/lara-asp-documentator/src/Markdown/Data/Data.php
 
         # (dev) Required for tests
         -
             message: "#^Class `[^`]+` must be marked by `@internal`\\.$#"
             paths:
-                - packages/dev/src/PhpStan/ClassMustBeInternal/RuleTest.php
+                - packages/lara-asp-dev/src/PhpStan/ClassMustBeInternal/RuleTest.php
