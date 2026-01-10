@@ -71,8 +71,10 @@ jobs:
 
           while IFS= read -r NAME
           do
-            FILTERS+=("--subdirectory-filter")
-            FILTERS+=("${{ needs.settings.outputs.packages-directory }}/${NAME}")
+            if [[ -n "${NAME}" ]]; then
+              FILTERS+=("--subdirectory-filter")
+              FILTERS+=("${{ needs.settings.outputs.packages-directory }}/${NAME}")
+            fi
           done <<< "${NAMES}"
 
           git-filter-repo --source=src --target=package "${FILTERS[@]}"
