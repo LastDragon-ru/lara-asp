@@ -100,11 +100,11 @@ This package provides a customizable wrapper around the [Symfony Serializer Comp
 
 [Read more](<packages/lara-asp-serializer/README.md>).
 
-## [(Laravel) Testing Helpers 🐝](<packages/testing/README.md>)
+## [(Laravel) Testing Helpers 🐝](<packages/lara-asp-testing/README.md>)
 
 This package provides various useful asserts for [PHPUnit](https://phpunit.de/) and better solution for HTTP tests - testing HTTP response has never been so easy! And this not only about `TestResponse` but any PSR response 😎
 
-[Read more](<packages/testing/README.md>).
+[Read more](<packages/lara-asp-testing/README.md>).
 
 ## [Dev 🐝](<packages/lara-asp-dev/README.md>)
 

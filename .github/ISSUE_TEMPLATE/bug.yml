@@ -16,11 +16,11 @@ body:
         - lara-asp-migrator
         - lara-asp-serializer
         - lara-asp-spa
+        - lara-asp-testing
         - glob-matcher
         - graphql-printer
         - graphql-printer-testing
         - path
-        - testing
         - text-parser
   - type: input
     attributes:

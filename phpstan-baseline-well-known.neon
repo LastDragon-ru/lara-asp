@@ -1,6 +1,6 @@
 parameters:
     excludePaths:
-        - packages/testing/docs/Examples/TestCase.php
+        - packages/lara-asp-testing/docs/Examples/TestCase.php
 
     ignoreErrors:
         # Unwanted strict rules
@@ -37,7 +37,7 @@ parameters:
         -
             message: "#^Dynamic call to static method Illuminate\\\\Http\\\\Response::getContent\\(\\)\\.$#"
             paths:
-                - packages/testing/src/Mixins/TestResponseMixin.php
+                - packages/lara-asp-testing/src/Mixins/TestResponseMixin.php
 
         # False positive
         # https://github.com/phpstan/phpstan-mockery/issues/34
@@ -63,7 +63,7 @@ parameters:
         -
             message: "#^Call to protected method getContent\\(\\) of class LastDragon_ru\\\\LaraASP\\\\Testing\\\\Constraints\\\\FileSystem\\\\DirectoryMatchesDirectory\\.$#"
             paths:
-                - packages/testing/src/Constraints/FileSystem/DirectoryMatchesDirectoryTest.php
+                - packages/lara-asp-testing/src/Constraints/FileSystem/DirectoryMatchesDirectoryTest.php
 
         # PHPStan doesn't allow use `@var` and `assert()` for `$this` inside Closure yet
         # https://github.com/phpstan/phpstan/issues/149
@@ -76,7 +76,7 @@ parameters:
         -
             message: "#^PHPDoc tag @var with type Illuminate\\\\Testing\\\\TestResponse\\<Symfony\\\\Component\\\\HttpFoundation\\\\Response\\> is not subtype of native type \\$this\\(LastDragon_ru\\\\LaraASP\\\\Testing\\\\Mixins\\\\TestResponseMixin\\)\\.$#"
             paths:
-                - packages/testing/src/Mixins/TestResponseMixin.php
+                - packages/lara-asp-testing/src/Mixins/TestResponseMixin.php
 
         # Closure parameters cannot be inferred from return type yet
         # https://github.com/phpstan/phpstan/issues/11317

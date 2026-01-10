@@ -110,7 +110,7 @@
   "autoload": {
     "files": [
       "packages/lara-asp-eloquent/src/mixins.php",
-      "packages/testing/src/mixins.php"
+      "packages/lara-asp-testing/src/mixins.php"
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\": "packages/lara-asp-core/src/",
@@ -128,7 +128,7 @@
       "LastDragon_ru\\TextParser\\": "packages/text-parser/src/",
       "LastDragon_ru\\LaraASP\\Serializer\\": "packages/lara-asp-serializer/src/",
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/lara-asp-spa/src/",
-      "LastDragon_ru\\LaraASP\\Testing\\": "packages/testing/src/"
+      "LastDragon_ru\\LaraASP\\Testing\\": "packages/lara-asp-testing/src/"
     }
   },
   "autoload-dev": {
@@ -148,7 +148,7 @@
       "packages/text-parser/docs/",
       "packages/lara-asp-serializer/docs/",
       "packages/lara-asp-spa/docs/",
-      "packages/testing/docs/",
+      "packages/lara-asp-testing/docs/",
       "packages/**/*Test/"
     ],
     "psr-4": {
@@ -167,7 +167,7 @@
       "LastDragon_ru\\TextParser\\Docs\\": "packages/text-parser/docs",
       "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/lara-asp-serializer/docs",
       "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/lara-asp-spa/docs",
-      "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/testing/docs"
+      "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/lara-asp-testing/docs"
     }
   },
   "conflict": {
@@ -225,6 +225,9 @@
         ],
         "lara-asp-spa": [
           "spa"
+        ],
+        "lara-asp-testing": [
+          "testing"
         ],
         "text-parser": [
           "diy-parser"
