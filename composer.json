@@ -109,14 +109,14 @@
   },
   "autoload": {
     "files": [
-      "packages/eloquent/src/mixins.php",
+      "packages/lara-asp-eloquent/src/mixins.php",
       "packages/testing/src/mixins.php"
     ],
     "psr-4": {
       "LastDragon_ru\\LaraASP\\Core\\": "packages/lara-asp-core/src/",
       "LastDragon_ru\\LaraASP\\Dev\\": "packages/lara-asp-dev/src/",
       "LastDragon_ru\\LaraASP\\Documentator\\": "packages/lara-asp-documentator/src/",
-      "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/eloquent/src/",
+      "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/lara-asp-eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/formatter/src/",
       "LastDragon_ru\\GlobMatcher\\": "packages/glob-matcher/src/",
       "LastDragon_ru\\GraphQLPrinter\\": "packages/graphql-printer/src/",
@@ -136,7 +136,7 @@
       "packages/lara-asp-core/docs/",
       "packages/lara-asp-dev/docs/",
       "packages/lara-asp-documentator/docs/",
-      "packages/eloquent/docs/",
+      "packages/lara-asp-eloquent/docs/",
       "packages/formatter/docs/",
       "packages/glob-matcher/docs/",
       "packages/graphql-printer/docs/",
@@ -155,7 +155,7 @@
       "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/lara-asp-core/docs",
       "LastDragon_ru\\LaraASP\\Dev\\Docs\\": "packages/lara-asp-dev/docs",
       "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/lara-asp-documentator/docs",
-      "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/eloquent/docs",
+      "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/lara-asp-eloquent/docs",
       "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/formatter/docs",
       "LastDragon_ru\\GlobMatcher\\Docs\\": "packages/glob-matcher/docs",
       "LastDragon_ru\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
@@ -204,6 +204,9 @@
         ],
         "lara-asp-documentator": [
           "documentator"
+        ],
+        "lara-asp-eloquent": [
+          "eloquent"
         ],
         "text-parser": [
           "diy-parser"

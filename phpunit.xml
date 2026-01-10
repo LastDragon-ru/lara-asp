@@ -24,9 +24,9 @@
             <directory suffix="Test.php">./packages/testing/src</directory>
             <directory suffix="Test.php">./packages/testing/docs</directory>
         </testsuite>
-        <testsuite name="eloquent">
-            <directory suffix="Test.php">./packages/eloquent/src</directory>
-            <directory suffix="Test.php">./packages/eloquent/docs</directory>
+        <testsuite name="lara-asp-eloquent">
+            <directory suffix="Test.php">./packages/lara-asp-eloquent/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-eloquent/docs</directory>
         </testsuite>
         <testsuite name="formatter">
             <directory suffix="Test.php">./packages/formatter/src</directory>
@@ -83,8 +83,8 @@
             <directory suffix=".php">./packages/migrator/docs</directory>
             <directory suffix=".php">./packages/testing/src</directory>
             <directory suffix=".php">./packages/testing/docs</directory>
-            <directory suffix=".php">./packages/eloquent/src</directory>
-            <directory suffix=".php">./packages/eloquent/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-eloquent/src</directory>
+            <directory suffix=".php">./packages/lara-asp-eloquent/docs</directory>
             <directory suffix=".php">./packages/formatter/src</directory>
             <directory suffix=".php">./packages/formatter/docs</directory>
             <directory suffix=".php">./packages/spa/src</directory>
@@ -117,8 +117,8 @@
             <directory suffix="Test.php">./packages/migrator/docs</directory>
             <directory suffix="Test.php">./packages/testing/src</directory>
             <directory suffix="Test.php">./packages/testing/docs</directory>
-            <directory suffix="Test.php">./packages/eloquent/src</directory>
-            <directory suffix="Test.php">./packages/eloquent/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-eloquent/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-eloquent/docs</directory>
             <directory suffix="Test.php">./packages/formatter/src</directory>
             <directory suffix="Test.php">./packages/formatter/docs</directory>
             <directory suffix="Test.php">./packages/spa/src</directory>

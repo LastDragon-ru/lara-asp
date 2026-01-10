@@ -60,11 +60,11 @@ This package provides various utilities for documentation generation such as Mar
 
 [Read more](<packages/lara-asp-documentator/README.md>).
 
-## [(Laravel) Eloquent Helpers](<packages/eloquent/README.md>)
+## [(Laravel) Eloquent Helpers](<packages/lara-asp-eloquent/README.md>)
 
 This package contains useful extensions and mixins for [Eloquent](https://laravel.com/docs/eloquent).
 
-[Read more](<packages/eloquent/README.md>).
+[Read more](<packages/lara-asp-eloquent/README.md>).
 
 ## [(Laravel) GraphQL Extensions for Lighthouse](<packages/graphql/README.md>)
 

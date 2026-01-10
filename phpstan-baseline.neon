@@ -28,19 +28,19 @@ parameters:
 			rawMessage: 'Parameter #1 $offset of method LastDragon_ru\LaraASP\Eloquent\Iterators\IteratorImpl<TItem of Illuminate\Database\Eloquent\Model>::setOffset() expects int|string|null, mixed given.'
 			identifier: argument.type
 			count: 1
-			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIterator.php
+			path: packages/lara-asp-eloquent/src/Iterators/ChunkedChangeSafeIterator.php
 
 		-
 			rawMessage: 'Call to an undefined method Mockery\LegacyMockInterface::times().'
 			identifier: method.notFound
 			count: 2
-			path: packages/eloquent/src/Iterators/ChunkedChangeSafeIteratorTest.php
+			path: packages/lara-asp-eloquent/src/Iterators/ChunkedChangeSafeIteratorTest.php
 
 		-
 			rawMessage: 'Call to an undefined method Mockery\LegacyMockInterface::once().'
 			identifier: method.notFound
 			count: 2
-			path: packages/eloquent/src/Iterators/ChunkedIteratorTest.php
+			path: packages/lara-asp-eloquent/src/Iterators/ChunkedIteratorTest.php
 
 		-
 			rawMessage: 'Variable $currency on left side of ??= always exists and is always null.'

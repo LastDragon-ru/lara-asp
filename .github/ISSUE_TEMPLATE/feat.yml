@@ -10,7 +10,7 @@ body:
         - lara-asp-core
         - lara-asp-dev
         - lara-asp-documentator
-        - eloquent
+        - lara-asp-eloquent
         - formatter
         - glob-matcher
         - graphql
