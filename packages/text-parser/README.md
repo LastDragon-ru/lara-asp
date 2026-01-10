@@ -17,11 +17,17 @@ There are several tools to generate full-featured parsers even for PHP[^1]. They
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "text-parser"}})
+[//]: # (start: preprocess/61edde0e805c71f6)
+[//]: # (warning: Generated automatically. Do not edit.)
+
 # Installation
 
 ```shell
 composer require lastdragon-ru/text-parser
 ```
+
+[//]: # (end: preprocess/61edde0e805c71f6)
 
 # Introduction
 

@@ -36,8 +36,8 @@ This package provides highly powerful [`@searchBy`](docs/Directives/@searchBy.md
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "graphql"}})
-[//]: # (start: preprocess/ae5651d70b8cc4f8)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "lara-asp-graphql"}})
+[//]: # (start: preprocess/22822ea87cbd8aff)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -46,7 +46,7 @@ This package provides highly powerful [`@searchBy`](docs/Directives/@searchBy.md
 composer require lastdragon-ru/lara-asp-graphql
 ```
 
-[//]: # (end: preprocess/ae5651d70b8cc4f8)
+[//]: # (end: preprocess/22822ea87cbd8aff)
 
 # Configuration
 

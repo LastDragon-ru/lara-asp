@@ -30,8 +30,8 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "eloquent"}})
-[//]: # (start: preprocess/f8eefcb07ebebf48)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "lara-asp-eloquent"}})
+[//]: # (start: preprocess/132f1b83859090b7)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -40,7 +40,7 @@ This package contains useful extensions and mixins for [Eloquent](https://larave
 composer require lastdragon-ru/lara-asp-eloquent
 ```
 
-[//]: # (end: preprocess/f8eefcb07ebebf48)
+[//]: # (end: preprocess/132f1b83859090b7)
 
 # Iterators
 

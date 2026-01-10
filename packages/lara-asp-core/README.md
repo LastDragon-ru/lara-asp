@@ -29,8 +29,8 @@ This package contains useful utilities and classes.
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "core"}})
-[//]: # (start: preprocess/8b571af3629c16d0)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "lara-asp-core"}})
+[//]: # (start: preprocess/97c0531fb94cccf1)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -39,7 +39,7 @@ This package contains useful utilities and classes.
 composer require lastdragon-ru/lara-asp-core
 ```
 
-[//]: # (end: preprocess/8b571af3629c16d0)
+[//]: # (end: preprocess/97c0531fb94cccf1)
 
 # Usage
 

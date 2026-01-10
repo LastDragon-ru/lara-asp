@@ -19,8 +19,8 @@ Various internal tools and helpers to develop the package itself.
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "dev"}})
-[//]: # (start: preprocess/3d3cb65e05620e8c)
+[include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "lara-asp-dev"}})
+[//]: # (start: preprocess/32dc6e722d6b3da2)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -33,7 +33,7 @@ Various internal tools and helpers to develop the package itself.
 composer require --dev lastdragon-ru/lara-asp-dev
 ```
 
-[//]: # (end: preprocess/3d3cb65e05620e8c)
+[//]: # (end: preprocess/32dc6e722d6b3da2)
 
 ## Usage
 

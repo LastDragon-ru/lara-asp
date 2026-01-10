@@ -26,8 +26,8 @@
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "spa"}})
-[//]: # (start: preprocess/36dd56b7d2234313)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "lara-asp-spa"}})
+[//]: # (start: preprocess/1a3ca8dd1ec844c7)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -36,7 +36,7 @@
 composer require lastdragon-ru/lara-asp-spa
 ```
 
-[//]: # (end: preprocess/36dd56b7d2234313)
+[//]: # (end: preprocess/1a3ca8dd1ec844c7)
 
 # Upgrading
 

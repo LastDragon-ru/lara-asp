@@ -30,8 +30,8 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "formatter"}})
-[//]: # (start: preprocess/8750339286f08805)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "lara-asp-formatter"}})
+[//]: # (start: preprocess/873e8ee6f19c1b63)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -40,7 +40,7 @@ This package provides a customizable wrapper around [Intl](https://www.php.net/m
 composer require lastdragon-ru/lara-asp-formatter
 ```
 
-[//]: # (end: preprocess/8750339286f08805)
+[//]: # (end: preprocess/873e8ee6f19c1b63)
 
 # Configuration
 

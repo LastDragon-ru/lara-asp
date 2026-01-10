@@ -36,8 +36,8 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "testing"}})
-[//]: # (start: preprocess/6b84b76ae0cd1f01)
+[include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "lara-asp-testing"}})
+[//]: # (start: preprocess/35b8d0b2d34b8b44)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -50,7 +50,7 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 composer require --dev lastdragon-ru/lara-asp-testing
 ```
 
-[//]: # (end: preprocess/6b84b76ae0cd1f01)
+[//]: # (end: preprocess/35b8d0b2d34b8b44)
 
 # Usage
 

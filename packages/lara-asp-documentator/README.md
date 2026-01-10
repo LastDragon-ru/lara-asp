@@ -23,8 +23,8 @@ This package provides various utilities for documentation generation such as Mar
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "documentator"}})
-[//]: # (start: preprocess/ae875fc29fdefb4f)
+[include:template]: ../../docs/Shared/Installation.md ({"data": {"package": "lara-asp-documentator"}})
+[//]: # (start: preprocess/64f166fdfe9d58ac)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 # Installation
@@ -33,7 +33,7 @@ This package provides various utilities for documentation generation such as Mar
 composer require lastdragon-ru/lara-asp-documentator
 ```
 
-[//]: # (end: preprocess/ae875fc29fdefb4f)
+[//]: # (end: preprocess/64f166fdfe9d58ac)
 
 # Commands
 
