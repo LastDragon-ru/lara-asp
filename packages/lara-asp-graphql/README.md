@@ -561,7 +561,7 @@ type User {
 
 # Testing Assertions
 
-There are also a few useful assertions for PHPUnit to check printed/exported type/queries and more, please see the [`lastdragon-ru/lara-asp-graphql-testing`](../graphql-testing/README.md) package.
+There are also a few useful assertions for PHPUnit to check printed/exported type/queries and more, please see the [`lastdragon-ru/lara-asp-graphql-testing`](../lara-asp-graphql-testing/README.md) package.
 
 # Upgrading
 

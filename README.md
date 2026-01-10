@@ -72,11 +72,11 @@ This package provides highly powerful [`@searchBy`](packages/lara-asp-graphql/do
 
 [Read more](<packages/lara-asp-graphql/README.md>).
 
-## [(Laravel) GraphQL Testing Assertions for Laravel/Lighthouse 🐝](<packages/graphql-testing/README.md>)
+## [(Laravel) GraphQL Testing Assertions for Laravel/Lighthouse 🐝](<packages/lara-asp-graphql-testing/README.md>)
 
 Useful assertions for PHPUnit to check printed/exported type/queries and more with [`lastdragon-ru/lara-asp-graphql`](packages/lara-asp-graphql/README.md) package
 
-[Read more](<packages/graphql-testing/README.md>).
+[Read more](<packages/lara-asp-graphql-testing/README.md>).
 
 ## [(Laravel) Intl Formatter](<packages/lara-asp-formatter/README.md>)
 

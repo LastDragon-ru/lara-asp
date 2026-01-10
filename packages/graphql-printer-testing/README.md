@@ -49,7 +49,7 @@ abstract class Usage extends TestCase {
 
 # Laravel/Lighthouse
 
-It is highly recommended to use [`lastdragon-ru/lara-asp-graphql-testing`](../graphql-testing/README.md) package to use assertions within the Laravel/Lighthouse application.
+It is highly recommended to use [`lastdragon-ru/lara-asp-graphql-testing`](../lara-asp-graphql-testing/README.md) package to use assertions within the Laravel/Lighthouse application.
 
 # Assertions
 
