@@ -78,11 +78,11 @@ Useful assertions for PHPUnit to check printed/exported type/queries and more wi
 
 [Read more](<packages/graphql-testing/README.md>).
 
-## [(Laravel) Intl Formatter](<packages/formatter/README.md>)
+## [(Laravel) Intl Formatter](<packages/lara-asp-formatter/README.md>)
 
 This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application. And also allows defining own.
 
-[Read more](<packages/formatter/README.md>).
+[Read more](<packages/lara-asp-formatter/README.md>).
 
 ## [(Laravel) Raw SQL Migrator/Seeder](<packages/migrator/README.md>)
 

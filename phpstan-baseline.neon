@@ -46,13 +46,13 @@ parameters:
 			rawMessage: 'Variable $currency on left side of ??= always exists and is always null.'
 			identifier: nullCoalesce.variable
 			count: 1
-			path: packages/formatter/src/Formats/IntlNumber/IntlCurrencyFormat.php
+			path: packages/lara-asp-formatter/src/Formats/IntlNumber/IntlCurrencyFormat.php
 
 		-
 			rawMessage: 'Method LastDragon_ru\LaraASP\Formatter\Formatter::getDefaultTimezone() should return DateTimeZone|IntlTimeZone|string|null but returns mixed.'
 			identifier: return.type
 			count: 1
-			path: packages/formatter/src/Formatter.php
+			path: packages/lara-asp-formatter/src/Formatter.php
 
 		-
 			rawMessage: 'Parameter #2 $cursor of static method LastDragon_ru\GlobMatcher\Glob\Ast\Node::toRegex() expects LastDragon_ru\TextParser\Ast\Cursor<covariant LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNodeChild>, LastDragon_ru\TextParser\Ast\Cursor<LastDragon_ru\GlobMatcher\Glob\Ast\CharacterNodeChild> given.'

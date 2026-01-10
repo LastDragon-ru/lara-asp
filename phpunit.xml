@@ -28,9 +28,9 @@
             <directory suffix="Test.php">./packages/lara-asp-eloquent/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-eloquent/docs</directory>
         </testsuite>
-        <testsuite name="formatter">
-            <directory suffix="Test.php">./packages/formatter/src</directory>
-            <directory suffix="Test.php">./packages/formatter/docs</directory>
+        <testsuite name="lara-asp-formatter">
+            <directory suffix="Test.php">./packages/lara-asp-formatter/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-formatter/docs</directory>
         </testsuite>
         <testsuite name="spa">
             <directory suffix="Test.php">./packages/spa/src</directory>
@@ -85,8 +85,8 @@
             <directory suffix=".php">./packages/testing/docs</directory>
             <directory suffix=".php">./packages/lara-asp-eloquent/src</directory>
             <directory suffix=".php">./packages/lara-asp-eloquent/docs</directory>
-            <directory suffix=".php">./packages/formatter/src</directory>
-            <directory suffix=".php">./packages/formatter/docs</directory>
+            <directory suffix=".php">./packages/lara-asp-formatter/src</directory>
+            <directory suffix=".php">./packages/lara-asp-formatter/docs</directory>
             <directory suffix=".php">./packages/spa/src</directory>
             <directory suffix=".php">./packages/spa/docs</directory>
             <directory suffix=".php">./packages/graphql/src</directory>
@@ -119,8 +119,8 @@
             <directory suffix="Test.php">./packages/testing/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-eloquent/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-eloquent/docs</directory>
-            <directory suffix="Test.php">./packages/formatter/src</directory>
-            <directory suffix="Test.php">./packages/formatter/docs</directory>
+            <directory suffix="Test.php">./packages/lara-asp-formatter/src</directory>
+            <directory suffix="Test.php">./packages/lara-asp-formatter/docs</directory>
             <directory suffix="Test.php">./packages/spa/src</directory>
             <directory suffix="Test.php">./packages/spa/docs</directory>
             <directory suffix="Test.php">./packages/graphql/src</directory>

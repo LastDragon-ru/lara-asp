@@ -11,7 +11,7 @@ body:
         - lara-asp-dev
         - lara-asp-documentator
         - lara-asp-eloquent
-        - formatter
+        - lara-asp-formatter
         - glob-matcher
         - graphql
         - graphql-printer
