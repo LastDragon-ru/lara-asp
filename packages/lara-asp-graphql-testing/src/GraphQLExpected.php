@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
-use LastDragon_ru\GraphQLPrinter\Testing\GraphQLExpected as PrinterGraphQLExpected;
+use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected as PrinterGraphQLExpected;
 
 class GraphQLExpected extends PrinterGraphQLExpected {
     // empty

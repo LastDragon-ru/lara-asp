@@ -2,9 +2,9 @@
 
 namespace LastDragon_ru\GraphQLPrinter\Package;
 
-use LastDragon_ru\GraphQLPrinter\Testing\GraphQLAssertions;
 use LastDragon_ru\LaraASP\Testing\Concerns\StrictAssertEquals;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
+use LastDragon_ru\PhpUnit\GraphQL\GraphQLAssertions;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 

@@ -21,7 +21,7 @@ use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
 use LastDragon_ru\GraphQLPrinter\Package\GraphQLDefinition;
 use LastDragon_ru\GraphQLPrinter\Package\GraphQLMarker;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\GraphQLPrinter\Testing\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
