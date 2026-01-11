@@ -26,7 +26,7 @@
     "illuminate/contracts": "^12.0.1",
     "illuminate/filesystem": "^12.0.1",
     "lastdragon-ru/graphql-printer": "self.version",
-    "lastdragon-ru/graphql-printer-testing": "self.version",
+    "lastdragon-ru/phpunit-graphql": "self.version",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "nuwave/lighthouse": "^6.54.0",
     "phpunit/phpunit": "^11.2.0|^12.0.0",

@@ -19,7 +19,7 @@ body:
         - lara-asp-testing
         - glob-matcher
         - graphql-printer
-        - graphql-printer-testing
+        - phpunit-graphql
         - path
         - text-parser
   - type: input

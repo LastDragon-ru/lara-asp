@@ -3,5 +3,5 @@
 namespace LastDragon_ru\GraphQLPrinter\Testing;
 
 final class Package {
-    public const string Name = 'graphql-printer-testing';
+    public const string Name = 'phpunit-graphql';
 }

@@ -120,7 +120,7 @@
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/lara-asp-formatter/src/",
       "LastDragon_ru\\GlobMatcher\\": "packages/glob-matcher/src/",
       "LastDragon_ru\\GraphQLPrinter\\": "packages/graphql-printer/src/",
-      "LastDragon_ru\\GraphQLPrinter\\Testing\\": "packages/graphql-printer-testing/src/",
+      "LastDragon_ru\\GraphQLPrinter\\Testing\\": "packages/phpunit-graphql/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/lara-asp-graphql/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\": "packages/lara-asp-graphql-testing/src/",
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/lara-asp-migrator/src/",
@@ -140,7 +140,7 @@
       "packages/lara-asp-formatter/docs/",
       "packages/glob-matcher/docs/",
       "packages/graphql-printer/docs/",
-      "packages/graphql-printer-testing/docs/",
+      "packages/phpunit-graphql/docs/",
       "packages/lara-asp-graphql/docs/",
       "packages/lara-asp-migrator/docs/",
       "packages/lara-asp-migrator/src/Migrations/MigratorTest/raw/",
@@ -159,7 +159,7 @@
       "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/lara-asp-formatter/docs",
       "LastDragon_ru\\GlobMatcher\\Docs\\": "packages/glob-matcher/docs",
       "LastDragon_ru\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
-      "LastDragon_ru\\GraphQLPrinter\\Testing\\Docs\\": "packages/graphql-printer-testing/docs",
+      "LastDragon_ru\\GraphQLPrinter\\Testing\\Docs\\": "packages/phpunit-graphql/docs",
       "LastDragon_ru\\LaraASP\\GraphQL\\Docs\\": "packages/lara-asp-graphql/docs",
       "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Docs\\": "packages/lara-asp-graphql-testing/docs",
       "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "packages/lara-asp-migrator/docs",
@@ -228,6 +228,9 @@
         ],
         "lara-asp-testing": [
           "testing"
+        ],
+        "phpunit-graphql": [
+          "graphql-printer-testing"
         ],
         "text-parser": [
           "diy-parser"
@@ -315,7 +318,7 @@
     "lastdragon-ru/text-parser": "self.version",
     "lastdragon-ru/glob-matcher": "self.version",
     "lastdragon-ru/graphql-printer": "self.version",
-    "lastdragon-ru/graphql-printer-testing": "self.version",
+    "lastdragon-ru/phpunit-graphql": "self.version",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",

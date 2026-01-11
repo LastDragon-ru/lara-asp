@@ -17,7 +17,7 @@ Useful assertions for PHPUnit to check printed/exported type/queries with [`last
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 
-[include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "graphql-printer-testing"}})
+[include:template]: ../../docs/Shared/InstallationDev.md ({"data": {"package": "phpunit-graphql"}})
 [//]: # (start: preprocess/f75d139b2d525cc4)
 [//]: # (warning: Generated automatically. Do not edit.)
 
@@ -28,7 +28,7 @@ Useful assertions for PHPUnit to check printed/exported type/queries with [`last
 > The package intended to use in dev.
 
 ```shell
-composer require --dev lastdragon-ru/graphql-printer-testing
+composer require --dev lastdragon-ru/phpunit-graphql
 ```
 
 [//]: # (end: preprocess/f75d139b2d525cc4)
