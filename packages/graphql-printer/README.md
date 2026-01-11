@@ -224,7 +224,7 @@ It is highly recommended to use [`lastdragon-ru/lara-asp-graphql`](../lara-asp-g
 
 # Testing Assertions
 
-There are also a few useful assertions for PHPUnit to check printed/exported type/queries, please see the [`lastdragon-ru/graphql-printer-testing`](../graphql-printer-testing/README.md) package.
+There are also a few useful assertions for PHPUnit to check printed/exported type/queries, please see the [`lastdragon-ru/phpunit-graphql`](../phpunit-graphql/README.md) package.
 
 # Upgrading
 
@@ -233,7 +233,7 @@ Please follow [Upgrade Guide](UPGRADE.md).
 # Migration from `lastdragon-ru/lara-asp-graphql-printer`
 
 * [ ] Use `lastdragon-ru/graphql-printer` instead of `lastdragon-ru/lara-asp-graphql-printer` in `composer.json`
-* [ ] Use [`lastdragon-ru/graphql-printer-testing`](../graphql-printer-testing/README.md) package if you use PHPUnit assertions.
+* [ ] Use [`lastdragon-ru/phpunit-graphql`](../phpunit-graphql/README.md) package if you use PHPUnit assertions.
 * [ ] Use `LastDragon_ru\GraphQLPrinter\*` instead of `LastDragon_ru\LaraASP\GraphQLPrinter\*` in code.
 
 [include:file]: ../../docs/Shared/Contributing.md

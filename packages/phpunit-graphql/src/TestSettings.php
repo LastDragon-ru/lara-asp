@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\GraphQLPrinter\Testing;
+namespace LastDragon_ru\PhpUnit\GraphQL;
 
 use Closure;
 use LastDragon_ru\GraphQLPrinter\Contracts\DirectiveFilter;

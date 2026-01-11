@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\GraphQLPrinter\Testing;
+namespace LastDragon_ru\PhpUnit\GraphQL;
 
 use GraphQL\Language\AST\DocumentNode;
 use GraphQL\Language\AST\Node;
@@ -9,7 +9,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Contracts\Statistics;
-use LastDragon_ru\GraphQLPrinter\Testing\Package\TestCase;
+use LastDragon_ru\PhpUnit\GraphQL\Package\TestCase;
 use Mockery;
 use PHPUnit\Framework\Assert;
 use PHPUnit\Framework\Attributes\CoversTrait;

@@ -22,8 +22,8 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
-use LastDragon_ru\GraphQLPrinter\Testing\GraphQLExpected;
-use LastDragon_ru\GraphQLPrinter\Testing\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
+use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 

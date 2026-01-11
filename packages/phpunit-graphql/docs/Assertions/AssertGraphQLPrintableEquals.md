@@ -1,9 +1,18 @@
+# `assertGraphQLPrintableEquals`
+
+Prints and compares two GraphQL schemas/types/nodes/etc.
+
+[include:example]: ./AssertGraphQLPrintableEqualsTest.php
+[//]: # (start: preprocess/7020c87844f6795d)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\GraphQLPrinter\Testing\Docs\Assertions;
+namespace LastDragon_ru\PhpUnit\GraphQL\Docs\Assertions;
 
 use GraphQL\Utils\BuildSchema;
-use LastDragon_ru\GraphQLPrinter\Testing\GraphQLAssertions;
+use LastDragon_ru\PhpUnit\GraphQL\GraphQLAssertions;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -52,3 +61,6 @@ final class AssertGraphQLPrintableEqualsTest extends TestCase {
         );
     }
 }
+```
+
+[//]: # (end: preprocess/7020c87844f6795d)

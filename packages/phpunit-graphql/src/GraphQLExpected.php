@@ -1,6 +1,6 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\GraphQLPrinter\Testing;
+namespace LastDragon_ru\PhpUnit\GraphQL;
 
 use GraphQL\Language\AST\Node;
 use GraphQL\Type\Definition\Argument;

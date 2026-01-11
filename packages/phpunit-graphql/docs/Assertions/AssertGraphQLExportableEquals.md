@@ -9,11 +9,11 @@ Exports and compares two GraphQL schemas/types/nodes/etc.
 ```php
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\GraphQLPrinter\Testing\Docs\Assertions;
+namespace LastDragon_ru\PhpUnit\GraphQL\Docs\Assertions;
 
 use GraphQL\Utils\BuildSchema;
-use LastDragon_ru\GraphQLPrinter\Testing\GraphQLAssertions;
-use LastDragon_ru\GraphQLPrinter\Testing\GraphQLExpected;
+use LastDragon_ru\PhpUnit\GraphQL\GraphQLAssertions;
+use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 

@@ -48,9 +48,9 @@
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer/docs</directory>
         </testsuite>
-        <testsuite name="graphql-printer-testing">
-            <directory suffix="Test.php">./packages/graphql-printer-testing/src</directory>
-            <directory suffix="Test.php">./packages/graphql-printer-testing/docs</directory>
+        <testsuite name="phpunit-graphql">
+            <directory suffix="Test.php">./packages/phpunit-graphql/src</directory>
+            <directory suffix="Test.php">./packages/phpunit-graphql/docs</directory>
         </testsuite>
         <testsuite name="lara-asp-serializer">
             <directory suffix="Test.php">./packages/lara-asp-serializer/src</directory>
@@ -95,8 +95,8 @@
             <directory suffix=".php">./packages/lara-asp-graphql-testing/docs</directory>
             <directory suffix=".php">./packages/graphql-printer/src</directory>
             <directory suffix=".php">./packages/graphql-printer/docs</directory>
-            <directory suffix=".php">./packages/graphql-printer-testing/src</directory>
-            <directory suffix=".php">./packages/graphql-printer-testing/docs</directory>
+            <directory suffix=".php">./packages/phpunit-graphql/src</directory>
+            <directory suffix=".php">./packages/phpunit-graphql/docs</directory>
             <directory suffix=".php">./packages/lara-asp-serializer/src</directory>
             <directory suffix=".php">./packages/lara-asp-serializer/docs</directory>
             <directory suffix=".php">./packages/lara-asp-documentator/src</directory>
@@ -129,8 +129,8 @@
             <directory suffix="Test.php">./packages/lara-asp-graphql-testing/docs</directory>
             <directory suffix="Test.php">./packages/graphql-printer/src</directory>
             <directory suffix="Test.php">./packages/graphql-printer/docs</directory>
-            <directory suffix="Test.php">./packages/graphql-printer-testing/src</directory>
-            <directory suffix="Test.php">./packages/graphql-printer-testing/docs</directory>
+            <directory suffix="Test.php">./packages/phpunit-graphql/src</directory>
+            <directory suffix="Test.php">./packages/phpunit-graphql/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-serializer/src</directory>
             <directory suffix="Test.php">./packages/lara-asp-serializer/docs</directory>
             <directory suffix="Test.php">./packages/lara-asp-documentator/src</directory>
