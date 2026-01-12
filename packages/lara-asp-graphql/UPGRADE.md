@@ -31,11 +31,11 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 > [!TIP]
 >
-> Maybe a good idea to add test (at least) with [`GraphQLAssertions::assertGraphQLSchemaEquals()`][code-links/c84a35ff75f6a95e] assertion before the upgrade 🤗
+> Maybe a good idea to add test (at least) with [`Assertions::assertGraphQLSchemaEquals()`][code-links/2b084802cce4981b] assertion before the upgrade 🤗
 
 # Upgrade from v9
 
-* [ ] Assertions for PHPUnit extracted into [`lastdragon-ru/lara-asp-graphql-testing`](../lara-asp-graphql-testing/README.md) package (class names are the same).
+* [ ] Assertions for PHPUnit extracted into [`lastdragon-ru/lara-asp-graphql-testing`](../lara-asp-graphql-testing/README.md) package (class names changed a bit).
 
 # Upgrade from v7
 
@@ -81,7 +81,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 ## Tests
 
 * [ ] Following traits required `app()` method to get access to the Container (#151)
-  * [ ] [`GraphQLAssertions`][code-links/a6029821bb9d8f2e]
+  * [ ] `💀\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertion`
 
   ```php
   protected function app(): Application {
@@ -89,7 +89,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
   }
   ```
 
-* [ ] [`GraphQLAssertions`][code-links/a6029821bb9d8f2e] methods updated to allow `null` for `$message` argument.
+* [ ] `💀\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertion` methods updated to allow `null` for `$message` argument.
 
 ## API
 
@@ -395,11 +395,8 @@ This section is actual only if you are extending the package. Please review and 
 [code-links/bed52c4a6cb03cac]: src/Stream/Directives/Directive.php
     "\LastDragon_ru\LaraASP\GraphQL\Stream\Directives\Directive"
 
-[code-links/a6029821bb9d8f2e]: ../lara-asp-graphql-testing/src/GraphQLAssertions.php
-    "\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions"
-
-[code-links/c84a35ff75f6a95e]: ../lara-asp-graphql-testing/src/GraphQLAssertions.php#L86-L98
-    "\LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions::assertGraphQLSchemaEquals()"
+[code-links/2b084802cce4981b]: ../lara-asp-graphql-testing/src/Assertions.php#L86-L98
+    "\LastDragon_ru\LaraASP\GraphQL\Testing\Assertions::assertGraphQLSchemaEquals()"
 
 [code-links/947cddaaef5e3f1b]: src/Utils/AstManipulator.php#L298-L339
     "\LastDragon_ru\LaraASP\GraphQL\Utils\AstManipulator::getOriginType()"

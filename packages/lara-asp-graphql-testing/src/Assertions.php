@@ -40,7 +40,7 @@ use function mb_trim;
 /**
  * @phpstan-import-type Change from BreakingChangesFinder
  */
-trait GraphQLAssertions {
+trait Assertions {
     use PrinterGraphQLAssertions {
         assertGraphQLResult as private printerAssertGraphQLResult;
     }

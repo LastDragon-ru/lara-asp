@@ -13,7 +13,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Docs\Assertions;
 
 use LastDragon_ru\LaraASP\Core\PackageProvider as CorePackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\PackageProvider as GraphQLPackageProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Assertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestDirective;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
@@ -32,7 +32,7 @@ final class AssertGraphQLSchemaNoBreakingChangesTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
-    use GraphQLAssertions;
+    use Assertions;
 
     /**
      * Preparation for test.

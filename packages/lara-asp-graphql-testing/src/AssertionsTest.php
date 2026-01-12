@@ -11,8 +11,8 @@ use PHPUnit\Framework\Attributes\CoversClass;
 /**
  * @internal
  */
-#[CoversClass(GraphQLAssertions::class)]
-final class GraphQLAssertionsTest extends TestCase {
+#[CoversClass(Assertions::class)]
+final class AssertionsTest extends TestCase {
     public function testAssertGraphQLExportableEquals(): void {
         $this->app()->make(DirectiveLocator::class)
             ->setResolved('a', TestDirective::class);

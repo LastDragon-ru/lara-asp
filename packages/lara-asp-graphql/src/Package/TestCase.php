@@ -14,7 +14,7 @@ use LastDragon_ru\LaraASP\GraphQL\Package\Directives\ExposeBuilderDirective;
 use LastDragon_ru\LaraASP\GraphQL\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Package\SchemaPrinter\LighthouseDirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\PackageProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Assertions;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\Serializer\PackageProvider as SerializerProvider;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase as PackageTestCase;
@@ -34,7 +34,7 @@ use function mb_substr;
  * @internal
  */
 abstract class TestCase extends PackageTestCase {
-    use GraphQLAssertions {
+    use Assertions {
         getGraphQLPrinter as private getDefaultGraphQLPrinter;
     }
 
