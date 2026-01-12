@@ -27,7 +27,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
-use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLExpected;
+use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
