@@ -27,7 +27,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
+use LastDragon_ru\PhpUnit\GraphQL\Expected;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
@@ -57,7 +57,7 @@ final class PrinterTest extends TestCase {
     #[DataProvider('dataProviderPrintType')]
     #[DataProvider('dataProviderPrintNode')]
     public function testPrint(
-        GraphQLExpected $expected,
+        Expected $expected,
         ?Settings $settings,
         int $level,
         int $used,
@@ -84,7 +84,7 @@ final class PrinterTest extends TestCase {
     #[DataProvider('dataProviderExportType')]
     #[DataProvider('dataProviderExportNode')]
     public function testExport(
-        GraphQLExpected $expected,
+        Expected $expected,
         ?Settings $settings,
         int $level,
         int $used,
@@ -578,7 +578,7 @@ final class PrinterTest extends TestCase {
 
         return [
             'UnionType'       => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
@@ -612,7 +612,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectType' => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                     """
                     Description
@@ -649,7 +649,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InterfaceType'   => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                     """
                     Description
@@ -696,7 +696,7 @@ final class PrinterTest extends TestCase {
 
         return [
             'UnionTypeDefinitionNode'   => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
@@ -720,7 +720,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectTypeDefinition' => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                     """
                     Description
@@ -915,7 +915,7 @@ final class PrinterTest extends TestCase {
         };
     }
 
-    private static function getSchemaExpected(string $path): GraphQLExpected {
+    private static function getSchemaExpected(string $path): Expected {
         $expected      = self::getTestData()->file($path);
         static $legacy = InstalledVersions::satisfies(new VersionParser(), 'nuwave/lighthouse', '<6.59.0');
 
@@ -929,7 +929,7 @@ final class PrinterTest extends TestCase {
             );
         }
 
-        return new GraphQLExpected($expected);
+        return new Expected($expected);
     }
     // </editor-fold>
 }

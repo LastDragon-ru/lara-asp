@@ -13,7 +13,7 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use SplFileInfo;
 
-class GraphQLExpected {
+class Expected {
     /**
      * @param list<string>|null $usedTypes
      * @param list<string>|null $usedDirectives

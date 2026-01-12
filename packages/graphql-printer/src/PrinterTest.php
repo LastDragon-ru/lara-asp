@@ -22,7 +22,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
-use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
+use LastDragon_ru\PhpUnit\GraphQL\Expected;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -44,7 +44,7 @@ final class PrinterTest extends TestCase {
     #[DataProvider('dataProviderPrintSchema')]
     #[DataProvider('dataProviderPrint')]
     public function testPrint(
-        GraphQLExpected $expected,
+        Expected $expected,
         ?Settings $settings,
         int $level,
         int $used,
@@ -73,7 +73,7 @@ final class PrinterTest extends TestCase {
     #[DataProvider('dataProviderPrintSchema')]
     #[DataProvider('dataProviderExport')]
     public function testExport(
-        GraphQLExpected $expected,
+        Expected $expected,
         ?Settings $settings,
         int $level,
         int $used,
@@ -110,7 +110,7 @@ final class PrinterTest extends TestCase {
 
         return [
             'Schema'                                           => [
-                new GraphQLExpected(
+                new Expected(
                     self::getTestData()->file('~print-Schema-DefaultSettings.graphql'),
                 ),
                 null,
@@ -120,7 +120,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-DefaultSettings'                           => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-DefaultSettings.graphql'),
                 ))
                     ->setUsedTypes([
@@ -154,7 +154,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-GraphQLSettings'                           => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-GraphQLSettings.graphql'),
                 ))
                     ->setUsedTypes([
@@ -193,7 +193,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings'                           => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-PrinterSettings.graphql'),
                 ))
                     ->setUsedTypes([
@@ -227,7 +227,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-NoDirectivesDefinitions'   => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-PrinterSettings-NoDirectivesDefinitions.graphql'),
                 ))
                     ->setUsedTypes([
@@ -262,7 +262,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-NoNormalization'           => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-PrinterSettings-NoNormalization.graphql'),
                 ))
                     ->setUsedTypes([
@@ -307,7 +307,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-DirectiveDefinitionFilter' => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-PrinterSettings-DirectiveDefinitionFilter.graphql'),
                 ))
                     ->setUsedTypes([
@@ -346,7 +346,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-TypeDefinitionFilter'      => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-PrinterSettings-TypeDefinitionFilter.graphql'),
                 ))
                     ->setUsedTypes([
@@ -386,7 +386,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-TypeFilter'                => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-PrinterSettings-TypeFilter.graphql'),
                 ))
                     ->setUsedTypes([
@@ -423,7 +423,7 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-Everything'                => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~print-Schema-PrinterSettings-Everything.graphql'),
                 ))
                     ->setUsedTypes([
@@ -473,7 +473,7 @@ final class PrinterTest extends TestCase {
 
         return [
             'UnionType'                                   => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
@@ -507,7 +507,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectType'                             => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                     """
                     Description
@@ -545,7 +545,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InterfaceType'                               => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                     """
                     Description
@@ -582,7 +582,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'UnionTypeDefinitionNode'                     => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                         union CodeUnion =
                             | CodeType
@@ -606,7 +606,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectTypeDefinition'                   => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                     """
                     Description
@@ -636,7 +636,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'DirectiveNode (forbidden)'                   => [
-                (new GraphQLExpected(''))
+                (new Expected(''))
                     ->setUsedTypes([
                         // empty
                     ])
@@ -658,7 +658,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'DirectiveNode (printing disabled)'           => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                     @test
                     GRAPHQL,
@@ -682,7 +682,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'DirectiveDefinitionNode (forbidden)'         => [
-                (new GraphQLExpected(''))
+                (new Expected(''))
                     ->setUsedTypes([
                         // empty
                     ])
@@ -704,7 +704,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'DirectiveDefinitionNode (printing disabled)' => [
-                (new GraphQLExpected(
+                (new Expected(
                     <<<'GRAPHQL'
                     """
                     Description
@@ -733,7 +733,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'ScalarTypeDefinitionNode (forbidden)'        => [
-                (new GraphQLExpected(''))
+                (new Expected(''))
                     ->setUsedTypes([
                         // empty
                     ])
@@ -765,7 +765,7 @@ final class PrinterTest extends TestCase {
 
         return [
             'UnionType'                 => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~export-UnionType.graphql'),
                 ))
                     ->setUsedTypes([
@@ -805,7 +805,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'ObjectType'                => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~export-ObjectType.graphql'),
                 ))
                     ->setUsedTypes([
@@ -836,7 +836,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InterfaceType'             => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~export-InterfaceType.graphql'),
                 ))
                     ->setUsedTypes([
@@ -864,7 +864,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'UnionTypeDefinitionNode'   => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~export-UnionTypeDefinitionNode.graphql'),
                 ))
                     ->setUsedTypes([
@@ -894,7 +894,7 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectTypeDefinition' => [
-                (new GraphQLExpected(
+                (new Expected(
                     self::getTestData()->file('~export-InputObjectTypeDefinition.graphql'),
                 ))
                     ->setUsedTypes([

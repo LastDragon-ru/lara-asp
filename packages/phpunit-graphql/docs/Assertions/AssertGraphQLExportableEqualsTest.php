@@ -4,7 +4,7 @@ namespace LastDragon_ru\PhpUnit\GraphQL\Docs\Assertions;
 
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\PhpUnit\GraphQL\Assertions;
-use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
+use LastDragon_ru\PhpUnit\GraphQL\Expected;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -65,7 +65,7 @@ final class AssertGraphQLExportableEqualsTest extends TestCase {
         // Test
         // (schema required to find types/directives definition)
         $this->assertGraphQLExportableEquals(
-            (new GraphQLExpected($expected))->setSchema($schema),
+            (new Expected($expected))->setSchema($schema),
             $type,
         );
     }
