@@ -44,14 +44,14 @@ composer require --dev lastdragon-ru/phpunit-graphql
 
 namespace LastDragon_ru\PhpUnit\GraphQL\Docs\Examples;
 
-use LastDragon_ru\PhpUnit\GraphQL\GraphQLAssertions;
+use LastDragon_ru\PhpUnit\GraphQL\Assertions;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  */
 abstract class Usage extends TestCase {
-    use GraphQLAssertions;
+    use Assertions;
 }
 ```
 

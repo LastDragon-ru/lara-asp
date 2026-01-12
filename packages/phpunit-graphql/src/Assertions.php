@@ -24,7 +24,7 @@ use SplFileInfo;
 use function array_combine;
 use function is_string;
 
-trait GraphQLAssertions {
+trait Assertions {
     // <editor-fold desc="Assertions">
     // =========================================================================
     /**

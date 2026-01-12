@@ -23,7 +23,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
-use LastDragon_ru\PhpUnit\GraphQL\GraphQLAssertions as PrinterGraphQLAssertions;
+use LastDragon_ru\PhpUnit\GraphQL\Assertions as GraphQLAssertions;
 use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
@@ -41,7 +41,7 @@ use function mb_trim;
  * @phpstan-import-type Change from BreakingChangesFinder
  */
 trait Assertions {
-    use PrinterGraphQLAssertions {
+    use GraphQLAssertions {
         assertGraphQLResult as private printerAssertGraphQLResult;
     }
 

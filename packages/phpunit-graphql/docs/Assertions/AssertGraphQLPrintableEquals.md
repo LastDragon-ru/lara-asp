@@ -12,7 +12,7 @@ Prints and compares two GraphQL schemas/types/nodes/etc.
 namespace LastDragon_ru\PhpUnit\GraphQL\Docs\Assertions;
 
 use GraphQL\Utils\BuildSchema;
-use LastDragon_ru\PhpUnit\GraphQL\GraphQLAssertions;
+use LastDragon_ru\PhpUnit\GraphQL\Assertions;
 use PHPUnit\Framework\Attributes\CoversNothing;
 use PHPUnit\Framework\TestCase;
 
@@ -24,7 +24,7 @@ final class AssertGraphQLPrintableEqualsTest extends TestCase {
     /**
      * Trait where assertion defined.
      */
-    use GraphQLAssertions;
+    use Assertions;
 
     /**
      * Assertion test.

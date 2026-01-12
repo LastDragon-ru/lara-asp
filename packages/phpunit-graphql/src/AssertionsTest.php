@@ -17,8 +17,8 @@ use PHPUnit\Framework\Attributes\CoversTrait;
 /**
  * @internal
  */
-#[CoversTrait(GraphQLAssertions::class)]
-final class GraphQLAssertionsTest extends TestCase {
+#[CoversTrait(Assertions::class)]
+final class AssertionsTest extends TestCase {
     public function testAssertGraphQLPrintableEquals(): void {
         $printable = Mockery::mock(Node::class);
         $expected  = new GraphQLExpected('result');
@@ -168,7 +168,7 @@ final class GraphQLAssertionsTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class GraphQLAssertionsTest_TestCase extends Assert {
-    use GraphQLAssertions {
+    use Assertions {
         assertGraphQLExpectation as public;
         assertGraphQLResult as public;
     }
