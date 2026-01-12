@@ -11,7 +11,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -48,7 +48,7 @@ final class SchemaDefinitionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $context    = new Context(new TestSettings(), null, null);
+        $context    = new Context(new PrinterSettings(), null, null);
         $collector  = new Collector();
         $definition = Parser::schemaDefinition(
             'schema @a @b { query: Query, mutation: Mutation }',
@@ -80,7 +80,7 @@ final class SchemaDefinitionTest extends TestCase {
             }
             GRAPHQL,
         );
-        $settings   = (new TestSettings())->setTypeFilter(static function (string $type): bool {
+        $settings   = (new PrinterSettings())->setTypeFilter(static function (string $type): bool {
             return $type !== 'Mutation';
         });
         $context    = new Context($settings, null, $schema);
@@ -103,7 +103,7 @@ final class SchemaDefinitionTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, SchemaDefinitionNode|Schema, ?Schema}>
      */
     public static function dataProviderSerialize(): array {
-        $settings = (new TestSettings())
+        $settings = (new PrinterSettings())
             ->setPrintDirectives(false)
             ->setNormalizeFields(false);
 

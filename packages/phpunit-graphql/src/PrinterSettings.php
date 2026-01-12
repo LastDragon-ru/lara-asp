@@ -8,7 +8,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\TypeFilter;
 use LastDragon_ru\GraphQLPrinter\Settings\ImmutableSettings;
 use Override;
 
-class TestSettings extends ImmutableSettings {
+class PrinterSettings extends ImmutableSettings {
     protected string           $space                             = ' ';
     protected string           $indent                            = '    ';
     protected string           $fileEnd                           = "\n";

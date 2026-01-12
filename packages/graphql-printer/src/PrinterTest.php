@@ -23,7 +23,7 @@ use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\GraphQLPrinter\Settings\DefaultSettings;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -109,7 +109,7 @@ final class PrinterTest extends TestCase {
         };
 
         return [
-            'Schema'                                        => [
+            'Schema'                                           => [
                 new GraphQLExpected(
                     self::getTestData()->file('~print-Schema-DefaultSettings.graphql'),
                 ),
@@ -119,7 +119,7 @@ final class PrinterTest extends TestCase {
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-DefaultSettings'                        => [
+            'Schema-DefaultSettings'                           => [
                 (new GraphQLExpected(
                     self::getTestData()->file('~print-Schema-DefaultSettings.graphql'),
                 ))
@@ -153,7 +153,7 @@ final class PrinterTest extends TestCase {
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-GraphQLSettings'                        => [
+            'Schema-GraphQLSettings'                           => [
                 (new GraphQLExpected(
                     self::getTestData()->file('~print-Schema-GraphQLSettings.graphql'),
                 ))
@@ -192,9 +192,9 @@ final class PrinterTest extends TestCase {
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-TestSettings'                           => [
+            'Schema-PrinterSettings'                           => [
                 (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings.graphql'),
+                    self::getTestData()->file('~print-Schema-PrinterSettings.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',
@@ -220,15 +220,15 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 0,
                 0,
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-TestSettings-NoDirectivesDefinitions'   => [
+            'Schema-PrinterSettings-NoDirectivesDefinitions'   => [
                 (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-NoDirectivesDefinitions.graphql'),
+                    self::getTestData()->file('~print-Schema-PrinterSettings-NoDirectivesDefinitions.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -254,16 +254,16 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setPrintDirectiveDefinitions(false),
                 0,
                 0,
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-TestSettings-NoNormalization'           => [
+            'Schema-PrinterSettings-NoNormalization'           => [
                 (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-NoNormalization.graphql'),
+                    self::getTestData()->file('~print-Schema-PrinterSettings-NoNormalization.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',
@@ -289,7 +289,7 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setNormalizeDefinitions(false)
                     ->setNormalizeUnions(false)
                     ->setNormalizeEnums(false)
@@ -306,9 +306,9 @@ final class PrinterTest extends TestCase {
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-TestSettings-DirectiveDefinitionFilter' => [
+            'Schema-PrinterSettings-DirectiveDefinitionFilter' => [
                 (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-DirectiveDefinitionFilter.graphql'),
+                    self::getTestData()->file('~print-Schema-PrinterSettings-DirectiveDefinitionFilter.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -334,7 +334,7 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setDirectiveDefinitionFilter(
                         static function (string $directive, bool $isStandard): bool {
                             return $isStandard || $directive !== 'directive';
@@ -345,9 +345,9 @@ final class PrinterTest extends TestCase {
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-TestSettings-TypeDefinitionFilter'      => [
+            'Schema-PrinterSettings-TypeDefinitionFilter'      => [
                 (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-TypeDefinitionFilter.graphql'),
+                    self::getTestData()->file('~print-Schema-PrinterSettings-TypeDefinitionFilter.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -373,7 +373,7 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setTypeDefinitionFilter(
                         static function (string $type, bool $isStandard): bool {
                             return $isStandard === false
@@ -385,9 +385,9 @@ final class PrinterTest extends TestCase {
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-TestSettings-TypeFilter'                => [
+            'Schema-PrinterSettings-TypeFilter'                => [
                 (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-TypeFilter.graphql'),
+                    self::getTestData()->file('~print-Schema-PrinterSettings-TypeFilter.graphql'),
                 ))
                     ->setUsedTypes([
                         'Query',
@@ -411,7 +411,7 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setTypeFilter(
                         static function (string $type, bool $isStandard): bool {
                             return !str_ends_with($type, 'Hidden');
@@ -422,9 +422,9 @@ final class PrinterTest extends TestCase {
                 $schemaFactory,
                 $printableFactory,
             ],
-            'Schema-TestSettings-Everything'                => [
+            'Schema-PrinterSettings-Everything'                => [
                 (new GraphQLExpected(
-                    self::getTestData()->file('~print-Schema-TestSettings-Everything.graphql'),
+                    self::getTestData()->file('~print-Schema-PrinterSettings-Everything.graphql'),
                 ))
                     ->setUsedTypes([
                         'Int',
@@ -451,7 +451,7 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setTypeDefinitionFilter(static fn (): bool => true)
                     ->setDirectiveFilter(static fn (): bool => true)
                     ->setDirectiveDefinitionFilter(static fn (): bool => true),
@@ -486,7 +486,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         // empty
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 1,
                 0,
                 $schemaFactory,
@@ -526,7 +526,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         '@schemaDirective',
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 0,
                 0,
                 $schemaFactory,
@@ -562,7 +562,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         // empty
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setPrintDirectives(false),
                 0,
                 0,
@@ -595,7 +595,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         // empty
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 1,
                 0,
                 $schemaFactory,
@@ -625,7 +625,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         '@schemaDirective',
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 0,
                 0,
                 $schemaFactory,
@@ -643,7 +643,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         // empty
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setPrintDirectiveDefinitions(true)
                     ->setPrintDirectives(true)
                     ->setDirectiveDefinitionFilter(static fn () => false)
@@ -669,7 +669,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         '@test',
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setPrintDirectiveDefinitions(false)
                     ->setPrintDirectives(false),
                 0,
@@ -689,7 +689,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         // empty
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setPrintDirectiveDefinitions(true)
                     ->setPrintDirectives(true)
                     ->setDirectiveDefinitionFilter(static fn () => false)
@@ -720,7 +720,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         '@test',
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setPrintDirectiveDefinitions(false)
                     ->setPrintDirectives(false),
                 0,
@@ -740,7 +740,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         // empty
                     ]),
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setTypeDefinitionFilter(static fn () => false)
                     ->setTypeFilter(static fn () => false),
                 0,
@@ -784,7 +784,7 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 0,
                 0,
                 $schemaFactory,
@@ -823,7 +823,7 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 0,
                 0,
                 $schemaFactory,
@@ -851,7 +851,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         '@directive',
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 1,
                 0,
                 $schemaFactory,
@@ -883,7 +883,7 @@ final class PrinterTest extends TestCase {
                         '@deprecated',
                         '@directive',
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 1,
                 0,
                 $schemaFactory,
@@ -908,7 +908,7 @@ final class PrinterTest extends TestCase {
                     ->setUsedDirectives([
                         '@directive',
                     ]),
-                new TestSettings(),
+                new PrinterSettings(),
                 0,
                 0,
                 $schemaFactory,

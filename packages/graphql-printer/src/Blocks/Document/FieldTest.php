@@ -13,7 +13,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -57,7 +57,7 @@ final class FieldTest extends TestCase {
             }
             GRAPHQL,
         );
-        $context    = new Context(new TestSettings(), null, $schema);
+        $context    = new Context(new PrinterSettings(), null, $schema);
         $collector  = new Collector();
         $definition = Parser::field('alias: field(a: 123) @a { a }');
         $type       = $schema->getType('A');
@@ -77,7 +77,7 @@ final class FieldTest extends TestCase {
     }
 
     public function testStatisticsNoSchema(): void {
-        $context    = new Context(new TestSettings(), null, null);
+        $context    = new Context(new PrinterSettings(), null, null);
         $collector  = new Collector();
         $definition = Parser::field('alias: field(a: 123) @a');
         $type       = null;
@@ -103,7 +103,7 @@ final class FieldTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, FieldNode, (TypeNode&Node)|Type|null, ?Schema}>
      */
     public static function dataProviderSerialize(): array {
-        $settings = (new TestSettings())
+        $settings = (new PrinterSettings())
             ->setNormalizeArguments(false)
             ->setAlwaysMultilineArguments(false);
 

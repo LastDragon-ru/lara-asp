@@ -25,7 +25,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use LastDragon_ru\PhpUnit\GraphQL\GraphQLAssertions as PrinterGraphQLAssertions;
 use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
@@ -72,7 +72,7 @@ trait GraphQLAssertions {
         if ($expected->getSettings() === null) {
             $filter   = static fn () => true;
             $expected = $expected->setSettings(
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setPrintUnusedDefinitions(true)
                     ->setTypeDefinitionFilter($filter)
                     ->setDirectiveDefinitionFilter($filter),
@@ -211,7 +211,7 @@ trait GraphQLAssertions {
     }
 
     protected function getGraphQLPrinter(?Settings $settings = null): Printer {
-        return $this->app()->make(Printer::class)->setSettings($settings ?? new TestSettings());
+        return $this->app()->make(Printer::class)->setSettings($settings ?? new PrinterSettings());
     }
 
     protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {
@@ -241,7 +241,7 @@ trait GraphQLAssertions {
 
     private function getGraphQLSchemaString(): string {
         return (string) $this
-            ->getGraphQLPrinter(new TestSettings())
+            ->getGraphQLPrinter(new PrinterSettings())
             ->print($this->getGraphQLSchema());
     }
 

@@ -8,7 +8,7 @@ use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -57,7 +57,7 @@ final class ListBlockTest extends TestCase {
 
     public function testStatistics(): void {
         $collector = new Collector();
-        $context   = new Context(new TestSettings(), null, null);
+        $context   = new Context(new PrinterSettings(), null, null);
         $items     = [
             new ListBlockTest__StatisticsBlock(['ta'], ['da']),
             new ListBlockTest__StatisticsBlock(['tb'], ['db']),
@@ -83,7 +83,7 @@ final class ListBlockTest extends TestCase {
      * @return array<array-key, array<array-key, mixed>>
      */
     public static function dataProviderSerialize(): array {
-        $settings = new TestSettings();
+        $settings = new PrinterSettings();
 
         return (new MergeDataProvider([
             'index'           => new ArrayDataProvider([
@@ -784,7 +784,7 @@ class ListBlockTest__Block extends Block {
     public function __construct(
         protected string $serialized,
     ) {
-        parent:: __construct(new Context(new TestSettings(), null, null));
+        parent:: __construct(new Context(new PrinterSettings(), null, null));
     }
 
     #[Override]
@@ -805,7 +805,7 @@ class ListBlockTest__NamedBlock extends PropertyBlock {
         protected string $serialized,
     ) {
         parent::__construct(
-            new Context(new TestSettings(), null, null),
+            new Context(new PrinterSettings(), null, null),
             $name,
             new ListBlockTest__Block(''),
         );
@@ -840,7 +840,7 @@ class ListBlockTest__StatisticsBlock extends Block {
         protected array $types,
         protected array $directives,
     ) {
-        parent:: __construct(new Context(new TestSettings(), null, null));
+        parent:: __construct(new Context(new PrinterSettings(), null, null));
     }
 
     #[Override]

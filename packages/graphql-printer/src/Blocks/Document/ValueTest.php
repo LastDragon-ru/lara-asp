@@ -24,7 +24,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -68,7 +68,7 @@ final class ValueTest extends TestCase {
 
     public function testStatistics(): void {
         $collector = new Collector();
-        $context   = new Context(new TestSettings(), null, null);
+        $context   = new Context(new PrinterSettings(), null, null);
         $literal   = Parser::valueLiteral('123');
         $block     = new Value($context, $literal, Type::int());
         $content   = $block->serialize($collector, 0, 0);
@@ -97,7 +97,7 @@ final class ValueTest extends TestCase {
             }
             GRAPHQL,
         );
-        $context   = new Context(new TestSettings(), null, $schema);
+        $context   = new Context(new PrinterSettings(), null, $schema);
         $collector = new Collector();
         $literal   = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
         $block     = new Value($context, $literal, $schema->getType('A'));
@@ -120,7 +120,7 @@ final class ValueTest extends TestCase {
 
     public function testStatisticsObjectValueNoSchema(): void {
         $collector = new Collector();
-        $context   = new Context(new TestSettings(), null, null);
+        $context   = new Context(new PrinterSettings(), null, null);
         $literal   = Parser::valueLiteral('{ a: 123, b: true, c: { a: 123, b: { b: "b" } } }');
         $block     = new Value(
             $context,
@@ -151,7 +151,7 @@ final class ValueTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, ValueNode&Node, ?Schema, ?Type}>
      */
     public static function dataProviderSerialize(): array {
-        $settings = (new TestSettings())
+        $settings = (new PrinterSettings())
             ->setNormalizeArguments(false);
         $object   = new InputObjectType([
             'name'   => 'A',

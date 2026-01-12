@@ -155,7 +155,7 @@ trait GraphQLAssertions {
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function getGraphQLPrinter(?Settings $settings = null): PrinterContract {
-        return new Printer($settings ?? new TestSettings());
+        return new Printer($settings ?? new PrinterSettings());
     }
     // </editor-fold>
 }

@@ -8,7 +8,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -40,7 +40,7 @@ final class EnumTypeExtensionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $context    = new Context(new TestSettings(), null, null);
+        $context    = new Context(new PrinterSettings(), null, null);
         $collector  = new Collector();
         $definition = Parser::enumTypeExtension(
             'extend enum Test @a { A }',
@@ -67,7 +67,7 @@ final class EnumTypeExtensionTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, EnumTypeExtensionNode}>
      */
     public static function dataProviderSerialize(): array {
-        $settings = (new TestSettings())
+        $settings = (new PrinterSettings())
             ->setNormalizeEnums(false);
 
         return [

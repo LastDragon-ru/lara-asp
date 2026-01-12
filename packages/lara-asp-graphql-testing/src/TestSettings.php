@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\GraphQL\Testing;
 
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings as PrinterTestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings as PrinterTestSettings;
 
 class TestSettings extends PrinterTestSettings {
     // empty

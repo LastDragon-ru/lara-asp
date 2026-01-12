@@ -21,7 +21,7 @@ use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
 use LastDragon_ru\GraphQLPrinter\Package\GraphQLDefinition;
 use LastDragon_ru\GraphQLPrinter\Package\GraphQLMarker;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -82,7 +82,7 @@ final class BlockTest extends TestCase {
         $used      = 123;
         $level     = 1;
         $collector = new Collector();
-        $context   = new Context(new TestSettings(), null, null);
+        $context   = new Context(new PrinterSettings(), null, null);
         $content   = 'content';
         $block     = Mockery::mock(BlockTest__Block::class, [$context]);
         $block->shouldAllowMockingProtectedMethods();
@@ -185,7 +185,7 @@ final class BlockTest extends TestCase {
      * @return array<string, array{bool, Settings, string}>
      */
     public static function dataProviderIsMultiline(): array {
-        $settings = new TestSettings();
+        $settings = new PrinterSettings();
 
         return [
             'single short line' => [

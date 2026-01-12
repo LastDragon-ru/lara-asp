@@ -9,7 +9,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -44,7 +44,7 @@ final class DirectivesTest extends TestCase {
     public function testStatistics(): void {
         $a         = Parser::directive('@a');
         $b         = Parser::directive('@b');
-        $settings  = (new TestSettings())->setPrintDirectives(true);
+        $settings  = (new PrinterSettings())->setPrintDirectives(true);
         $context   = new Context($settings, null, null);
         $collector = new Collector();
         $block     = new Directives($context, [$a, $b]);
@@ -62,7 +62,7 @@ final class DirectivesTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, list<DirectiveNode>, ?string}>
      */
     public static function dataProviderSerialize(): array {
-        $settings = (new TestSettings())
+        $settings = (new PrinterSettings())
             ->setNormalizeDirectives(false)
             ->setAlwaysMultilineDirectives(true)
             ->setAlwaysMultilineArguments(false);

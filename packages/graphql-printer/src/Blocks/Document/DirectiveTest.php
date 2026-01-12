@@ -15,7 +15,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -72,7 +72,7 @@ final class DirectiveTest extends TestCase {
             ],
         ]);
         $resolver  = $this->getDirectiveResolver($directive);
-        $context   = new Context(new TestSettings(), $resolver, null);
+        $context   = new Context(new PrinterSettings(), $resolver, null);
         $collector = new Collector();
         $node      = Parser::directive('@test(a: 123, b: "b")');
         $block     = new Directive($context, $node);
@@ -118,7 +118,7 @@ final class DirectiveTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, DirectiveNode, ?GraphQLDirective, ?Schema}>
      */
     public static function dataProviderSerialize(): array {
-        $settings = (new TestSettings())
+        $settings = (new PrinterSettings())
             ->setNormalizeArguments(false)
             ->setAlwaysMultilineArguments(false);
 
