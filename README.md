@@ -132,7 +132,7 @@ Independent (from Laravel and Lighthouse) package that allow you to print GraphQ
 
 ## [GraphQL Testing Assertions 🐝](<packages/phpunit-graphql/README.md>)
 
-Useful assertions for PHPUnit to check printed/exported type/queries with [`lastdragon-ru/graphql-printer`](packages/graphql-printer/README.md) package
+PHPUnit assertions for GraphQL to check printed/exported type/queries.
 
 [Read more](<packages/phpunit-graphql/README.md>).
 

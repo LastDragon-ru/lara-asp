@@ -1,6 +1,6 @@
 # GraphQL Testing Assertions 🐝
 
-Useful assertions for PHPUnit to check printed/exported type/queries with [`lastdragon-ru/graphql-printer`](../graphql-printer/README.md) package
+PHPUnit assertions for GraphQL to check printed/exported type/queries.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
 [//]: # (start: preprocess/78cfc4c7c7c55577)
