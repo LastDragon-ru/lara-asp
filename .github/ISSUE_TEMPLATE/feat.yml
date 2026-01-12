@@ -21,6 +21,7 @@ body:
         - lara-asp-spa
         - lara-asp-testing
         - path
+        - phpunit-extensions
         - phpunit-graphql
         - text-parser
   - type: textarea

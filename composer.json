@@ -127,6 +127,7 @@
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/lara-asp-spa/src/",
       "LastDragon_ru\\LaraASP\\Testing\\": "packages/lara-asp-testing/src/",
       "LastDragon_ru\\Path\\": "packages/path/src/",
+      "LastDragon_ru\\PhpUnit\\": "packages/phpunit-extensions/src/",
       "LastDragon_ru\\PhpUnit\\GraphQL\\": "packages/phpunit-graphql/src/",
       "LastDragon_ru\\TextParser\\": "packages/text-parser/src/"
     }
@@ -147,6 +148,7 @@
       "packages/lara-asp-spa/docs/",
       "packages/lara-asp-testing/docs/",
       "packages/path/docs/",
+      "packages/phpunit-extensions/docs/",
       "packages/phpunit-graphql/docs/",
       "packages/text-parser/docs/",
       "packages/**/*Test/"
@@ -166,6 +168,7 @@
       "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/lara-asp-spa/docs",
       "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/lara-asp-testing/docs",
       "LastDragon_ru\\Path\\Docs\\": "packages/path/docs",
+      "LastDragon_ru\\PhpUnit\\Docs\\": "packages/phpunit-extensions/docs",
       "LastDragon_ru\\PhpUnit\\GraphQL\\Docs\\": "packages/phpunit-graphql/docs",
       "LastDragon_ru\\TextParser\\Docs\\": "packages/text-parser/docs"
     }
@@ -327,6 +330,7 @@
     "lastdragon-ru/lara-asp-spa": "self.version",
     "lastdragon-ru/lara-asp-testing": "self.version",
     "lastdragon-ru/path": "self.version",
+    "lastdragon-ru/phpunit-extensions": "self.version",
     "lastdragon-ru/phpunit-graphql": "self.version",
     "lastdragon-ru/text-parser": "self.version"
   }
