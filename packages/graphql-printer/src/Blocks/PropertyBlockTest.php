@@ -5,7 +5,7 @@ namespace LastDragon_ru\GraphQLPrinter\Blocks;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -22,7 +22,7 @@ final class PropertyBlockTest extends TestCase {
         $separator = ':';
         $collector = new Collector();
         $content   = 'abc abcabc abcabc abcabc abc';
-        $settings  = (new TestSettings())->setSpace($space);
+        $settings  = (new PrinterSettings())->setSpace($space);
         $context   = new Context($settings, null, null);
         $block     = new class($context, $content) extends Block {
             public function __construct(

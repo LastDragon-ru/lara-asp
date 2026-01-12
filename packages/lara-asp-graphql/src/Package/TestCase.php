@@ -14,11 +14,11 @@ use LastDragon_ru\LaraASP\GraphQL\Package\Directives\ExposeBuilderDirective;
 use LastDragon_ru\LaraASP\GraphQL\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Package\SchemaPrinter\LighthouseDirectiveFilter;
 use LastDragon_ru\LaraASP\GraphQL\PackageProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
-use LastDragon_ru\LaraASP\GraphQL\Testing\TestSettings;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Assertions;
 use LastDragon_ru\LaraASP\GraphQL\Utils\ArgumentFactory;
 use LastDragon_ru\LaraASP\Serializer\PackageProvider as SerializerProvider;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase as PackageTestCase;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
@@ -34,7 +34,7 @@ use function mb_substr;
  * @internal
  */
 abstract class TestCase extends PackageTestCase {
-    use GraphQLAssertions {
+    use Assertions {
         getGraphQLPrinter as private getDefaultGraphQLPrinter;
     }
 
@@ -56,7 +56,7 @@ abstract class TestCase extends PackageTestCase {
     }
 
     protected function getGraphQLPrinter(?Settings $settings = null): Printer {
-        $settings ??= (new TestSettings())
+        $settings ??= (new PrinterSettings())
             ->setDirectiveDefinitionFilter($this->app()->make(LighthouseDirectiveFilter::class));
         $printer    = $this->getDefaultGraphQLPrinter($settings);
 

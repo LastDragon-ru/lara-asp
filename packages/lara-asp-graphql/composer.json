@@ -40,6 +40,7 @@
     "phpunit/phpunit": "^11.2.0|^12.0.0",
     "lastdragon-ru/lara-asp-graphql-testing": "self.version",
     "lastdragon-ru/lara-asp-testing": "self.version",
+    "lastdragon-ru/phpunit-graphql": "self.version",
     "orchestra/testbench": "^10.0.0"
   },
   "suggest": {

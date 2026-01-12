@@ -4,7 +4,7 @@ namespace LastDragon_ru\LaraASP\GraphQL\Testing\Package;
 
 use LastDragon_ru\LaraASP\Core\PackageProvider as CorePackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\PackageProvider as GraphQLPackageProvider;
-use LastDragon_ru\LaraASP\GraphQL\Testing\GraphQLAssertions;
+use LastDragon_ru\LaraASP\GraphQL\Testing\Assertions;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase as PackageTestCase;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthouseTestingServiceProvider;
@@ -17,7 +17,7 @@ use function array_merge;
  * @internal
  */
 abstract class TestCase extends PackageTestCase {
-    use GraphQLAssertions;
+    use Assertions;
 
     /**
      * @inheritDoc

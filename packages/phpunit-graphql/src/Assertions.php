@@ -24,14 +24,14 @@ use SplFileInfo;
 use function array_combine;
 use function is_string;
 
-trait GraphQLAssertions {
+trait Assertions {
     // <editor-fold desc="Assertions">
     // =========================================================================
     /**
      * Prints and compares two GraphQL schemas/types/nodes/etc.
      */
     public function assertGraphQLPrintableEquals(
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|SplFileInfo|string $expected,
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
         string $message = '',
     ): void {
@@ -46,7 +46,7 @@ trait GraphQLAssertions {
         );
 
         // Expectation
-        if ($expected instanceof GraphQLExpected) {
+        if ($expected instanceof Expected) {
             $this->assertGraphQLExpectation($expected, $actual);
         }
     }
@@ -55,7 +55,7 @@ trait GraphQLAssertions {
      * Exports and compares two GraphQL schemas/types/nodes/etc.
      */
     public function assertGraphQLExportableEquals(
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|SplFileInfo|string $expected,
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
         string $message = '',
     ): void {
@@ -70,7 +70,7 @@ trait GraphQLAssertions {
         );
 
         // Expectation
-        if ($expected instanceof GraphQLExpected) {
+        if ($expected instanceof Expected) {
             $this->assertGraphQLExpectation($expected, $actual);
         }
     }
@@ -79,7 +79,7 @@ trait GraphQLAssertions {
      * @param Closure(PrinterContract, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
      */
     private function assertGraphQLResult(
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|SplFileInfo|string $expected,
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
         string $message,
         Closure $print,
@@ -89,7 +89,7 @@ trait GraphQLAssertions {
         $schema   = null;
         $settings = null;
 
-        if ($output instanceof GraphQLExpected) {
+        if ($output instanceof Expected) {
             $settings = $output->getSettings();
             $schema   = $output->getSchema();
             $output   = $output->getPrintable();
@@ -125,7 +125,7 @@ trait GraphQLAssertions {
     }
 
     private function assertGraphQLExpectation(
-        GraphQLExpected $expected,
+        Expected $expected,
         Statistics $actual,
     ): void {
         // Used types
@@ -155,7 +155,7 @@ trait GraphQLAssertions {
     // <editor-fold desc="Helpers">
     // =========================================================================
     protected function getGraphQLPrinter(?Settings $settings = null): PrinterContract {
-        return new Printer($settings ?? new TestSettings());
+        return new Printer($settings ?? new PrinterSettings());
     }
     // </editor-fold>
 }

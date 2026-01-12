@@ -23,9 +23,9 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\LaraASP\Testing\Utils\Args;
-use LastDragon_ru\PhpUnit\GraphQL\GraphQLAssertions as PrinterGraphQLAssertions;
-use LastDragon_ru\PhpUnit\GraphQL\GraphQLExpected;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\Assertions as GraphQLAssertions;
+use LastDragon_ru\PhpUnit\GraphQL\Expected;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
@@ -40,8 +40,8 @@ use function mb_trim;
 /**
  * @phpstan-import-type Change from BreakingChangesFinder
  */
-trait GraphQLAssertions {
-    use PrinterGraphQLAssertions {
+trait Assertions {
+    use GraphQLAssertions {
         assertGraphQLResult as private printerAssertGraphQLResult;
     }
 
@@ -56,7 +56,7 @@ trait GraphQLAssertions {
      * Compares GraphQL schema with current (application) public (client) schema.
      */
     public function assertGraphQLIntrospectionEquals(
-        GraphQLExpected|SplFileInfo|string $expected,
+        Expected|SplFileInfo|string $expected,
         string $message = '',
     ): void {
         // Schema
@@ -64,15 +64,15 @@ trait GraphQLAssertions {
         $schema = Introspection::fromSchema($schema);
         $schema = BuildClientSchema::build($schema);
 
-        if (!($expected instanceof GraphQLExpected)) {
-            $expected = (new GraphQLExpected($expected))->setSchema($schema);
+        if (!($expected instanceof Expected)) {
+            $expected = (new Expected($expected))->setSchema($schema);
         }
 
         // Settings
         if ($expected->getSettings() === null) {
             $filter   = static fn () => true;
             $expected = $expected->setSettings(
-                (new TestSettings())
+                (new PrinterSettings())
                     ->setPrintUnusedDefinitions(true)
                     ->setTypeDefinitionFilter($filter)
                     ->setDirectiveDefinitionFilter($filter),
@@ -87,7 +87,7 @@ trait GraphQLAssertions {
      * Compares GraphQL schema with current (application) schema.
      */
     public function assertGraphQLSchemaEquals(
-        GraphQLExpected|SplFileInfo|string $expected,
+        Expected|SplFileInfo|string $expected,
         string $message = '',
     ): void {
         $this->assertGraphQLPrintableEquals(
@@ -158,13 +158,13 @@ trait GraphQLAssertions {
      * @param Closure(Printer, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
      */
     private function assertGraphQLResult(
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|GraphQLExpected|SplFileInfo|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|SplFileInfo|string $expected,
         Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
         string $message,
         Closure $print,
     ): Result {
-        if (!($expected instanceof GraphQLExpected)) {
-            $expected = (new GraphQLExpected($expected))->setSchema($this->getGraphQLSchema());
+        if (!($expected instanceof Expected)) {
+            $expected = (new Expected($expected))->setSchema($this->getGraphQLSchema());
         }
 
         return $this->printerAssertGraphQLResult($expected, $actual, $message, $print);
@@ -211,7 +211,7 @@ trait GraphQLAssertions {
     }
 
     protected function getGraphQLPrinter(?Settings $settings = null): Printer {
-        return $this->app()->make(Printer::class)->setSettings($settings ?? new TestSettings());
+        return $this->app()->make(Printer::class)->setSettings($settings ?? new PrinterSettings());
     }
 
     protected function getGraphQLSchemaBuilder(): SchemaBuilderWrapper {
@@ -241,7 +241,7 @@ trait GraphQLAssertions {
 
     private function getGraphQLSchemaString(): string {
         return (string) $this
-            ->getGraphQLPrinter(new TestSettings())
+            ->getGraphQLPrinter(new PrinterSettings())
             ->print($this->getGraphQLSchema());
     }
 

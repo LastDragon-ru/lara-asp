@@ -7,7 +7,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -37,19 +37,19 @@ final class IntrospectionPrinterTest extends TestCase {
      */
     public static function dataProviderPrint(): array {
         return [
-            GraphQLSettings::class         => [
+            GraphQLSettings::class            => [
                 '~GraphQLSettings.graphql',
                 new GraphQLSettings(),
                 0,
             ],
-            TestSettings::class            => [
-                '~TestSettings.graphql',
-                new TestSettings(),
+            PrinterSettings::class            => [
+                '~PrinterSettings.graphql',
+                new PrinterSettings(),
                 0,
             ],
-            TestSettings::class.' (level)' => [
-                '~TestSettings-level.graphql',
-                new TestSettings(),
+            PrinterSettings::class.' (level)' => [
+                '~PrinterSettings-level.graphql',
+                new PrinterSettings(),
                 1,
             ],
         ];

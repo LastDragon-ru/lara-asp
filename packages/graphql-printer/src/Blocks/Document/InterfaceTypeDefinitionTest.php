@@ -11,7 +11,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\GraphQL\TestSettings;
+use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -42,7 +42,7 @@ final class InterfaceTypeDefinitionTest extends TestCase {
     }
 
     public function testStatistics(): void {
-        $context    = new Context(new TestSettings(), null, null);
+        $context    = new Context(new PrinterSettings(), null, null);
         $collector  = new Collector();
         $definition = new InterfaceType([
             'name'       => 'A',
@@ -107,7 +107,7 @@ final class InterfaceTypeDefinitionTest extends TestCase {
      * @return array<string,array{string, Settings, int, int, InterfaceTypeDefinitionNode|InterfaceType}>
      */
     public static function dataProviderSerialize(): array {
-        $settings = (new TestSettings())
+        $settings = (new PrinterSettings())
             ->setNormalizeFields(false)
             ->setNormalizeInterfaces(false)
             ->setAlwaysMultilineArguments(false)

@@ -17,11 +17,11 @@ use PHPUnit\Framework\Attributes\CoversTrait;
 /**
  * @internal
  */
-#[CoversTrait(GraphQLAssertions::class)]
-final class GraphQLAssertionsTest extends TestCase {
+#[CoversTrait(Assertions::class)]
+final class AssertionsTest extends TestCase {
     public function testAssertGraphQLPrintableEquals(): void {
         $printable = Mockery::mock(Node::class);
-        $expected  = new GraphQLExpected('result');
+        $expected  = new Expected('result');
         $result    = Mockery::mock(Result::class);
         $result
             ->shouldReceive('__toString')
@@ -52,7 +52,7 @@ final class GraphQLAssertionsTest extends TestCase {
 
     public function testAssertGraphQLExportableEquals(): void {
         $exportable = Mockery::mock(Node::class);
-        $expected   = new GraphQLExpected('result');
+        $expected   = new Expected('result');
         $result     = Mockery::mock(Result::class);
         $result
             ->shouldReceive('__toString')
@@ -85,7 +85,7 @@ final class GraphQLAssertionsTest extends TestCase {
         $node     = Mockery::mock(Node::class);
         $schema   = Mockery::mock(Schema::class);
         $settings = Mockery::mock(Settings::class);
-        $expected = (new GraphQLExpected($node))->setSettings($settings)->setSchema($schema);
+        $expected = (new Expected($node))->setSettings($settings)->setSchema($schema);
 
         $result = Mockery::mock(Result::class);
         $result
@@ -149,7 +149,7 @@ final class GraphQLAssertionsTest extends TestCase {
             ->shouldReceive('getUsedDirectives')
             ->once()
             ->andReturn(['@a' => '@a']);
-        $expected = (new GraphQLExpected('expected'))
+        $expected = (new Expected('expected'))
             ->setUsedDirectives(['@a'])
             ->setUsedTypes(['A']);
 
@@ -168,7 +168,7 @@ final class GraphQLAssertionsTest extends TestCase {
  * @noinspection PhpMultipleClassesDeclarationsInOneFile
  */
 class GraphQLAssertionsTest_TestCase extends Assert {
-    use GraphQLAssertions {
+    use Assertions {
         assertGraphQLExpectation as public;
         assertGraphQLResult as public;
     }
