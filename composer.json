@@ -113,61 +113,61 @@
       "packages/lara-asp-testing/src/mixins.php"
     ],
     "psr-4": {
+      "LastDragon_ru\\GlobMatcher\\": "packages/glob-matcher/src/",
+      "LastDragon_ru\\GraphQLPrinter\\": "packages/graphql-printer/src/",
       "LastDragon_ru\\LaraASP\\Core\\": "packages/lara-asp-core/src/",
       "LastDragon_ru\\LaraASP\\Dev\\": "packages/lara-asp-dev/src/",
       "LastDragon_ru\\LaraASP\\Documentator\\": "packages/lara-asp-documentator/src/",
       "LastDragon_ru\\LaraASP\\Eloquent\\": "packages/lara-asp-eloquent/src/",
       "LastDragon_ru\\LaraASP\\Formatter\\": "packages/lara-asp-formatter/src/",
-      "LastDragon_ru\\GlobMatcher\\": "packages/glob-matcher/src/",
-      "LastDragon_ru\\GraphQLPrinter\\": "packages/graphql-printer/src/",
-      "LastDragon_ru\\PhpUnit\\GraphQL\\": "packages/phpunit-graphql/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\": "packages/lara-asp-graphql/src/",
       "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\": "packages/lara-asp-graphql-testing/src/",
       "LastDragon_ru\\LaraASP\\Migrator\\": "packages/lara-asp-migrator/src/",
-      "LastDragon_ru\\Path\\": "packages/path/src/",
-      "LastDragon_ru\\TextParser\\": "packages/text-parser/src/",
       "LastDragon_ru\\LaraASP\\Serializer\\": "packages/lara-asp-serializer/src/",
       "LastDragon_ru\\LaraASP\\Spa\\": "packages/lara-asp-spa/src/",
-      "LastDragon_ru\\LaraASP\\Testing\\": "packages/lara-asp-testing/src/"
+      "LastDragon_ru\\LaraASP\\Testing\\": "packages/lara-asp-testing/src/",
+      "LastDragon_ru\\Path\\": "packages/path/src/",
+      "LastDragon_ru\\PhpUnit\\GraphQL\\": "packages/phpunit-graphql/src/",
+      "LastDragon_ru\\TextParser\\": "packages/text-parser/src/"
     }
   },
   "autoload-dev": {
     "exclude-from-classmap": [
+      "packages/glob-matcher/docs/",
+      "packages/graphql-printer/docs/",
       "packages/lara-asp-core/docs/",
       "packages/lara-asp-dev/docs/",
       "packages/lara-asp-documentator/docs/",
       "packages/lara-asp-eloquent/docs/",
       "packages/lara-asp-formatter/docs/",
-      "packages/glob-matcher/docs/",
-      "packages/graphql-printer/docs/",
-      "packages/phpunit-graphql/docs/",
       "packages/lara-asp-graphql/docs/",
       "packages/lara-asp-migrator/docs/",
       "packages/lara-asp-migrator/src/Migrations/MigratorTest/raw/",
-      "packages/path/docs/",
-      "packages/text-parser/docs/",
       "packages/lara-asp-serializer/docs/",
       "packages/lara-asp-spa/docs/",
       "packages/lara-asp-testing/docs/",
+      "packages/path/docs/",
+      "packages/phpunit-graphql/docs/",
+      "packages/text-parser/docs/",
       "packages/**/*Test/"
     ],
     "psr-4": {
+      "LastDragon_ru\\GlobMatcher\\Docs\\": "packages/glob-matcher/docs",
+      "LastDragon_ru\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
       "LastDragon_ru\\LaraASP\\Core\\Docs\\": "packages/lara-asp-core/docs",
       "LastDragon_ru\\LaraASP\\Dev\\Docs\\": "packages/lara-asp-dev/docs",
       "LastDragon_ru\\LaraASP\\Documentator\\Docs\\": "packages/lara-asp-documentator/docs",
       "LastDragon_ru\\LaraASP\\Eloquent\\Docs\\": "packages/lara-asp-eloquent/docs",
       "LastDragon_ru\\LaraASP\\Formatter\\Docs\\": "packages/lara-asp-formatter/docs",
-      "LastDragon_ru\\GlobMatcher\\Docs\\": "packages/glob-matcher/docs",
-      "LastDragon_ru\\GraphQLPrinter\\Docs\\": "packages/graphql-printer/docs",
-      "LastDragon_ru\\PhpUnit\\GraphQL\\Docs\\": "packages/phpunit-graphql/docs",
       "LastDragon_ru\\LaraASP\\GraphQL\\Docs\\": "packages/lara-asp-graphql/docs",
       "LastDragon_ru\\LaraASP\\GraphQL\\Testing\\Docs\\": "packages/lara-asp-graphql-testing/docs",
       "LastDragon_ru\\LaraASP\\Migrator\\Docs\\": "packages/lara-asp-migrator/docs",
-      "LastDragon_ru\\Path\\Docs\\": "packages/path/docs",
-      "LastDragon_ru\\TextParser\\Docs\\": "packages/text-parser/docs",
       "LastDragon_ru\\LaraASP\\Serializer\\Docs\\": "packages/lara-asp-serializer/docs",
       "LastDragon_ru\\LaraASP\\Spa\\Docs\\": "packages/lara-asp-spa/docs",
-      "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/lara-asp-testing/docs"
+      "LastDragon_ru\\LaraASP\\Testing\\Docs\\": "packages/lara-asp-testing/docs",
+      "LastDragon_ru\\Path\\Docs\\": "packages/path/docs",
+      "LastDragon_ru\\PhpUnit\\GraphQL\\Docs\\": "packages/phpunit-graphql/docs",
+      "LastDragon_ru\\TextParser\\Docs\\": "packages/text-parser/docs"
     }
   },
   "conflict": {
@@ -314,11 +314,8 @@
     }
   },
   "replace": {
-    "lastdragon-ru/path": "self.version",
-    "lastdragon-ru/text-parser": "self.version",
     "lastdragon-ru/glob-matcher": "self.version",
     "lastdragon-ru/graphql-printer": "self.version",
-    "lastdragon-ru/phpunit-graphql": "self.version",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-dev": "self.version",
     "lastdragon-ru/lara-asp-documentator": "self.version",
@@ -328,6 +325,9 @@
     "lastdragon-ru/lara-asp-migrator": "self.version",
     "lastdragon-ru/lara-asp-serializer": "self.version",
     "lastdragon-ru/lara-asp-spa": "self.version",
-    "lastdragon-ru/lara-asp-testing": "self.version"
+    "lastdragon-ru/lara-asp-testing": "self.version",
+    "lastdragon-ru/path": "self.version",
+    "lastdragon-ru/phpunit-graphql": "self.version",
+    "lastdragon-ru/text-parser": "self.version"
   }
 }
