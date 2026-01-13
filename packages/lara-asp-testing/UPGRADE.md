@@ -29,7 +29,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v9
 
-* [ ] Trait [`💀StrictAssertEquals`][code-links/2187ed1b4d4e6c14] deprecated, please use [`Extension`][code-links/50cb69b702caae36] instead 🤝
+* [ ] Trait [`💀StrictAssertEquals`][code-links/2187ed1b4d4e6c14] deprecated, please use [`\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension`][code-links/50cb69b702caae36] instead 🤝
+
+* [ ] Extension [`💀\LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension`][code-links/26cc04e820d354b1] deprecated, please use [`\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension`][code-links/7e51b51dd292df33] instead 🤝
 
 # Upgrade from v7
 
@@ -96,8 +98,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [code-links/e6637d2e31bd9516]: src/Database/QueryLog/WithQueryLog.php
     "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog"
 
+[code-links/26cc04e820d354b1]: src/Requirements/PhpUnit/Extension.php
+    "\LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"
+
 [code-links/733eb8fbc4b211a5]: src/Utils/WithTranslations.php
     "\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations"
+
+[code-links/7e51b51dd292df33]: ../phpunit-extensions/src/Extensions/Requirements/Extension.php
+    "\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension"
 
 [code-links/50cb69b702caae36]: ../phpunit-extensions/src/Extensions/StrictScalarCompare/Extension.php
     "\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension"

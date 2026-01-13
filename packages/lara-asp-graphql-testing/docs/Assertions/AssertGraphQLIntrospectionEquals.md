@@ -16,8 +16,8 @@ use LastDragon_ru\LaraASP\GraphQL\PackageProvider as GraphQLPackageProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Assertions;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\Provider as TestProvider;
 use LastDragon_ru\LaraASP\GraphQL\Testing\Package\TestDirective;
-use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
 use Nuwave\Lighthouse\LighthouseServiceProvider;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Override;
@@ -53,7 +53,7 @@ final class AssertGraphQLIntrospectionEqualsTest extends TestCase {
     /**
      * Assertion test.
      */
-    #[RequiresComposerPackage('webonyx/graphql-php', '>=15.22.0')]
+    #[RequiresPackage('webonyx/graphql-php', '>=15.22.0')]
     public function testAssertion(): void {
         // Prepare
         $this->app()->make(DirectiveLocator::class)

@@ -6,7 +6,7 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
-use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -19,7 +19,7 @@ final class IntrospectionPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderPrint')]
-    #[RequiresComposerPackage('webonyx/graphql-php', '>=15.22.0')]
+    #[RequiresPackage('webonyx/graphql-php', '>=15.22.0')]
     public function testPrint(string $expected, Settings $settings, int $level): void {
         $expected = self::getTestData()->content($expected);
         $printer  = (new IntrospectionPrinter())->setSettings($settings);

@@ -7,6 +7,8 @@ use LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension;
 use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
 
 /**
+ * @deprecated %{VERSION} Please use `\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension` instead.
+ *
  * @see Extension
  */
 #[Attribute(Attribute::TARGET_CLASS | Attribute::TARGET_METHOD)]

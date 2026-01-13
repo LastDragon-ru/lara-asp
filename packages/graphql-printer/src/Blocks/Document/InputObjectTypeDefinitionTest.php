@@ -10,7 +10,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -43,7 +43,7 @@ final class InputObjectTypeDefinitionTest extends TestCase {
     }
 
     #[DataProvider('dataProviderSerializeOneOf')]
-    #[RequiresComposerPackage('webonyx/graphql-php', '>=15.21.0')]
+    #[RequiresPackage('webonyx/graphql-php', '>=15.21.0')]
     public function testSerializeOneOf(
         string $expected,
         Settings $settings,
