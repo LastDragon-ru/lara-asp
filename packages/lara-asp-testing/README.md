@@ -126,16 +126,6 @@ properties types before comparison.
 
 [//]: # (end: preprocess/b9eae8b36fc2d911)
 
-## [`ScalarStrictComparator`](./src/Comparators/ScalarStrictComparator.php)
-
-[include:docblock]: ./src/Comparators/ScalarStrictComparator.php
-[//]: # (start: preprocess/1e9e6e9fa3d236a1)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-Makes comparison of scalars strict.
-
-[//]: # (end: preprocess/1e9e6e9fa3d236a1)
-
 # Extensions
 
 ## PHPUnit `TestCase`
