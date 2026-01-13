@@ -1,10 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
+namespace LastDragon_ru\PhpUnit\Extensions\Requirements;
 
 use Attribute;
-use LastDragon_ru\LaraASP\Testing\Requirements\Requirement;
-use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Contracts\Requirement;
+use LastDragon_ru\PhpUnit\Package\TestCase;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;

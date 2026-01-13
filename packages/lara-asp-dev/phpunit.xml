@@ -6,6 +6,7 @@
          colors="true">
     <extensions>
         <bootstrap class="\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension"/>
+        <bootstrap class="\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension"/>
     </extensions>
     <testsuites>
         <testsuite name="package">

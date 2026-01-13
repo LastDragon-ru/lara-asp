@@ -52,6 +52,50 @@ To [register extension](https://docs.phpunit.de/en/12.5/extending-phpunit.html#r
 </phpunit>
 ```
 
+## Test Requirements
+
+PHPUnit provides several attributes like `\PHPUnit\Framework\Attributes\RequiresPhp` that allow skip the test if the condition doesn't meet. But there is no way to check if the specific composer package is installed or not. The extension fills this gap.
+
+To [register extension](https://docs.phpunit.de/en/12.5/extending-phpunit.html#registering-an-extension-from-a-composer-package) update your `phpunit.xml`:
+
+```xml
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit>
+    <!-- ... -->
+    <extensions>
+        <bootstrap class="\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension"/>
+    </extensions>
+    <!-- ... -->
+</phpunit>
+```
+
+[include:example]: ./docs/Examples/RequirementsExtensionTest.php
+[//]: # (start: preprocess/a201179110b693b9)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+```php
+<?php declare(strict_types = 1);
+
+namespace LastDragon_ru\PhpUnit\Docs\Examples;
+
+use Composer\InstalledVersions;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
+use PHPUnit\Framework\TestCase;
+
+/**
+ * @internal
+ */
+#[RequiresPackage('phpunit/phpunit')]
+final class RequirementsExtensionTest extends TestCase {
+    #[RequiresPackage('phpunit/phpunit', '>=10.0.0')]
+    public function testSomething(): void {
+        self::assertTrue(InstalledVersions::isInstalled('phpunit/phpunit'));
+    }
+}
+```
+
+[//]: # (end: preprocess/a201179110b693b9)
+
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
