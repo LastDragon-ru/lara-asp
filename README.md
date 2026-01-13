@@ -142,6 +142,12 @@ Provides utilities for working with file and directory paths in an object-orient
 
 [Read more](<packages/path/README.md>).
 
+## [PHPUnit Extensions 🐝](<packages/phpunit-extensions/README.md>)
+
+Various useful assertions/extensions for PHPUnit.
+
+[Read more](<packages/phpunit-extensions/README.md>).
+
 [//]: # (end: preprocess/2814e5e8c6b59bac)
 
 # Upgrading
