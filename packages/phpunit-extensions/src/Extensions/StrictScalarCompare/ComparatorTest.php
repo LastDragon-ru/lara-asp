@@ -1,17 +1,17 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Comparators;
+namespace LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare;
 
-use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use SebastianBergmann\Comparator\ComparisonFailure;
 
 /**
  * @internal
  */
-#[CoversClass(ScalarStrictComparator::class)]
-final class ScalarStrictComparatorTest extends TestCase {
+#[CoversClass(Comparator::class)]
+final class ComparatorTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderAssertEquals')]
@@ -20,7 +20,7 @@ final class ScalarStrictComparatorTest extends TestCase {
             self::expectException(ComparisonFailure::class);
         }
 
-        (new ScalarStrictComparator())->assertEquals($expected, $actual);
+        (new Comparator())->assertEquals($expected, $actual);
 
         self::assertEquals($expected, $actual);
     }

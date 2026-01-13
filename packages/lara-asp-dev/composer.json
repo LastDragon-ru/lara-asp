@@ -33,7 +33,8 @@
     "symfony/var-dumper": "^7.0.0"
   },
   "require-dev": {
-    "phpunit/phpunit": "^11.2.0|^12.0.0"
+    "phpunit/phpunit": "^11.2.0|^12.0.0",
+    "lastdragon-ru/phpunit-extensions": "self.version"
   },
   "autoload": {
     "psr-4": {

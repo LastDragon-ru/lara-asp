@@ -5,6 +5,7 @@
          executionOrder="random"
          colors="true">
     <extensions>
+        <bootstrap class="\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension"/>
         <bootstrap class="LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"/>
     </extensions>
     <testsuites>

@@ -4,6 +4,9 @@
          cacheDirectory=".phpunit/cache"
          executionOrder="random"
          colors="true">
+    <extensions>
+        <bootstrap class="\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension"/>
+    </extensions>
     <testsuites>
         <testsuite name="package">
             <directory suffix="Test.php">./src</directory>

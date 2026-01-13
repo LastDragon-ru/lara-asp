@@ -1,9 +1,10 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Comparators;
+namespace LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare;
 
 use Override;
-use SebastianBergmann\Comparator\Comparator;
+use PHPUnit\Framework\Assert;
+use SebastianBergmann\Comparator\Comparator as AbstractComparator;
 use SebastianBergmann\Comparator\ComparisonFailure;
 use SebastianBergmann\Exporter\Exporter;
 
@@ -12,18 +13,19 @@ use function is_string;
 use function mb_strtolower;
 
 /**
- * Makes comparison of scalars strict.
+ * By default, the {@see Assert::assertEquals()} uses weak comparison (`==`).
+ * Probably this is not what you want nowadays. This comparator uses `===` to
+ * compare scalars.
+ *
+ * @see Assert
  */
-class ScalarStrictComparator extends Comparator {
+class Comparator extends AbstractComparator {
     #[Override]
     public function accepts(mixed $expected, mixed $actual): bool {
         return is_scalar($expected)
             && is_scalar($actual);
     }
 
-    /**
-     * @param array<array-key, mixed> $processed
-     */
     #[Override]
     public function assertEquals(
         mixed $expected,
@@ -31,7 +33,6 @@ class ScalarStrictComparator extends Comparator {
         float $delta = 0.0,
         bool $canonicalize = false,
         bool $ignoreCase = false,
-        array &$processed = [],
     ): void {
         // Ignore case?
         $actualNormalized   = $actual;
