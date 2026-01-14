@@ -48,7 +48,8 @@ class Listener {
         $method = null;
 
         if ($event instanceof BeforeTestMethodCalled || $event instanceof PreConditionCalled) {
-            $class = $event->test()->className();
+            // Can be updated after `phpunit/phpunit:11` support drop.
+            $class = $event->testClassName();
         } elseif ($event instanceof Prepared) {
             $test = $event->test();
 
