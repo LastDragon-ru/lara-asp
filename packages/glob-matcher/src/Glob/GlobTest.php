@@ -5,6 +5,7 @@ namespace LastDragon_ru\GlobMatcher\Glob;
 use Exception;
 use LastDragon_ru\GlobMatcher\Package;
 use LastDragon_ru\GlobMatcher\Package\TestCase;
+use LastDragon_ru\PhpUnit\Utils\TestData;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -70,7 +71,7 @@ final class GlobTest extends TestCase {
         ];
 
         try {
-            $file  = self::getTestData()->path('Match/index.txt');
+            $file  = TestData::get()->file('Match/index.txt')->path;
             $lines = self::getMatchIterator($file, basename($file));
 
             foreach ($lines as $line => $string) {

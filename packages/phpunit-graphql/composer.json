@@ -20,7 +20,6 @@
   "require": {
     "php": "^8.3|^8.4",
     "lastdragon-ru/graphql-printer": "self.version",
-    "lastdragon-ru/lara-asp-testing": "self.version",
     "lastdragon-ru/phpunit-extensions": "self.version",
     "phpunit/phpunit": "^11.2.0|^12.0.0",
     "webonyx/graphql-php": "^15.4.0"
