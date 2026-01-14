@@ -29,13 +29,13 @@ use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
 use LastDragon_ru\LaraASP\GraphQL\Package\TestCase;
 use LastDragon_ru\PhpUnit\GraphQL\Expected;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
+use LastDragon_ru\PhpUnit\Utils\TestData;
 use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Schema\Directives\BaseDirective;
 use Nuwave\Lighthouse\Schema\TypeRegistry;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-use SplFileInfo;
 
 use function in_array;
 use function str_replace;
@@ -49,7 +49,7 @@ final class PrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param Closure(static): (Schema|SplFileInfo|string)                                                                        $schemaFactory
+     * @param Closure(static): (Schema|string)                                                                                    $schemaFactory
      * @param Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema) $printableFactory
      * @param Closure(static, Schema): ((TypeNode&Node)|Type|null)|null                                                           $typeFactory
      */
@@ -76,7 +76,7 @@ final class PrinterTest extends TestCase {
     }
 
     /**
-     * @param Closure(static): (Schema|SplFileInfo|string)                                                                        $schemaFactory
+     * @param Closure(static): (Schema|string)                                                                                    $schemaFactory
      * @param Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema) $exportableFactory
      * @param Closure(static, Schema): ((TypeNode&Node)|Type|null)|null                                                           $typeFactory
      */
@@ -109,15 +109,17 @@ final class PrinterTest extends TestCase {
      * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintSchema(): array {
-        $schemaFactory    = self::getSchemaFactory();
+        $data             = TestData::get();
+        $schemaFactory    = self::getSchemaFactory($data);
         $printableFactory = static function (TestCase $test, ?Schema $schema): ?Schema {
             return $schema;
         };
 
         return [
             'Schema'                                           => [
-                self::getSchemaExpected('~print-Schema-DefaultSettings.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'print/DefaultSettings.graphql'),
+                    types     : [
                         'Query',
                         'String',
                         'Boolean',
@@ -139,14 +141,15 @@ final class PrinterTest extends TestCase {
                         'CodeDirectiveInput',
                         'CodeDirectiveScalar',
                         'Int',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@deprecated',
                         '@codeDirective',
                         '@mock',
                         '@schemaDirective',
                         '@scalar',
-                    ]),
+                    ],
+                ),
                 null,
                 0,
                 0,
@@ -154,8 +157,9 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-DefaultSettings'                           => [
-                self::getSchemaExpected('~print-Schema-DefaultSettings.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'print/DefaultSettings.graphql'),
+                    types     : [
                         'Query',
                         'String',
                         'Boolean',
@@ -177,14 +181,15 @@ final class PrinterTest extends TestCase {
                         'CodeDirectiveInput',
                         'CodeDirectiveScalar',
                         'Int',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@deprecated',
                         '@codeDirective',
                         '@mock',
                         '@schemaDirective',
                         '@scalar',
-                    ]),
+                    ],
+                ),
                 new DefaultSettings(),
                 0,
                 0,
@@ -192,8 +197,9 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-GraphQLSettings'                           => [
-                self::getSchemaExpected('~print-Schema-GraphQLSettings.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'print/GraphQLSettings.graphql'),
+                    types     : [
                         'Query',
                         'String',
                         'Boolean',
@@ -216,10 +222,11 @@ final class PrinterTest extends TestCase {
                         'SchemaInterfaceA',
                         'SchemaInterfaceUnused',
                         'SchemaUnionUnused',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@deprecated',
-                    ]),
+                    ],
+                ),
                 new GraphQLSettings(),
                 0,
                 0,
@@ -227,8 +234,9 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings'                           => [
-                self::getSchemaExpected('~print-Schema-PrinterSettings.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'print/PrinterSettings.graphql'),
+                    types     : [
                         'Int',
                         'Query',
                         'String',
@@ -250,14 +258,15 @@ final class PrinterTest extends TestCase {
                         'CodeDirectiveScalar',
                         'CodeDirectiveScalarCustomClass',
                         'CodeInterface',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 0,
                 0,
@@ -265,8 +274,9 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-NoDirectivesDefinitions'   => [
-                self::getSchemaExpected('~print-Schema-PrinterSettings-NoDirectivesDefinitions.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'print/PrinterSettings-NoDirectivesDefinitions.graphql'),
+                    types     : [
                         'Query',
                         'String',
                         'Boolean',
@@ -283,14 +293,15 @@ final class PrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                         'CodeInterface',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ]),
+                    ],
+                ),
                 (new PrinterSettings())
                     ->setPrintDirectiveDefinitions(false),
                 0,
@@ -299,8 +310,9 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-NoNormalization'           => [
-                self::getSchemaExpected('~print-Schema-PrinterSettings-NoNormalization.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'print/PrinterSettings-NoNormalization.graphql'),
+                    types     : [
                         'Int',
                         'Query',
                         'String',
@@ -322,14 +334,15 @@ final class PrinterTest extends TestCase {
                         'CodeDirectiveScalar',
                         'CodeDirectiveScalarCustomClass',
                         'CodeInterface',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ]),
+                    ],
+                ),
                 (new PrinterSettings())
                     ->setNormalizeDefinitions(false)
                     ->setNormalizeUnions(false)
@@ -348,8 +361,12 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-DirectiveDefinitionFilter' => [
-                self::getSchemaExpected('~print-Schema-PrinterSettings-DirectiveDefinitionFilter.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent(
+                        $data,
+                        'print/PrinterSettings-DirectiveDefinitionFilter.graphql',
+                    ),
+                    types     : [
                         'Query',
                         'String',
                         'Boolean',
@@ -366,14 +383,15 @@ final class PrinterTest extends TestCase {
                         'CodeEnum',
                         'CodeType',
                         'CodeInterface',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ]),
+                    ],
+                ),
                 (new PrinterSettings())
                     ->setDirectiveDefinitionFilter(
                         static function (string $directive, bool $isStandard): bool {
@@ -387,8 +405,9 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-TypeDefinitionFilter'      => [
-                self::getSchemaExpected('~print-Schema-PrinterSettings-TypeDefinitionFilter.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'print/PrinterSettings-TypeDefinitionFilter.graphql'),
+                    types     : [
                         'Boolean',
                         'CodeDirectiveEnum',
                         'CodeDirectiveInput',
@@ -409,14 +428,15 @@ final class PrinterTest extends TestCase {
                         'SchemaUnion',
                         'String',
                         'CodeInterface',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ]),
+                    ],
+                ),
                 (new PrinterSettings())
                     ->setTypeDefinitionFilter(
                         static function (string $type, bool $isStandard): bool {
@@ -430,8 +450,9 @@ final class PrinterTest extends TestCase {
                 $printableFactory,
             ],
             'Schema-PrinterSettings-Everything'                => [
-                self::getSchemaExpected('~print-Schema-PrinterSettings-Everything.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'print/PrinterSettings-Everything.graphql'),
+                    types     : [
                         'Int',
                         'Query',
                         'String',
@@ -453,14 +474,15 @@ final class PrinterTest extends TestCase {
                         'CodeDirectiveScalar',
                         'CodeDirectiveScalarCustomClass',
                         'CodeInterface',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
                         '@codeDirective',
                         '@deprecated',
                         '@scalar',
                         '@mock',
-                    ]),
+                    ],
+                ),
                 (new PrinterSettings())
                     ->setTypeDefinitionFilter(static fn (): bool => true)
                     ->setDirectiveFilter(static fn (): bool => true)
@@ -477,20 +499,23 @@ final class PrinterTest extends TestCase {
      * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderExportType(): array {
-        $schemaFactory = self::getSchemaFactory();
+        $data          = TestData::get();
+        $schemaFactory = self::getSchemaFactory($data);
 
         return [
             'CodeUnion'  => [
-                self::getSchemaExpected('~export-CodeUnion.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'export/CodeUnion.graphql'),
+                    types     : [
                         'String',
                         'Boolean',
                         'CodeType',
                         'CodeUnion',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 1,
                 0,
@@ -512,15 +537,17 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'CodeInput'  => [
-                self::getSchemaExpected('~export-CodeInput.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'export/CodeInput.graphql'),
+                    types     : [
                         'String',
                         'Boolean',
                         'CodeInput',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 0,
                 0,
@@ -534,8 +561,9 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'SchemaType' => [
-                self::getSchemaExpected('~export-SchemaType.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value: self::getSchemaContent($data, 'export/SchemaType.graphql'),
+                    types: [
                         'Boolean',
                         'SchemaInterfaceB',
                         'String',
@@ -550,10 +578,8 @@ final class PrinterTest extends TestCase {
                         'CodeType',
                         'CodeInterface',
                         'SchemaInterfaceA',
-                    ])
-                    ->setUsedDirectives([
-                        // empty
-                    ]),
+                    ],
+                ),
                 (new PrinterSettings())
                     ->setPrintDirectives(false),
                 0,
@@ -574,23 +600,21 @@ final class PrinterTest extends TestCase {
      * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintType(): array {
-        $schemaFactory = self::getSchemaFactory();
+        $data          = TestData::get();
+        $schemaFactory = self::getSchemaFactory($data);
 
         return [
             'UnionType'       => [
-                (new Expected(
-                    <<<'GRAPHQL'
-                        union CodeUnion =
-                            | CodeType
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
+                new Expected(
+                    value: <<<'GRAPHQL'
+                            union CodeUnion =
+                                | CodeType
+                        GRAPHQL,
+                    types: [
                         'CodeType',
                         'CodeUnion',
-                    ])
-                    ->setUsedDirectives([
-                        // empty
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 1,
                 0,
@@ -612,25 +636,25 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectType' => [
-                (new Expected(
-                    <<<'GRAPHQL'
-                    """
-                    Description
-                    """
-                    input CodeInput
-                    @schemaDirective
-                    {
-                        a: Boolean
-                    }
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
+                new Expected(
+                    value     : <<<'GRAPHQL'
+                        """
+                        Description
+                        """
+                        input CodeInput
+                        @schemaDirective
+                        {
+                            a: Boolean
+                        }
+                        GRAPHQL,
+                    types     : [
                         'Boolean',
                         'CodeInput',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 0,
                 0,
@@ -649,23 +673,20 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InterfaceType'   => [
-                (new Expected(
-                    <<<'GRAPHQL'
-                    """
-                    Description
-                    """
-                    interface CodeInterface {
-                        a: Boolean!
-                    }
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
+                new Expected(
+                    value: <<<'GRAPHQL'
+                        """
+                        Description
+                        """
+                        interface CodeInterface {
+                            a: Boolean!
+                        }
+                        GRAPHQL,
+                    types: [
                         'Boolean',
                         'CodeInterface',
-                    ])
-                    ->setUsedDirectives([
-                        // empty
-                    ]),
+                    ],
+                ),
                 (new PrinterSettings())
                     ->setPrintDirectives(false),
                 0,
@@ -692,23 +713,21 @@ final class PrinterTest extends TestCase {
      * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderPrintNode(): array {
-        $schemaFactory = self::getSchemaFactory();
+        $data          = TestData::get();
+        $schemaFactory = self::getSchemaFactory($data);
 
         return [
             'UnionTypeDefinitionNode'   => [
-                (new Expected(
-                    <<<'GRAPHQL'
-                        union CodeUnion =
-                            | CodeType
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
+                new Expected(
+                    value: <<<'GRAPHQL'
+                            union CodeUnion =
+                                | CodeType
+                        GRAPHQL,
+                    types: [
                         'CodeType',
                         'CodeUnion',
-                    ])
-                    ->setUsedDirectives([
-                        // empty
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 1,
                 0,
@@ -720,25 +739,25 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectTypeDefinition' => [
-                (new Expected(
-                    <<<'GRAPHQL'
-                    """
-                    Description
-                    """
-                    input CodeInput
-                    @schemaDirective
-                    {
-                        a: Boolean
-                    }
-                    GRAPHQL,
-                ))
-                    ->setUsedTypes([
+                new Expected(
+                    value     : <<<'GRAPHQL'
+                        """
+                        Description
+                        """
+                        input CodeInput
+                        @schemaDirective
+                        {
+                            a: Boolean
+                        }
+                        GRAPHQL,
+                    types     : [
                         'Boolean',
                         'CodeInput',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 0,
                 0,
@@ -756,20 +775,23 @@ final class PrinterTest extends TestCase {
      * @return array<string, array<array-key, mixed>>
      */
     public static function dataProviderExportNode(): array {
-        $schemaFactory = self::getSchemaFactory();
+        $data          = TestData::get();
+        $schemaFactory = self::getSchemaFactory($data);
 
         return [
             'UnionTypeDefinitionNode'   => [
-                self::getSchemaExpected('~export-UnionTypeDefinitionNode.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'export/UnionTypeDefinitionNode.graphql'),
+                    types     : [
                         'String',
                         'CodeType',
                         'SchemaUnion',
                         'Boolean',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 1,
                 0,
@@ -781,16 +803,18 @@ final class PrinterTest extends TestCase {
                 },
             ],
             'InputObjectTypeDefinition' => [
-                self::getSchemaExpected('~export-InputObjectTypeDefinition.graphql')
-                    ->setUsedTypes([
+                new Expected(
+                    value     : self::getSchemaContent($data, 'export/InputObjectTypeDefinition.graphql'),
+                    types     : [
                         'String',
                         'CodeInput',
                         'SchemaInput',
                         'Boolean',
-                    ])
-                    ->setUsedDirectives([
+                    ],
+                    directives: [
                         '@schemaDirective',
-                    ]),
+                    ],
+                ),
                 new PrinterSettings(),
                 0,
                 0,
@@ -808,10 +832,10 @@ final class PrinterTest extends TestCase {
     // <editor-fold desc="Helpers">
     // =========================================================================
     /**
-     * @return Closure(static): SplFileInfo
+     * @return Closure(static): string
      */
-    private static function getSchemaFactory(): Closure {
-        return static function (TestCase $test): SplFileInfo {
+    private static function getSchemaFactory(TestData $data): Closure {
+        return static function (TestCase $test) use ($data): string {
             // Types
             $directives = $test->app()->make(DirectiveLocator::class);
             $registry   = $test->app()->make(TypeRegistry::class);
@@ -911,17 +935,19 @@ final class PrinterTest extends TestCase {
             $registry->register($codeInput);
 
             // Schema
-            return self::getTestData()->file('~schema.graphql');
+            return $data->content('schema.graphql');
         };
     }
 
-    private static function getSchemaExpected(string $path): Expected {
-        $expected      = self::getTestData()->file($path);
+    /**
+     * @param non-empty-string $path
+     */
+    private static function getSchemaContent(TestData $data, string $path): string {
+        $expected      = $data->content($path);
         static $legacy = InstalledVersions::satisfies(new VersionParser(), 'nuwave/lighthouse', '<6.59.0');
 
         if ($legacy) {
             // @see https://github.com/nuwave/lighthouse/commit/52962f5366b7774315d7024162798edee109f93b
-            $expected = self::getTestData()->content($path);
             $expected = str_replace(
                 'Reference to a class that extends `GraphQL\Type\Definition\ScalarType`.',
                 'Reference to a class that extends `\\GraphQL\\Type\\Definition\\ScalarType`.',
@@ -929,7 +955,7 @@ final class PrinterTest extends TestCase {
             );
         }
 
-        return new Expected($expected);
+        return $expected;
     }
     // </editor-fold>
 }

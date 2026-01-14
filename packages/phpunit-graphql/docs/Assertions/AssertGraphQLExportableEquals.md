@@ -74,7 +74,7 @@ final class AssertGraphQLExportableEqualsTest extends TestCase {
         // Test
         // (schema required to find types/directives definition)
         $this->assertGraphQLExportableEquals(
-            (new Expected($expected))->setSchema($schema),
+            new Expected($expected, schema: $schema),
             $type,
         );
     }

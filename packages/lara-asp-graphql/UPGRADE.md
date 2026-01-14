@@ -35,7 +35,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v9
 
-* [ ] Assertions for PHPUnit extracted into [`lastdragon-ru/lara-asp-graphql-testing`](../lara-asp-graphql-testing/README.md) package (class names changed a bit).
+* [ ] Assertions for PHPUnit extracted into [`lastdragon-ru/lara-asp-graphql-testing`](../lara-asp-graphql-testing/README.md) package (class names changed a bit). Please also note that `\SplFileInfo` cannot be used with them anymore.
 
 # Upgrade from v7
 

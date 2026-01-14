@@ -17,9 +17,7 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Contracts\Statistics;
 use LastDragon_ru\GraphQLPrinter\Printer;
-use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use PHPUnit\Framework\Assert;
-use SplFileInfo;
 
 use function array_combine;
 use function is_string;
@@ -31,8 +29,8 @@ trait Assertions {
      * Prints and compares two GraphQL schemas/types/nodes/etc.
      */
     public function assertGraphQLPrintableEquals(
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|SplFileInfo|string $expected,
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|string $actual,
         string $message = '',
     ): void {
         // Printed
@@ -55,8 +53,8 @@ trait Assertions {
      * Exports and compares two GraphQL schemas/types/nodes/etc.
      */
     public function assertGraphQLExportableEquals(
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|SplFileInfo|string $expected,
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|string $actual,
         string $message = '',
     ): void {
         // Printed
@@ -79,8 +77,8 @@ trait Assertions {
      * @param Closure(PrinterContract, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
      */
     private function assertGraphQLResult(
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|SplFileInfo|string $expected,
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|string $actual,
         string $message,
         Closure $print,
     ): Result {
@@ -90,9 +88,9 @@ trait Assertions {
         $settings = null;
 
         if ($output instanceof Expected) {
-            $settings = $output->getSettings();
-            $schema   = $output->getSchema();
-            $output   = $output->getPrintable();
+            $settings = $output->settings;
+            $schema   = $output->schema;
+            $output   = $output->value;
         }
 
         // Printer
@@ -103,14 +101,12 @@ trait Assertions {
         }
 
         // Compare
-        if (!($output instanceof SplFileInfo) && !is_string($output)) {
+        if (!is_string($output)) {
             $output = (string) $print($printer, $output);
-        } else {
-            $output = Args::content($output);
         }
 
-        if ($actual instanceof SplFileInfo || is_string($actual)) {
-            $actual = Parser::parse(Args::content($actual));
+        if (is_string($actual)) {
+            $actual = Parser::parse($actual);
         }
 
         if (!($actual instanceof Result)) {
@@ -129,7 +125,7 @@ trait Assertions {
         Statistics $actual,
     ): void {
         // Used types
-        $usedTypes = $expected->getUsedTypes();
+        $usedTypes = $expected->types;
 
         if ($usedTypes !== null) {
             Assert::assertEquals(
@@ -140,7 +136,7 @@ trait Assertions {
         }
 
         // Used directives
-        $usedDirectives = $expected->getUsedDirectives();
+        $usedDirectives = $expected->directives;
 
         if ($usedDirectives !== null) {
             Assert::assertEquals(

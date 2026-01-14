@@ -25,7 +25,6 @@ use Nuwave\Lighthouse\Schema\DirectiveLocator;
 use Nuwave\Lighthouse\Testing\TestingServiceProvider as LighthouseTestingServiceProvider;
 use Nuwave\Lighthouse\Validation\ValidationServiceProvider as LighthouseValidationServiceProvider;
 use Override;
-use SplFileInfo;
 
 use function array_merge;
 use function mb_substr;
@@ -66,7 +65,7 @@ abstract class TestCase extends PackageTestCase {
     protected function getGraphQLArgument(
         string $type,
         mixed $value,
-        Schema|SplFileInfo|string|null $schema = null,
+        Schema|string|null $schema = null,
     ): Argument {
         try {
             if ($schema !== null) {

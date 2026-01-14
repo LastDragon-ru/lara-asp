@@ -50,6 +50,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\CompositeDataProvider;
 use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
+use LastDragon_ru\PhpUnit\Utils\TestData;
 use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\Argument;
 use Nuwave\Lighthouse\Pagination\PaginationServiceProvider as LighthousePaginationServiceProvider;
@@ -94,6 +95,8 @@ final class DirectiveTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
+     * @param non-empty-string           $expected
+     * @param non-empty-string           $graphql
      * @param Closure(static): void|null $prepare
      */
     #[DataProvider('dataProviderManipulateArgDefinition')]
@@ -103,10 +106,10 @@ final class DirectiveTest extends TestCase {
         }
 
         $this->useGraphQLSchema(
-            self::getTestData()->file($graphql),
+            TestData::get()->content($graphql),
         );
 
-        $this->assertGraphQLSchemaEquals(self::getTestData()->file($expected));
+        $this->assertGraphQLSchemaEquals(TestData::get()->content($expected));
         $this->assertGraphQLSchemaValid();
     }
 
@@ -122,11 +125,11 @@ final class DirectiveTest extends TestCase {
             ->setResolved('search', SearchDirective::class);
 
         $this->useGraphQLSchema(
-            self::getTestData()->file('Scout.schema.graphql'),
+            TestData::get()->content('Scout.schema.graphql'),
         );
 
         $this->assertGraphQLSchemaEquals(
-            static::getTestData()->file('Scout.expected.graphql'),
+            TestData::get()->content('Scout.expected.graphql'),
         );
         $this->assertGraphQLSchemaValid();
     }
