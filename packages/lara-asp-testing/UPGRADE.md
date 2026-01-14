@@ -29,9 +29,11 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 # Upgrade from v9
 
+* [ ] Extension [`💀\LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension`][code-links/26cc04e820d354b1] deprecated, please use [`\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension`][code-links/7e51b51dd292df33] instead 🤝
+*
 * [ ] Trait [`💀StrictAssertEquals`][code-links/2187ed1b4d4e6c14] deprecated, please use [`\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension`][code-links/50cb69b702caae36] instead 🤝
 
-* [ ] Extension [`💀\LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension`][code-links/26cc04e820d354b1] deprecated, please use [`\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension`][code-links/7e51b51dd292df33] instead 🤝
+* [ ] Trait [`💀WithTestData`][code-links/c1153ff984856b36] and [`💀\LastDragon_ru\LaraASP\Testing\Utils\TestData`][code-links/84706d7f00aadc5e] deprecated, please use [`\LastDragon_ru\PhpUnit\Utils\TestData`][code-links/ded4ad00d1ea1842] instead 🤝
 
 # Upgrade from v7
 
@@ -101,6 +103,12 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [code-links/26cc04e820d354b1]: src/Requirements/PhpUnit/Extension.php
     "\LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"
 
+[code-links/84706d7f00aadc5e]: src/Utils/TestData.php
+    "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
+
+[code-links/c1153ff984856b36]: src/Utils/WithTestData.php
+    "\LastDragon_ru\LaraASP\Testing\Utils\WithTestData"
+
 [code-links/733eb8fbc4b211a5]: src/Utils/WithTranslations.php
     "\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations"
 
@@ -109,5 +117,8 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [code-links/50cb69b702caae36]: ../phpunit-extensions/src/Extensions/StrictScalarCompare/Extension.php
     "\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension"
+
+[code-links/ded4ad00d1ea1842]: ../phpunit-extensions/src/Utils/TestData.php
+    "\LastDragon_ru\PhpUnit\Utils\TestData"
 
 [//]: # (end: code-links)

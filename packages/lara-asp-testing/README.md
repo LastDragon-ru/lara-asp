@@ -152,17 +152,6 @@ after script shutdown.
 
 [//]: # (end: preprocess/10c0333c466e5e09)
 
-### [`WithTestData`](./src/Utils/WithTestData.php)
-
-[include:docblock]: ./src/Utils/WithTestData.php
-[//]: # (start: preprocess/f433a9e3c98e269e)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-Allows to get instance of [`TestData`][code-links/84706d7f00aadc5e] (a small helper to load data
-associated with test)
-
-[//]: # (end: preprocess/f433a9e3c98e269e)
-
 ## Laravel `TestCase`
 
 ### [`WithTranslations`](./src/Utils/WithTranslations.php)
@@ -866,8 +855,5 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [code-links/f2055681d6897706]: src/Database/QueryLog/Query.php
     "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query"
-
-[code-links/84706d7f00aadc5e]: src/Utils/TestData.php
-    "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
 
 [//]: # (end: code-links)
