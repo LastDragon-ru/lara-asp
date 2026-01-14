@@ -96,6 +96,18 @@ final class RequirementsExtensionTest extends TestCase {
 
 [//]: # (end: preprocess/a201179110b693b9)
 
+# Utilities
+
+## [`TestData`][code-links/ded4ad00d1ea1842]
+
+[include:docblock]: src/Utils/TestData.php
+[//]: # (start: preprocess/882c71f1b5a04671)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Small helper to load data associated with test.
+
+[//]: # (end: preprocess/882c71f1b5a04671)
+
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
@@ -115,5 +127,8 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [code-links/62e94c1c0fe743de]: src/Extensions/StrictScalarCompare/Comparator.php
     "\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Comparator"
+
+[code-links/ded4ad00d1ea1842]: src/Utils/TestData.php
+    "\LastDragon_ru\PhpUnit\Utils\TestData"
 
 [//]: # (end: code-links)
