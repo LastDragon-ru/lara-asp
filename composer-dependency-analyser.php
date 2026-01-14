@@ -7,6 +7,10 @@ use ShipMonk\ComposerDependencyAnalyser\Path;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\Glob;
 
+// It is not loaded by default, and may lead to 'Class "Symfony\Component\Finder\Finder"
+// not found' error.
+require_once __DIR__ . '/vendor-bin/composer-dependency-analyser/vendor/autoload.php';
+
 // General
 $config = (new Configuration())
     ->enableAnalysisOfUnusedDevDependencies()
@@ -27,15 +31,10 @@ if (!$root) {
     // fixme: Hotfix for https://github.com/shipmonk-rnd/composer-dependency-analyser/issues/216
     $config->ignoreErrorsOnPaths(
         [
-            'packages/graphql-printer/src/Blocks/Document/Value.php',
+            'packages/graphql-printer/src/Blocks/Document/Argument.php',
             'packages/graphql-printer/src/Blocks/Document/InputValueDefinition.php',
             'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
-            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
-            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
-            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
-            'packages/graphql-printer/src/Blocks/Document/ValueTest.php',
             'packages/graphql-printer/src/Blocks/Document/VariableDefinition.php',
-            'packages/graphql-printer/src/Blocks/Document/Argument.php',
         ],
         [
             ErrorType::SHADOW_DEPENDENCY,
