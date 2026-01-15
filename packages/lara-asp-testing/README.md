@@ -126,16 +126,6 @@ properties types before comparison.
 
 [//]: # (end: preprocess/b9eae8b36fc2d911)
 
-## [`ScalarStrictComparator`](./src/Comparators/ScalarStrictComparator.php)
-
-[include:docblock]: ./src/Comparators/ScalarStrictComparator.php
-[//]: # (start: preprocess/1e9e6e9fa3d236a1)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-Makes comparison of scalars strict.
-
-[//]: # (end: preprocess/1e9e6e9fa3d236a1)
-
 # Extensions
 
 ## PHPUnit `TestCase`
@@ -161,17 +151,6 @@ Allows to create a temporary file. The file will be removed automatically
 after script shutdown.
 
 [//]: # (end: preprocess/10c0333c466e5e09)
-
-### [`WithTestData`](./src/Utils/WithTestData.php)
-
-[include:docblock]: ./src/Utils/WithTestData.php
-[//]: # (start: preprocess/f433a9e3c98e269e)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-Allows to get instance of [`TestData`][code-links/84706d7f00aadc5e] (a small helper to load data
-associated with test)
-
-[//]: # (end: preprocess/f433a9e3c98e269e)
 
 ## Laravel `TestCase`
 
@@ -857,39 +836,6 @@ $mock->a();
 
 [//]: # (end: preprocess/00f706ff1b471d60)
 
-# Custom Test Requirements
-
-Unfortunately, PHPUnit doesn't allow to add/extend existing requirements and probably will not:
-
-> I do not think that additional attributes for test requirements should be added. After all, the existing ones are only convenient syntax sugar. Simply check your custom requirements in a before-test method and call `markTestSkipped()` when they are not met.
-> [©](https://github.com/sebastianbergmann/phpunit/issues/5674#issuecomment-1899839119) @sebastianbergmann
-
-The extension listen several events and checks all attributes of test class/method which are implements [`Requirement`](./src/Requirements/Requirement.php). If the requirements don't meet, the test will be marked as skipped. Please note that at least one "before" hook will be executed anyway (PHPUnit emits events after hook execution).
-
-You need to [register extension](https://docs.phpunit.de/en/main/extending-phpunit.html#registering-an-extension-from-a-composer-package) first:
-
-```xml
-<extensions>
-    <bootstrap class="LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"/>
-</extensions>
-```
-
-And then
-
-```php
-<?php declare(strict_types = 1);
-
-use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
-use PHPUnit\Framework\TestCase;
-
-class SomePackageTest extends TestCase {
-    #[RequiresComposerPackage('some/package')]
-    public function testSomePackage(): void {
-        // .....
-    }
-}
-```
-
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
@@ -909,8 +855,5 @@ This package is the part of Awesome Set of Packages for Laravel. Please use the 
 
 [code-links/f2055681d6897706]: src/Database/QueryLog/Query.php
     "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\Query"
-
-[code-links/84706d7f00aadc5e]: src/Utils/TestData.php
-    "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
 
 [//]: # (end: code-links)

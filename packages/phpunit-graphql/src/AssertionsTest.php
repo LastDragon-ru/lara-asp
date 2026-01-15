@@ -85,7 +85,7 @@ final class AssertionsTest extends TestCase {
         $node     = Mockery::mock(Node::class);
         $schema   = Mockery::mock(Schema::class);
         $settings = Mockery::mock(Settings::class);
-        $expected = (new Expected($node))->setSettings($settings)->setSchema($schema);
+        $expected = new Expected($node, settings: $settings, schema: $schema);
 
         $result = Mockery::mock(Result::class);
         $result
@@ -149,9 +149,7 @@ final class AssertionsTest extends TestCase {
             ->shouldReceive('getUsedDirectives')
             ->once()
             ->andReturn(['@a' => '@a']);
-        $expected = (new Expected('expected'))
-            ->setUsedDirectives(['@a'])
-            ->setUsedTypes(['A']);
+        $expected = new Expected('expected', ['A'], ['@a']);
 
         $instance = Mockery::mock(GraphQLAssertionsTest_TestCase::class);
         $instance->makePartial();

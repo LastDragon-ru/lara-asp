@@ -3,39 +3,15 @@
 namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
 
 use LastDragon_ru\LaraASP\Testing\Requirements\Requirement;
-use Override;
-use PHPUnit\Event\Test\BeforeTestMethodCalledSubscriber;
-use PHPUnit\Event\Test\PreConditionCalledSubscriber;
-use PHPUnit\Event\Test\PreparedSubscriber;
-use PHPUnit\Runner\Extension\Extension as PHPUnitExtension;
-use PHPUnit\Runner\Extension\Facade;
-use PHPUnit\Runner\Extension\ParameterCollection;
-use PHPUnit\TextUI\Configuration\Configuration;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Extension as NewExtension;
 
 /**
  * Marks test skipped if requirements don't meet.
  *
+ * @deprecated %{VERSION} Please use `\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension` instead.
+ *
  * @see Requirement
  */
-class Extension implements PHPUnitExtension {
-    public function __construct() {
-        // empty
-    }
-
-    #[Override]
-    public function bootstrap(Configuration $configuration, Facade $facade, ParameterCollection $parameters): void {
-        $checker = new Checker();
-
-        $facade->registerSubscribers(
-            new class ($checker) extends Listener implements BeforeTestMethodCalledSubscriber {
-                // empty
-            },
-            new class ($checker) extends Listener implements PreConditionCalledSubscriber {
-                // empty
-            },
-            new class ($checker) extends Listener implements PreparedSubscriber {
-                // empty
-            },
-        );
-    }
+class Extension extends NewExtension {
+    // empty
 }

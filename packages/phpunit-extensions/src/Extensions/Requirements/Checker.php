@@ -1,8 +1,8 @@
 <?php declare(strict_types = 1);
 
-namespace LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit;
+namespace LastDragon_ru\PhpUnit\Extensions\Requirements;
 
-use LastDragon_ru\LaraASP\Testing\Requirements\Requirement;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Contracts\Requirement;
 use ReflectionAttribute;
 use ReflectionClass;
 use ReflectionMethod;

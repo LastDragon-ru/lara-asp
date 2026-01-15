@@ -1,0 +1,47 @@
+{
+  "name": "lastdragon-ru/phpunit-extensions",
+  "homepage": "https://github.com/LastDragon-ru/lara-asp",
+  "description": "Various useful assertions/extensions for PHPUnit.",
+  "readme": "README.md",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "PHPUnit",
+    "php"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
+    "source": "https://github.com/LastDragon-ru/lara-asp",
+    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+  },
+  "require": {
+    "php": "^8.3|^8.4",
+    "ext-mbstring": "*",
+    "composer/semver": "^3.2",
+    "lastdragon-ru/path": "self.version",
+    "phpunit/phpunit": "^11.2.0|^12.0.0",
+    "sebastian/comparator": "^6.0.0|^7.0.0",
+    "sebastian/exporter": "^6.0.0|^7.0.0"
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.6.6",
+    "symfony/polyfill-php84": "^1.31"
+  },
+  "autoload": {
+    "psr-4": {
+      "LastDragon_ru\\PhpUnit\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LastDragon_ru\\PhpUnit\\Docs\\": "docs"
+    },
+    "exclude-from-classmap": [
+      "docs/"
+    ]
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}

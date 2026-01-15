@@ -27,7 +27,6 @@
     "illuminate/filesystem": "^12.0.1",
     "lastdragon-ru/graphql-printer": "self.version",
     "lastdragon-ru/phpunit-graphql": "self.version",
-    "lastdragon-ru/lara-asp-testing": "self.version",
     "nuwave/lighthouse": "^6.54.0",
     "phpunit/phpunit": "^11.2.0|^12.0.0",
     "symfony/polyfill-php84": "^1.31",
@@ -38,6 +37,8 @@
     "illuminate/support": "^12.0.1",
     "lastdragon-ru/lara-asp-core": "self.version",
     "lastdragon-ru/lara-asp-graphql": "self.version",
+    "lastdragon-ru/lara-asp-testing": "self.version",
+    "lastdragon-ru/phpunit-extensions": "self.version",
     "orchestra/testbench": "^10.0.0"
   },
   "autoload": {

@@ -61,6 +61,7 @@ use LastDragon_ru\LaraASP\Testing\Constraints\Response\Response;
 use LastDragon_ru\LaraASP\Testing\Constraints\Response\StatusCodes\Ok;
 use LastDragon_ru\LaraASP\Testing\Mockery\PropertiesMock;
 use LastDragon_ru\LaraASP\Testing\Mockery\WithProperties;
+use LastDragon_ru\PhpUnit\Utils\TestData;
 use Mockery;
 use Mockery\MockInterface;
 use Nuwave\Lighthouse\Execution\Arguments\ArgumentSetFactory;
@@ -296,9 +297,9 @@ final class DirectiveTest extends TestCase {
             ],
         ]);
 
-        $this->useGraphQLSchema(self::getTestData()->file('~schema.graphql'));
+        $this->useGraphQLSchema(TestData::get()->content('schema.graphql'));
         $this->assertGraphQLSchemaEquals(
-            self::getTestData()->file('~schema-expected.graphql'),
+            TestData::get()->content('schema-expected.graphql'),
         );
         $this->assertGraphQLSchemaValid();
     }
@@ -322,9 +323,9 @@ final class DirectiveTest extends TestCase {
 
         $directives->setResolved('stream', StreamDirective::class);
 
-        $this->useGraphQLSchema(self::getTestData()->file('~scout.graphql'));
+        $this->useGraphQLSchema(TestData::get()->content('scout.graphql'));
         $this->assertGraphQLSchemaEquals(
-            self::getTestData()->file('~scout-expected.graphql'),
+            TestData::get()->content('scout-expected.graphql'),
         );
         $this->assertGraphQLSchemaValid();
     }

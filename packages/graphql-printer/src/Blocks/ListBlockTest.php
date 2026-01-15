@@ -6,8 +6,6 @@ use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\LaraASP\Testing\Providers\ArrayDataProvider;
-use LastDragon_ru\LaraASP\Testing\Providers\MergeDataProvider;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -85,103 +83,102 @@ final class ListBlockTest extends TestCase {
     public static function dataProviderSerialize(): array {
         $settings = new PrinterSettings();
 
-        return (new MergeDataProvider([
-            'index'           => new ArrayDataProvider([
-                'one single-line block'                         => [
-                    <<<'STRING'
+        return [
+            'index / one single-line block'                           => [
+                <<<'STRING'
                     block a
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block('block a'),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block('block a'),
                 ],
-                'one multi-line block'                          => [
-                    <<<'STRING'
+            ],
+            'index / one multi-line block'                            => [
+                <<<'STRING'
                     block a
                     --multiline
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block("block a\n--multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block("block a\n--multiline"),
                 ],
-                'short block list'                              => [
-                    <<<'STRING'
+            ],
+            'index / short block list'                                => [
+                <<<'STRING'
                     block a, block b
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__Block('block b'),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__Block('block b'),
                 ],
-                'long block list'                               => [
-                    <<<'STRING'
+            ],
+            'index / long block list'                                 => [
+                <<<'STRING'
                     block b
                     block a
                     STRING,
-                    $settings->setLineLength(19),
-                    0,
-                    5,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block('block b'),
-                        new ListBlockTest__Block('block a'),
-                    ],
+                $settings->setLineLength(19),
+                0,
+                5,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block('block b'),
+                    new ListBlockTest__Block('block a'),
                 ],
-                'short block list with multiline block'         => [
-                    <<<'STRING'
+            ],
+            'index / short block list with multiline block'           => [
+                <<<'STRING'
                     block a
 
                     block b
                     --multiline
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__Block("block b\n--multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__Block("block b\n--multiline"),
                 ],
-                'block list with multiline blocks'              => [
-                    <<<'STRING'
+            ],
+            'index / block list with multiline blocks'                => [
+                <<<'STRING'
                     block a
                     --multiline
 
@@ -197,184 +194,182 @@ final class ListBlockTest extends TestCase {
                     block g
                     --multiline
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block("block a\n--multiline"),
-                        new ListBlockTest__Block('block b'),
-                        new ListBlockTest__Block('block c'),
-                        new ListBlockTest__Block("block d\n--multiline"),
-                        new ListBlockTest__Block('block e'),
-                        new ListBlockTest__Block('block f'),
-                        new ListBlockTest__Block("block g\n--multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block("block a\n--multiline"),
+                    new ListBlockTest__Block('block b'),
+                    new ListBlockTest__Block('block c'),
+                    new ListBlockTest__Block("block d\n--multiline"),
+                    new ListBlockTest__Block('block e'),
+                    new ListBlockTest__Block('block f'),
+                    new ListBlockTest__Block("block g\n--multiline"),
                 ],
-                'block list with multiline blocks without wrap' => [
-                    <<<'STRING'
+            ],
+            'index / block list with multiline blocks without wrap'   => [
+                <<<'STRING'
                     block c
                     --multiline
                     block b
                     block a
                     --multiline
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    false,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block("block c\n--multiline"),
-                        new ListBlockTest__Block('block b'),
-                        new ListBlockTest__Block("block a\n--multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                false,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block("block c\n--multiline"),
+                    new ListBlockTest__Block('block b'),
+                    new ListBlockTest__Block("block a\n--multiline"),
                 ],
-                'normalized block list'                         => [
-                    <<<'STRING'
+            ],
+            'index / normalized block list'                           => [
+                <<<'STRING'
                     block b, block a
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    true,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block('block b'),
-                        new ListBlockTest__Block('block a'),
-                    ],
+                $settings,
+                0,
+                0,
+                true,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block('block b'),
+                    new ListBlockTest__Block('block a'),
                 ],
-                'multi-line with level'                         => [
-                    <<<'STRING'
+            ],
+            'index / multi-line with level'                           => [
+                <<<'STRING'
                     block a
                     --multiline
                         block b
                         --multiline
                     STRING,
-                    $settings->setIndent('  '),
-                    2,
-                    0,
-                    false,
-                    false,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block("block a\n--multiline"),
-                        new ListBlockTest__Block("block b\n    --multiline"),
-                    ],
+                $settings->setIndent('  '),
+                2,
+                0,
+                false,
+                false,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block("block a\n--multiline"),
+                    new ListBlockTest__Block("block b\n    --multiline"),
                 ],
-            ]),
-            'named'           => new ArrayDataProvider([
-                'one single-line block'                         => [
-                    <<<'STRING'
+            ],
+            'named / one single-line block'                           => [
+                <<<'STRING'
                     a: block a
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('a', 'block a'),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('a', 'block a'),
                 ],
-                'one multi-line block'                          => [
-                    <<<'STRING'
+            ],
+            'named / one multi-line block'                            => [
+                <<<'STRING'
                     a: block a
                     --multiline
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('a', "block a\n--multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('a', "block a\n--multiline"),
                 ],
-                'short block list'                              => [
-                    <<<'STRING'
+            ],
+            'named / short block list'                                => [
+                <<<'STRING'
                     a: block a, b: block b
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('a', 'block a'),
-                        new ListBlockTest__NamedBlock('b', 'block b'),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('a', 'block a'),
+                    new ListBlockTest__NamedBlock('b', 'block b'),
                 ],
-                'long block list'                               => [
-                    <<<'STRING'
+            ],
+            'named / long block list'                                 => [
+                <<<'STRING'
                     b: block b
                     a: block a
                     STRING,
-                    $settings->setLineLength(20),
-                    0,
-                    5,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('b', 'block b'),
-                        new ListBlockTest__NamedBlock('a', 'block a'),
-                    ],
+                $settings->setLineLength(20),
+                0,
+                5,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('b', 'block b'),
+                    new ListBlockTest__NamedBlock('a', 'block a'),
                 ],
-                'short block list with multiline block'         => [
-                    <<<'STRING'
+            ],
+            'named / short block list with multiline block'           => [
+                <<<'STRING'
                     a: block a
 
                     b: block b
                     --multiline
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('a', 'block a'),
-                        new ListBlockTest__NamedBlock('b', "block b\n--multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('a', 'block a'),
+                    new ListBlockTest__NamedBlock('b', "block b\n--multiline"),
                 ],
-                'block list with multiline blocks'              => [
-                    <<<'STRING'
+            ],
+            'named / block list with multiline blocks'                => [
+                <<<'STRING'
                     a: block a
                     --multiline
 
@@ -390,167 +385,165 @@ final class ListBlockTest extends TestCase {
                     g: block g
                     --multiline
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('a', "block a\n--multiline"),
-                        new ListBlockTest__NamedBlock('b', 'block b'),
-                        new ListBlockTest__NamedBlock('c', 'block c'),
-                        new ListBlockTest__NamedBlock('d', "block d\n--multiline"),
-                        new ListBlockTest__NamedBlock('e', 'block e'),
-                        new ListBlockTest__NamedBlock('f', 'block f'),
-                        new ListBlockTest__NamedBlock('g', "block g\n--multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('a', "block a\n--multiline"),
+                    new ListBlockTest__NamedBlock('b', 'block b'),
+                    new ListBlockTest__NamedBlock('c', 'block c'),
+                    new ListBlockTest__NamedBlock('d', "block d\n--multiline"),
+                    new ListBlockTest__NamedBlock('e', 'block e'),
+                    new ListBlockTest__NamedBlock('f', 'block f'),
+                    new ListBlockTest__NamedBlock('g', "block g\n--multiline"),
                 ],
-                'block list with multiline blocks without wrap' => [
-                    <<<'STRING'
+            ],
+            'named / block list with multiline blocks without wrap'   => [
+                <<<'STRING'
                     c: block c
                     --multiline
                     b: block b
                     a: block a
                     --multiline
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    false,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('c', "block c\n--multiline"),
-                        new ListBlockTest__NamedBlock('b', 'block b'),
-                        new ListBlockTest__NamedBlock('a', "block a\n--multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                false,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('c', "block c\n--multiline"),
+                    new ListBlockTest__NamedBlock('b', 'block b'),
+                    new ListBlockTest__NamedBlock('a', "block a\n--multiline"),
                 ],
-                'normalized block list'                         => [
-                    <<<'STRING'
+            ],
+            'named / normalized block list'                           => [
+                <<<'STRING'
                     a: block a, b: block b
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    true,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('b', 'block b'),
-                        new ListBlockTest__NamedBlock('a', 'block a'),
-                    ],
+                $settings,
+                0,
+                0,
+                true,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('b', 'block b'),
+                    new ListBlockTest__NamedBlock('a', 'block a'),
                 ],
-                'multi-line with level'                         => [
-                    <<<'STRING'
+            ],
+            'named / multi-line with level'                           => [
+                <<<'STRING'
                     a: block a
                     --multiline
                         b: block b
                         --multiline
                     STRING,
-                    $settings->setIndent('  '),
-                    2,
-                    0,
-                    false,
-                    false,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('a', "block a\n--multiline"),
-                        new ListBlockTest__NamedBlock('b', "block b\n    --multiline"),
-                    ],
+                $settings->setIndent('  '),
+                2,
+                0,
+                false,
+                false,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('a', "block a\n--multiline"),
+                    new ListBlockTest__NamedBlock('b', "block b\n    --multiline"),
                 ],
-            ]),
-            'prefix & suffix' => new ArrayDataProvider([
-                'one single-line block'                 => [
-                    <<<'STRING'
+            ],
+            'prefix & suffix / one single-line block'                 => [
+                <<<'STRING'
                     [a: block a]
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '[',
-                    ']',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('a', 'block a'),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '[',
+                ']',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('a', 'block a'),
                 ],
-                'one multi-line block'                  => [
-                    <<<'STRING'
+            ],
+            'prefix & suffix / one multi-line block'                  => [
+                <<<'STRING'
                     [
                         a: block a
                         --multiline
                     ]
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '[',
-                    ']',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('a', "block a\n    --multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '[',
+                ']',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('a', "block a\n    --multiline"),
                 ],
-                'short block list'                      => [
-                    <<<'STRING'
+            ],
+            'prefix & suffix / short block list'                      => [
+                <<<'STRING'
                     [block a, b: block b]
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '[',
-                    ']',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__NamedBlock('b', 'block b'),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '[',
+                ']',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__NamedBlock('b', 'block b'),
                 ],
-                'long block list'                       => [
-                    <<<'STRING'
+            ],
+            'prefix & suffix / long block list'                       => [
+                <<<'STRING'
                     [
                         b: block b
                         a: block a
                     ]
                     STRING,
-                    $settings->setLineLength(20),
-                    0,
-                    5,
-                    false,
-                    true,
-                    '[',
-                    ']',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__NamedBlock('b', 'block b'),
-                        new ListBlockTest__NamedBlock('a', 'block a'),
-                    ],
+                $settings->setLineLength(20),
+                0,
+                5,
+                false,
+                true,
+                '[',
+                ']',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__NamedBlock('b', 'block b'),
+                    new ListBlockTest__NamedBlock('a', 'block a'),
                 ],
-                'short block list with multiline block' => [
-                    <<<'STRING'
+            ],
+            'prefix & suffix / short block list with multiline block' => [
+                <<<'STRING'
                     [
                         block a
 
@@ -558,158 +551,153 @@ final class ListBlockTest extends TestCase {
                         --multiline
                     ]
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '[',
-                    ']',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__Block("block b\n    --multiline"),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '[',
+                ']',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__Block("block b\n    --multiline"),
                 ],
-                'multi-line with level'                 => [
-                    <<<'STRING'
+            ],
+            'prefix & suffix / multi-line with level'                 => [
+                <<<'STRING'
                     [
                                 block a
                                 --multiline
                             ]
                     STRING,
-                    $settings,
-                    2,
-                    0,
-                    false,
-                    false,
-                    '[',
-                    ']',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block("block a\n            --multiline"),
-                    ],
+                $settings,
+                2,
+                0,
+                false,
+                false,
+                '[',
+                ']',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block("block a\n            --multiline"),
                 ],
-                'empty'                                 => [
-                    '',
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    false,
-                    '[',
-                    ']',
-                    ', ',
-                    '',
-                    [],
-                ],
-            ]),
-            'separators'      => new ArrayDataProvider([
-                'single-line'          => [
-                    <<<'STRING'
+            ],
+            'prefix & suffix / empty'                                 => [
+                '',
+                $settings,
+                0,
+                0,
+                false,
+                false,
+                '[',
+                ']',
+                ', ',
+                '',
+                [],
+            ],
+            'separators / single-line'                                => [
+                <<<'STRING'
                     block a | block b
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ' | ',
-                    '||',
-                    [
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__Block('block b'),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ' | ',
+                '||',
+                [
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__Block('block b'),
                 ],
-                'multiline'            => [
-                    <<<'STRING'
+            ],
+            'separators / multiline'                                  => [
+                <<<'STRING'
                     || block a
                     || block b
                     STRING,
-                    $settings,
-                    0,
-                    120,
-                    false,
-                    true,
-                    '',
-                    '',
-                    '|',
-                    '|| ',
-                    [
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__Block('block b'),
-                    ],
+                $settings,
+                0,
+                120,
+                false,
+                true,
+                '',
+                '',
+                '|',
+                '|| ',
+                [
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__Block('block b'),
                 ],
-                'multiline and indent' => [
-                    <<<'STRING'
+            ],
+            'separators / multiline and indent'                       => [
+                <<<'STRING'
                     || block a
                         || block b
                     STRING,
-                    $settings,
-                    1,
-                    120,
-                    false,
-                    true,
-                    '',
-                    '',
-                    '|',
-                    '|| ',
-                    [
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__Block('block b'),
-                    ],
+                $settings,
+                1,
+                120,
+                false,
+                true,
+                '',
+                '',
+                '|',
+                '|| ',
+                [
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__Block('block b'),
                 ],
-            ]),
-            'empty blocks'    => new ArrayDataProvider([
-                'should be ignored with no used' => [
-                    <<<'STRING'
+            ],
+            'empty blocks / should be ignored with no used'           => [
+                <<<'STRING'
                     block a, block b
                     STRING,
-                    $settings,
-                    0,
-                    0,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block(''),
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__Block(''),
-                        new ListBlockTest__Block('block b'),
-                        new ListBlockTest__Block(''),
-                    ],
+                $settings,
+                0,
+                0,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block(''),
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__Block(''),
+                    new ListBlockTest__Block('block b'),
+                    new ListBlockTest__Block(''),
                 ],
-                'should be ignored with used'    => [
-                    <<<'STRING'
+            ],
+            'empty blocks / should be ignored with used'              => [
+                <<<'STRING'
                     block a
                     block b
                     STRING,
-                    $settings,
-                    0,
-                    120,
-                    false,
-                    true,
-                    '',
-                    '',
-                    ', ',
-                    '',
-                    [
-                        new ListBlockTest__Block(''),
-                        new ListBlockTest__Block('block a'),
-                        new ListBlockTest__Block(''),
-                        new ListBlockTest__Block('block b'),
-                        new ListBlockTest__Block(''),
-                    ],
+                $settings,
+                0,
+                120,
+                false,
+                true,
+                '',
+                '',
+                ', ',
+                '',
+                [
+                    new ListBlockTest__Block(''),
+                    new ListBlockTest__Block('block a'),
+                    new ListBlockTest__Block(''),
+                    new ListBlockTest__Block('block b'),
+                    new ListBlockTest__Block(''),
                 ],
-            ]),
-        ]))->getData();
+            ],
+        ];
     }
     //</editor-fold>
 }

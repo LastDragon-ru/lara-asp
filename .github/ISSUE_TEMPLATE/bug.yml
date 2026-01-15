@@ -7,20 +7,22 @@ body:
       label: Package
       description: "Please choose a package, leave blank if it is general or if you are not sure."
       options:
+        - glob-matcher
+        - graphql-printer
         - lara-asp-core
         - lara-asp-dev
         - lara-asp-documentator
         - lara-asp-eloquent
         - lara-asp-formatter
         - lara-asp-graphql
+        - lara-asp-graphql-testing
         - lara-asp-migrator
         - lara-asp-serializer
         - lara-asp-spa
         - lara-asp-testing
-        - glob-matcher
-        - graphql-printer
-        - phpunit-graphql
         - path
+        - phpunit-extensions
+        - phpunit-graphql
         - text-parser
   - type: input
     attributes:

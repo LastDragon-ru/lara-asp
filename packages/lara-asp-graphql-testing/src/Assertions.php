@@ -22,7 +22,6 @@ use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\GraphQLPrinter\Contracts\Printer;
 use LastDragon_ru\GraphQLPrinter\Contracts\Result;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
-use LastDragon_ru\LaraASP\Testing\Utils\Args;
 use LastDragon_ru\PhpUnit\GraphQL\Assertions as GraphQLAssertions;
 use LastDragon_ru\PhpUnit\GraphQL\Expected;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
@@ -30,7 +29,6 @@ use Nuwave\Lighthouse\Schema\AST\DocumentAST;
 use Nuwave\Lighthouse\Schema\SchemaBuilder;
 use Nuwave\Lighthouse\Testing\TestSchemaProvider;
 use PHPUnit\Framework\Assert;
-use SplFileInfo;
 
 use function assert;
 use function implode;
@@ -55,27 +53,30 @@ trait Assertions {
     /**
      * Compares GraphQL schema with current (application) public (client) schema.
      */
-    public function assertGraphQLIntrospectionEquals(
-        Expected|SplFileInfo|string $expected,
-        string $message = '',
-    ): void {
+    public function assertGraphQLIntrospectionEquals(Expected|string $expected, string $message = ''): void {
         // Schema
-        $schema = $this->getGraphQLSchema();
-        $schema = Introspection::fromSchema($schema);
-        $schema = BuildClientSchema::build($schema);
+        $schema   = $this->getGraphQLSchema();
+        $schema   = Introspection::fromSchema($schema);
+        $schema   = BuildClientSchema::build($schema);
+        $filter   = static fn () => true;
+        $settings = (new PrinterSettings())
+            ->setPrintUnusedDefinitions(true)
+            ->setTypeDefinitionFilter($filter)
+            ->setDirectiveDefinitionFilter($filter);
 
         if (!($expected instanceof Expected)) {
-            $expected = (new Expected($expected))->setSchema($schema);
+            $expected = new Expected($expected, settings: $settings, schema: $schema);
         }
 
         // Settings
-        if ($expected->getSettings() === null) {
-            $filter   = static fn () => true;
-            $expected = $expected->setSettings(
-                (new PrinterSettings())
-                    ->setPrintUnusedDefinitions(true)
-                    ->setTypeDefinitionFilter($filter)
-                    ->setDirectiveDefinitionFilter($filter),
+        if ($expected->settings === null) {
+            // todo(lara-asp-graphql-testing): PHP 8.5 Use clone with args.
+            $expected = new Expected(
+                value     : $expected->value,
+                types     : $expected->types,
+                directives: $expected->directives,
+                settings  : $settings,
+                schema    : $schema,
             );
         }
 
@@ -86,10 +87,7 @@ trait Assertions {
     /**
      * Compares GraphQL schema with current (application) schema.
      */
-    public function assertGraphQLSchemaEquals(
-        Expected|SplFileInfo|string $expected,
-        string $message = '',
-    ): void {
+    public function assertGraphQLSchemaEquals(Expected|string $expected, string $message = ''): void {
         $this->assertGraphQLPrintableEquals(
             $expected,
             $this->getGraphQLSchema(),
@@ -125,11 +123,8 @@ trait Assertions {
     /**
      * Checks the current (application) schema has no breaking changes.
      */
-    public function assertGraphQLSchemaNoBreakingChanges(
-        SplFileInfo|string $expected,
-        ?string $message = null,
-    ): void {
-        $oldSchema = BuildSchema::build(Args::content($expected));
+    public function assertGraphQLSchemaNoBreakingChanges(string $expected, ?string $message = null): void {
+        $oldSchema = BuildSchema::build($expected);
         $newSchema = BuildSchema::build($this->getGraphQLSchemaString());
         $changes   = BreakingChangesFinder::findBreakingChanges($oldSchema, $newSchema);
         $changes   = $this->getGraphQLChanges($changes);
@@ -141,11 +136,8 @@ trait Assertions {
     /**
      * Checks the current (application) schema has no dangerous changes.
      */
-    public function assertGraphQLSchemaNoDangerousChanges(
-        SplFileInfo|string $expected,
-        ?string $message = null,
-    ): void {
-        $oldSchema = BuildSchema::build(Args::content($expected));
+    public function assertGraphQLSchemaNoDangerousChanges(string $expected, ?string $message = null): void {
+        $oldSchema = BuildSchema::build($expected);
         $newSchema = BuildSchema::build($this->getGraphQLSchemaString());
         $changes   = BreakingChangesFinder::findDangerousChanges($oldSchema, $newSchema);
         $changes   = $this->getGraphQLChanges($changes);
@@ -158,13 +150,13 @@ trait Assertions {
      * @param Closure(Printer, Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema): Result $print
      */
     private function assertGraphQLResult(
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|SplFileInfo|string $expected,
-        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|SplFileInfo|string $actual,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Expected|string $expected,
+        Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema|Result|string $actual,
         string $message,
         Closure $print,
     ): Result {
         if (!($expected instanceof Expected)) {
-            $expected = (new Expected($expected))->setSchema($this->getGraphQLSchema());
+            $expected = new Expected($expected, schema: $this->getGraphQLSchema());
         }
 
         return $this->printerAssertGraphQLResult($expected, $actual, $message, $print);
@@ -176,7 +168,7 @@ trait Assertions {
     /**
      * Sets the current (application) schema to the given.
      */
-    protected function useGraphQLSchema(Schema|DocumentNode|DocumentAST|SplFileInfo|string $schema): static {
+    protected function useGraphQLSchema(Schema|DocumentNode|DocumentAST|string $schema): static {
         if ($schema instanceof DocumentAST) {
             // We just need all definitions
             $schema = new DocumentNode([
@@ -189,7 +181,7 @@ trait Assertions {
 
         $schema   = $schema instanceof Schema || $schema instanceof DocumentNode
             ? (string) $this->getGraphQLPrinter()->print($schema)
-            : Args::content($schema);
+            : $schema;
         $provider = new TestSchemaProvider($schema);
 
         $this->getGraphQLSchemaBuilder()->setSchema($this->app(), $provider);

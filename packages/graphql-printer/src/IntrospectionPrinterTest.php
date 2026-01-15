@@ -6,8 +6,9 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
-use LastDragon_ru\LaraASP\Testing\Requirements\Requirements\RequiresComposerPackage;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
+use LastDragon_ru\PhpUnit\Utils\TestData;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 
@@ -18,10 +19,13 @@ use PHPUnit\Framework\Attributes\DataProvider;
 final class IntrospectionPrinterTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
+    /**
+     * @param non-empty-string $expected
+     */
     #[DataProvider('dataProviderPrint')]
-    #[RequiresComposerPackage('webonyx/graphql-php', '>=15.22.0')]
+    #[RequiresPackage('webonyx/graphql-php', '>=15.22.0')]
     public function testPrint(string $expected, Settings $settings, int $level): void {
-        $expected = self::getTestData()->content($expected);
+        $expected = TestData::get()->content($expected);
         $printer  = (new IntrospectionPrinter())->setSettings($settings);
         $schema   = new Schema([]);
         $actual   = $printer->print($schema, $level);
@@ -33,22 +37,22 @@ final class IntrospectionPrinterTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{string, Settings, int}>
+     * @return array<string, array{non-empty-string, Settings, int}>
      */
     public static function dataProviderPrint(): array {
         return [
             GraphQLSettings::class            => [
-                '~GraphQLSettings.graphql',
+                'GraphQLSettings.graphql',
                 new GraphQLSettings(),
                 0,
             ],
             PrinterSettings::class            => [
-                '~PrinterSettings.graphql',
+                'PrinterSettings.graphql',
                 new PrinterSettings(),
                 0,
             ],
             PrinterSettings::class.' (level)' => [
-                '~PrinterSettings-level.graphql',
+                'PrinterSettings-level.graphql',
                 new PrinterSettings(),
                 1,
             ],

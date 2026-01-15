@@ -27,6 +27,14 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v9
+
+* [ ] Extension [`💀\LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension`][code-links/26cc04e820d354b1] deprecated, please use [`\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension`][code-links/7e51b51dd292df33] instead 🤝
+*
+* [ ] Trait [`💀StrictAssertEquals`][code-links/2187ed1b4d4e6c14] deprecated, please use [`\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension`][code-links/50cb69b702caae36] instead 🤝
+
+* [ ] Trait [`💀WithTestData`][code-links/c1153ff984856b36] and [`💀\LastDragon_ru\LaraASP\Testing\Utils\TestData`][code-links/84706d7f00aadc5e] deprecated, please use [`\LastDragon_ru\PhpUnit\Utils\TestData`][code-links/ded4ad00d1ea1842] instead 🤝
+
 # Upgrade from v7
 
 [include:file]: ../../docs/Shared/Upgrade/FromV7.md
@@ -86,10 +94,31 @@ Please also see [changelog](https://github.com/LastDragon-ru/lara-asp/releases) 
 [code-links/a5e57679c3a947a6]: src/Concerns/Override.php
     "\LastDragon_ru\LaraASP\Testing\Concerns\Override"
 
+[code-links/2187ed1b4d4e6c14]: src/Concerns/StrictAssertEquals.php
+    "\LastDragon_ru\LaraASP\Testing\Concerns\StrictAssertEquals"
+
 [code-links/e6637d2e31bd9516]: src/Database/QueryLog/WithQueryLog.php
     "\LastDragon_ru\LaraASP\Testing\Database\QueryLog\WithQueryLog"
 
+[code-links/26cc04e820d354b1]: src/Requirements/PhpUnit/Extension.php
+    "\LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension"
+
+[code-links/84706d7f00aadc5e]: src/Utils/TestData.php
+    "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
+
+[code-links/c1153ff984856b36]: src/Utils/WithTestData.php
+    "\LastDragon_ru\LaraASP\Testing\Utils\WithTestData"
+
 [code-links/733eb8fbc4b211a5]: src/Utils/WithTranslations.php
     "\LastDragon_ru\LaraASP\Testing\Utils\WithTranslations"
+
+[code-links/7e51b51dd292df33]: ../phpunit-extensions/src/Extensions/Requirements/Extension.php
+    "\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension"
+
+[code-links/50cb69b702caae36]: ../phpunit-extensions/src/Extensions/StrictScalarCompare/Extension.php
+    "\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension"
+
+[code-links/ded4ad00d1ea1842]: ../phpunit-extensions/src/Utils/TestData.php
+    "\LastDragon_ru\PhpUnit\Utils\TestData"
 
 [//]: # (end: code-links)

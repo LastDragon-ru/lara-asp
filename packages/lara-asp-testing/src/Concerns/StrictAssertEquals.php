@@ -2,7 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Concerns;
 
-use LastDragon_ru\LaraASP\Testing\Comparators\ScalarStrictComparator;
+use LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Comparator;
 use PHPUnit\Framework\Attributes\Before;
 use PHPUnit\Framework\TestCase;
 
@@ -10,6 +10,8 @@ use PHPUnit\Framework\TestCase;
  * Makes `assertEquals` strict.
  *
  * @phpstan-require-extends TestCase
+ *
+ * @deprecated %{VERSION} Please use `\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension` instead.
  */
 trait StrictAssertEquals {
     /**
@@ -17,6 +19,6 @@ trait StrictAssertEquals {
      */
     #[Before]
     protected function initStrictAssertEquals(): void {
-        $this->registerComparator(new ScalarStrictComparator());
+        $this->registerComparator(new Comparator());
     }
 }

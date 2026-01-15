@@ -2,8 +2,11 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Requirements;
 
-use Stringable;
+use LastDragon_ru\PhpUnit\Extensions\Requirements\Contracts\Requirement as Contract;
 
-interface Requirement extends Stringable {
-    public function isSatisfied(): bool;
+/**
+ * @deprecated %{VERSION} Please use `\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension` instead.
+ */
+interface Requirement extends Contract {
+    // empty
 }
