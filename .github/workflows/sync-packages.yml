@@ -42,6 +42,19 @@ jobs:
         run: |
           git clone --no-single-branch "git@github.com:${{ github.repository }}.git" src
 
+      # Package
+      - name: Package name
+        id: package
+        run: |
+          echo "value=$(jq -r '.name' "src/${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json")" >> $GITHUB_OUTPUT
+
+      # Checkout package repo
+      # Unfortunately I'm not sure how to use actions/checkout with `--no-single-branch`
+      # that is required to get all commits.
+      - name: Checkout package
+        run: |
+          git clone --no-single-branch "git@github.com:${{ steps.package.outputs.value }}.git" origin
+
       # Create package repo
       # Checkout is not used because `git-filter-repo` doesn't remove the old
       # removed branches (which are not needed anymore) and I don't know how
@@ -52,7 +65,7 @@ jobs:
       - name: Configure package repo
         working-directory: package
         run: |
-          git remote add origin "git@github.com:$(jq -r '.name' "../src/${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}/composer.json").git"
+          git remote add origin "git@github.com:${{ steps.package.outputs.value }}.git"
 
       # Update package
       #
@@ -92,14 +105,26 @@ jobs:
               || git branch --track ${i#remotes/origin/} --set-upstream-to=$i
           done
 
+      # The `git-filter-repo` may be dangerous (especially with directories renames)
+      # and may remove some tags/versions. As a safety check, we are comparing
+      # tags and fail if some of them were deleted. Commits are not too important
+      # and thus ignored.
+      #
+      # A partial update is probably a better approach, but I'm not sure how to
+      # implement it...
+      - name: Validate tags
+        run: |
+          (cd "origin"  && git show-ref --tags -d) | grep "\^{}" | sed 's/\^{}//g' | sort > tags-origin.txt
+          (cd "package" && git show-ref --tags -d) | grep "\^{}" | sed 's/\^{}//g' | sort > tags-package.txt
+
+          MISSED_TAGS=$(comm -23 "tags-origin.txt" "tags-package.txt")
+
+          if [[ -n "${MISSED_TAGS}" ]]; then
+            echo "${MISSED_TAGS}" >> $GITHUB_STEP_SUMMARY
+            exit 1
+          fi
+
 #      - name: Push package
 #        working-directory: package
 #        run: |
 #          git push --mirror origin
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: "${{ matrix.package }}.pkg"
-          path: package
-          retention-days: 1
-          include-hidden-files: true
