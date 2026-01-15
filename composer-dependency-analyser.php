@@ -14,7 +14,6 @@ require_once __DIR__ . '/vendor-bin/composer-dependency-analyser/vendor/autoload
 // General
 $config = (new Configuration())
     ->enableAnalysisOfUnusedDevDependencies()
-    ->ignoreErrorsOnPackage('symfony/polyfill-php84', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('bamarni/composer-bin-plugin', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD])
     ->ignoreUnknownClasses([
@@ -28,7 +27,7 @@ $root = Path::realpath(dirname(__FILE__).'/composer.json') === $path;
 if (!$root) {
     $config->disableReportingUnmatchedIgnores();
 
-    // fixme: Hotfix for https://github.com/shipmonk-rnd/composer-dependency-analyser/issues/216
+    // fixme: Hotfix for https://github.com/shipmonk-rnd/composer-dependency-analyser/issues/253
     $config->ignoreErrorsOnPaths(
         [
             'packages/graphql-printer/src/Blocks/Document/Argument.php',

@@ -3,7 +3,7 @@ description: 'Install PHP and dependencies'
 
 inputs:
   version:
-    description: "PHP Version"
+    description: "PHP Version (version string, 'lowest', or empty)"
     required: false
     type: string
   dependencies:
@@ -22,11 +22,11 @@ runs:
   steps:
     - name: Detect PHP version
       id: version
-      if: ${{ ! inputs.version }}
+      if: ${{ ! inputs.version || inputs.version == 'lowest'}}
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        echo "value=$(jq '"8.3|" + .require."php" | split("|") | map(select(. != "")) | last | sub("^[^\\d]+"; "")' -r -c composer.json)" >> $GITHUB_OUTPUT
+        echo "value=$(jq '"^8.3|" + .require."php" | split("|") | map(select(. != "")) | sort | (if "${{ inputs.version }}" == "lowest" then first else last end) | sub("^[^\\d]+"; "")' -r -c composer.json)" >> $GITHUB_OUTPUT
 
     - name: Detect required PHP extensions
       id: extensions
@@ -38,7 +38,7 @@ runs:
     - name: Install PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: ${{ inputs.version && inputs.version || steps.version.outputs.value}}
+        php-version: ${{ inputs.version && inputs.version != 'lowest' && inputs.version || steps.version.outputs.value}}
         extensions: ${{ join(fromJSON(steps.extensions.outputs.value)) }}
         coverage: none
         tools: cs2pr
