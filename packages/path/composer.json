@@ -19,6 +19,7 @@
   "require": {
     "php": "^8.3|^8.4",
     "ext-mbstring": "*",
+    "symfony/polyfill-php84": "^1.31",
     "symfony/polyfill-php85": "^1.33"
   },
   "require-dev": {

@@ -18,7 +18,8 @@
     "php": "^8.3|^8.4",
     "ext-filter": "*",
     "ext-mbstring": "*",
-    "lastdragon-ru/text-parser": "self.version"
+    "lastdragon-ru/text-parser": "self.version",
+    "symfony/polyfill-php84": "^1.31"
   },
   "require-dev": {
     "lastdragon-ru/lara-asp-testing": "self.version",
