@@ -98,6 +98,8 @@ jobs:
     needs:
       - release
     secrets: inherit
+    permissions:
+      contents: write
 
   congrat:
     name: Congratulations
