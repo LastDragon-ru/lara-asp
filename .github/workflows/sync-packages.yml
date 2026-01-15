@@ -124,7 +124,7 @@ jobs:
             exit 1
           fi
 
-#      - name: Push package
-#        working-directory: package
-#        run: |
-#          git push --mirror origin
+      - name: Push package
+        working-directory: package
+        run: |
+          git push --mirror origin
