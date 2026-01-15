@@ -29,6 +29,7 @@ jobs:
       - name: Install PHP
         uses: ./.github/actions/php
         with:
+          version: "lowest"
           dependencies: false
       - name: Prepare
         run: |
@@ -78,6 +79,7 @@ jobs:
       - name: Install PHP
         uses: ./.github/actions/php
         with:
+          version: "lowest"
           dependencies: false
       - name: Prepare
         shell: bash
