@@ -17,13 +17,15 @@
   "require": {
     "php": "^8.3|^8.4",
     "ext-mbstring": "*",
+    "composer/semver": "^3.2",
     "lastdragon-ru/path": "self.version",
     "phpunit/phpunit": "^11.2.0|^12.0.0",
     "sebastian/comparator": "^6.0.0|^7.0.0",
     "sebastian/exporter": "^6.0.0|^7.0.0"
   },
   "require-dev": {
-    "mockery/mockery": "^1.6.6"
+    "mockery/mockery": "^1.6.6",
+    "symfony/polyfill-php84": "^1.31"
   },
   "autoload": {
     "psr-4": {
