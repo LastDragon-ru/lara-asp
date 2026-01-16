@@ -16,6 +16,7 @@ $config = (new Configuration())
     ->enableAnalysisOfUnusedDevDependencies()
     ->ignoreErrorsOnPackage('bamarni/composer-bin-plugin', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreErrorsOnPackage('laravel/scout', [ErrorType::DEV_DEPENDENCY_IN_PROD])
+    ->ignoreErrorsOnExtension('ext-pdo_sqlite', [ErrorType::UNUSED_DEPENDENCY])
     ->ignoreUnknownClasses([
         TestbenchTestCase::class,
     ]);

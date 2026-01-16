@@ -52,18 +52,6 @@
     "thecodingmachine/safe": "<3.0.0"
   },
   "extra": {
-    "lara-asp": {
-      "ci": {
-        "required-extensions": {
-          "league/flysystem": [
-            "ext-fileinfo"
-          ],
-          "illuminate/console": [
-            "ext-mbstring"
-          ]
-        }
-      }
-    },
     "laravel": {
       "providers": [
         "LastDragon_ru\\LaraASP\\Core\\PackageProvider"

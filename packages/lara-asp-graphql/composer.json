@@ -71,14 +71,6 @@
     },
     "lara-asp": {
       "ci": {
-        "required-extensions": {
-          "*": [
-            "ext-pdo_sqlite"
-          ],
-          "league/flysystem": [
-            "ext-fileinfo"
-          ]
-        },
         "optional-packages": [
           "laravel/scout"
         ]
