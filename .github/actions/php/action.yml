@@ -33,7 +33,14 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        echo "value=$(jq '( (."require" // [] | keys) + (."require-dev" // [] | keys) + (.["extra"]["lara-asp"]["ci"]["required-extensions"] // [] | flatten) ) | map(select(.|startswith("ext-"))) | map(. | sub("ext-"; "")) | unique | sort ' -r -c composer.json)" >> $GITHUB_OUTPUT
+        # The list of extensions can be generated via the following command:
+        #
+        #     composer check-platform-reqs --format=json | jq -c '. | map(.name) | map(select(.|startswith("ext-"))) | map(. | sub("ext-"; "")) | unique | sort'
+        #
+        # Unfortunately, when no `composer.lock` there is no way to get the list
+        # before installing PHP and dependencies.
+
+        echo 'value=["bcmath","ctype","dom","fileinfo","filter","hash","iconv","intl","json","libxml","mbstring","openssl","pcre","pdo_sqlite","phar","session","tokenizer","xml","xmlreader","xmlwriter"]' >> $GITHUB_OUTPUT
 
     - name: Install PHP
       uses: shivammathur/setup-php@v2

@@ -66,18 +66,6 @@
       "providers": [
         "LastDragon_ru\\LaraASP\\Migrator\\PackageProvider"
       ]
-    },
-    "lara-asp": {
-      "ci": {
-        "required-extensions": {
-          "*": [
-            "ext-pdo_sqlite"
-          ],
-          "league/flysystem": [
-            "ext-fileinfo"
-          ]
-        }
-      }
     }
   },
   "config": {

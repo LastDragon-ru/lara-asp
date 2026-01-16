@@ -77,18 +77,6 @@
       "providers": [
         "LastDragon_ru\\LaraASP\\Documentator\\PackageProvider"
       ]
-    },
-    "lara-asp": {
-      "ci": {
-        "required-extensions": {
-          "league/flysystem": [
-            "ext-fileinfo"
-          ],
-          "illuminate/console": [
-            "ext-mbstring"
-          ]
-        }
-      }
     }
   },
   "config": {

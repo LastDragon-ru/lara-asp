@@ -61,15 +61,6 @@
       "providers": [
         "LastDragon_ru\\LaraASP\\Spa\\PackageProvider"
       ]
-    },
-    "lara-asp": {
-      "ci": {
-        "required-extensions": {
-          "league/flysystem": [
-            "ext-fileinfo"
-          ]
-        }
-      }
     }
   },
   "config": {
