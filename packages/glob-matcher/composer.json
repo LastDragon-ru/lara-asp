@@ -1,18 +1,20 @@
 {
   "name": "lastdragon-ru/glob-matcher",
-  "homepage": "https://github.com/LastDragon-ru/lara-asp",
+  "homepage": "https://github.com/LastDragon-ru/php-packages",
   "description": "Full-featured well-tested glob pattern parser and matcher: basic matching (`?`, `*`), globstar (`**`), extglob (`?(pattern-list)`, `*(pattern-list)`, `+(pattern-list)`, `@(pattern-list)`, `!(pattern-list)`), brace expansion (`{a,b,c}.txt`, `{1..3}.txt`, etc), dotglob, nocasematch, POSIX Named character classes (`[:alnum:]`, etc), POSIX Collating symbols (`[.ch.]`, etc), POSIX Equivalence class expressions (`[=a=]`, etc), and escaping.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
   "keywords": [
     "glob",
+    "glob pattern",
+    "glob matcher",
     "php"
   ],
   "support": {
-    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
-    "source": "https://github.com/LastDragon-ru/lara-asp",
-    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+    "issues": "https://github.com/LastDragon-ru/php-packages/issues",
+    "source": "https://github.com/LastDragon-ru/php-packages",
+    "forum": "https://github.com/LastDragon-ru/php-packages/discussions"
   },
   "require": {
     "php": "^8.3|^8.4",

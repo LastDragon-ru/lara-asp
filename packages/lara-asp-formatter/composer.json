@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/lara-asp-formatter",
-  "homepage": "https://github.com/LastDragon-ru/lara-asp",
-  "description": "The Awesome Set of Packages for Laravel - The Formatter.",
+  "homepage": "https://github.com/LastDragon-ru/php-packages",
+  "description": "Provides a customizable wrapper around Intl formatters to use it inside Laravel application. And also allows defining your own formats.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
@@ -13,9 +13,9 @@
     "php"
   ],
   "support": {
-    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
-    "source": "https://github.com/LastDragon-ru/lara-asp",
-    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+    "issues": "https://github.com/LastDragon-ru/php-packages/issues",
+    "source": "https://github.com/LastDragon-ru/php-packages",
+    "forum": "https://github.com/LastDragon-ru/php-packages/discussions"
   },
   "require": {
     "php": "^8.3|^8.4",

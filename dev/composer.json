@@ -53,7 +53,7 @@
   "minimum-stability": "dev",
   "prefer-stable": true,
   "repositories": {
-    "lara-asp": {
+    "packages": {
       "type": "path",
       "url": "../packages/*"
     }

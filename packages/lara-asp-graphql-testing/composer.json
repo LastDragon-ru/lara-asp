@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/lara-asp-graphql-testing",
-  "homepage": "https://github.com/LastDragon-ru/lara-asp",
-  "description": "The Awesome Set of Packages for Laravel - The GraphQL Testing Assertions for Laravel/Lighthouse",
+  "homepage": "https://github.com/LastDragon-ru/php-packages",
+  "description": "Useful assertions for PHPUnit to check printed/exported type/queries and more.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
@@ -11,14 +11,15 @@
     "GraphQL",
     "GraphQL Printer",
     "GraphQL Schema Printer",
+    "lighthouse",
     "lighthouse-php",
     "PHPUnit",
     "php"
   ],
   "support": {
-    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
-    "source": "https://github.com/LastDragon-ru/lara-asp",
-    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+    "issues": "https://github.com/LastDragon-ru/php-packages/issues",
+    "source": "https://github.com/LastDragon-ru/php-packages",
+    "forum": "https://github.com/LastDragon-ru/php-packages/discussions"
   },
   "require": {
     "php": "^8.3|^8.4",

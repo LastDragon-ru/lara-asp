@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/lara-asp-testing",
-  "homepage": "https://github.com/LastDragon-ru/lara-asp",
-  "description": "The Awesome Set of Packages for Laravel - Testing Helpers.",
+  "homepage": "https://github.com/LastDragon-ru/php-packages",
+  "description": "Provides various useful asserts for PHPUnit and better solution for HTTP tests - testing HTTP response has never been so easy!",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
@@ -14,9 +14,9 @@
     "php"
   ],
   "support": {
-    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
-    "source": "https://github.com/LastDragon-ru/lara-asp",
-    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+    "issues": "https://github.com/LastDragon-ru/php-packages/issues",
+    "source": "https://github.com/LastDragon-ru/php-packages",
+    "forum": "https://github.com/LastDragon-ru/php-packages/discussions"
   },
   "require": {
     "php": "^8.3|^8.4",

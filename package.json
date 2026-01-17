@@ -6,7 +6,7 @@
     "markdownlint": "npx markdownlint-cli2"
   },
   "repository": {
-    "url": "https://github.com/LastDragon-ru/lara-asp"
+    "url": "https://github.com/LastDragon-ru/php-packages"
   },
   "devDependencies": {
     "@j-ulrich/release-it-regex-bumper": "^5.1.0",

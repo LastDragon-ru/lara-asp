@@ -77,7 +77,7 @@ jobs:
         run: |
           # Package directory can be renamed, so we are collecting all previous
           # names to preserve the history.
-          NAMES=$( jq '(."extra"."lara-asp"."sync-packages"."${{ matrix.package }}" // []) | unique' "src/composer.json" | jq -c -r '.[]' | tr -d '\r')
+          NAMES=$( jq '(."extra"."project"."sync-packages"."${{ matrix.package }}" // []) | unique' "src/composer.json" | jq -c -r '.[]' | tr -d '\r')
           FILTERS=()
           FILTERS+=("--subdirectory-filter")
           FILTERS+=("${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}")

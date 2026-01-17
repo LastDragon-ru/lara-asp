@@ -1,4 +1,4 @@
-name: lara-asp
+name: php-packages
 
 x-project: &project
     init: true

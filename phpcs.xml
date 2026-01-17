@@ -2,7 +2,7 @@
 <ruleset name="LaraAspStandard"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:noNamespaceSchemaLocation="./vendor-bin/phpcs/vendor/squizlabs/php_codesniffer/phpcs.xsd">
-    <description>Lara Asp coding standard, based on PSR12</description>
+    <description>PHP Projects coding standard, based on PSR12</description>
     <config name="installed_paths" value="../../slevomat/coding-standard"/>
     <file>./packages</file>
     <file>./dev</file>

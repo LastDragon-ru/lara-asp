@@ -112,7 +112,7 @@ abstract class DatabaseSorter implements Sorter {
                 // column which will store `IS NULL` status and an index for
                 // that column. But it is the task for the future :)
                 //
-                // @see https://github.com/LastDragon-ru/lara-asp/issues/21
+                // @see https://github.com/LastDragon-ru/php-packages/issues/21
                 $wrapped  = $builder->getGrammar()->wrap($column);
                 $operator = match ($nulls) {
                     Nulls::First => 'IS NOT NULL',
