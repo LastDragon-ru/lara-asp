@@ -18,7 +18,7 @@ use function str_starts_with;
 /**
  * Small helper to load data associated with test.
  *
- * @deprecated %{VERSION} The `\LastDragon_ru\PhpUnit\Utils\TestData` should be used instead.
+ * @deprecated 10.0.0 The `\LastDragon_ru\PhpUnit\Utils\TestData` should be used instead.
  */
 class TestData {
     private string $path;

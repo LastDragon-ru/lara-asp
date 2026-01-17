@@ -13,8 +13,8 @@ Full-featured well-tested glob pattern parser and matcher: basic matching (`?`, 
 
 | Requirement  | Constraint          | Supported by |
 |--------------|---------------------|------------------|
-|  PHP  | `^8.4` |  `HEAD`  ,  `9.2.0`   |
-|  | `^8.3` |  `HEAD`  ,  `9.2.0`   |
+|  PHP  | `^8.4` |   `HEAD ⋯ 9.2.0`   |
+|  | `^8.3` |   `HEAD ⋯ 9.2.0`   |
 
 [//]: # (end: preprocess/78cfc4c7c7c55577)
 

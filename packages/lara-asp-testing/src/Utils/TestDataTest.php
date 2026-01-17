@@ -9,7 +9,7 @@ use function dirname;
 use function str_replace;
 
 /**
- * @deprecated %{VERSION} The `\LastDragon_ru\PhpUnit\Utils\TestData` should be used instead.
+ * @deprecated 10.0.0 The `\LastDragon_ru\PhpUnit\Utils\TestData` should be used instead.
  * @internal
  */
 #[CoversClass(TestData::class)]

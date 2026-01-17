@@ -17,7 +17,7 @@ use function str_starts_with;
 /**
  * Converts autolink into normal link.
  *
- * @since %{VERSION}
+ * @since 10.0.0
  */
 readonly class AutolinkExpand extends Base {
     /**

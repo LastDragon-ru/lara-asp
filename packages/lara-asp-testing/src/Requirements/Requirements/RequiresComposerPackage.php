@@ -7,7 +7,7 @@ use LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension;
 use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
 
 /**
- * @deprecated %{VERSION} Please use `\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension` instead.
+ * @deprecated 10.0.0 Please use `\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension` instead.
  *
  * @see Extension
  */

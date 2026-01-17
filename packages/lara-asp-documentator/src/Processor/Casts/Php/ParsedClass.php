@@ -24,14 +24,14 @@ class ParsedClass {
     }
 
     /**
-     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     * @deprecated 10.0.0 Will be replaced to property hooks soon.
      */
     public function __isset(string $name): bool {
         return $this->__get($name) !== null;
     }
 
     /**
-     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     * @deprecated 10.0.0 Will be replaced to property hooks soon.
      */
     public function __get(string $name): mixed {
         return match ($name) {

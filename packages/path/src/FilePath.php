@@ -33,7 +33,7 @@ final class FilePath extends Path {
     }
 
     /**
-     * @deprecated %{VERSION} Will be replaced to property hooks soon.
+     * @deprecated 10.0.0 Will be replaced to property hooks soon.
      */
     #[Override]
     public function __get(string $name): mixed {

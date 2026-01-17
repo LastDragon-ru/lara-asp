@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
  *
  * @phpstan-require-extends TestCase
  *
- * @deprecated %{VERSION} Please use `\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension` instead.
+ * @deprecated 10.0.0 Please use `\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension` instead.
  */
 trait StrictAssertEquals {
     /**

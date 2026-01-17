@@ -8,7 +8,7 @@ use LastDragon_ru\PhpUnit\Extensions\Requirements\Extension as NewExtension;
 /**
  * Marks test skipped if requirements don't meet.
  *
- * @deprecated %{VERSION} Please use `\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension` instead.
+ * @deprecated 10.0.0 Please use `\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension` instead.
  *
  * @see Requirement
  */
