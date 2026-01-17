@@ -1,6 +1,6 @@
 {
   "name": "lastdragon-ru/lara-asp",
-  "homepage": "https://github.com/LastDragon-ru/lara-asp",
+  "homepage": "https://github.com/LastDragon-ru/php-packages",
   "description": "The Awesome Set of Packages for Laravel.",
   "license": "MIT",
   "type": "library",
@@ -27,9 +27,9 @@
     "serializer"
   ],
   "support": {
-    "issues": "https://github.com/LastDragon-ru/lara-asp/issues",
-    "source": "https://github.com/LastDragon-ru/lara-asp",
-    "forum": "https://github.com/LastDragon-ru/lara-asp/discussions"
+    "issues": "https://github.com/LastDragon-ru/php-packages/issues",
+    "source": "https://github.com/LastDragon-ru/php-packages",
+    "forum": "https://github.com/LastDragon-ru/php-packages/discussions"
   },
   "require": {
     "php": "^8.3|^8.4",

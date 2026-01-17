@@ -1,3 +1,3 @@
 # Changelog
 
-Please see [Releases](https://github.com/LastDragon-ru/lara-asp/releases).
+Please see [Releases](https://github.com/LastDragon-ru/php-packages/releases).
