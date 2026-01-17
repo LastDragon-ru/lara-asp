@@ -11,9 +11,9 @@
     "GraphQL",
     "lighthouse",
     "lighthouse-php",
-    "@searchBy",
-    "@sortBy",
-    "@stream",
+    "searchBy",
+    "sortBy",
+    "stream",
     "php"
   ],
   "support": {
