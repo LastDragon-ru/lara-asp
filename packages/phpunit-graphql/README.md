@@ -1,4 +1,4 @@
-# GraphQL Testing Assertions 🐝
+# PHPUnit GraphQL Assertions 🐝
 
 PHPUnit assertions for GraphQL to check printed/exported type/queries.
 

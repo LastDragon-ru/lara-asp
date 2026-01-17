@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/lara-asp-core",
   "homepage": "https://github.com/LastDragon-ru/php-packages",
-  "description": "The Awesome Set of Packages for Laravel - The Core.",
+  "description": "The package contains useful utilities and classes.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",

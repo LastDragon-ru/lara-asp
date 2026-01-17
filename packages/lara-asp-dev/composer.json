@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/lara-asp-dev",
   "homepage": "https://github.com/LastDragon-ru/php-packages",
-  "description": "The Awesome Set of Packages for Laravel - Dev tools.",
+  "description": "Various internal tools and helpers to develop the package itself.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",

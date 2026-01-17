@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/lara-asp-migrator",
   "homepage": "https://github.com/LastDragon-ru/php-packages",
-  "description": "The Awesome Set of Packages for Laravel - The Migrator.",
+  "description": "Improves standard Laravel migrations to add support for raw SQL files during migration and seeding. So you can easily use your favorite visual tool for database development with Laravel.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
@@ -12,6 +12,8 @@
     "laravel-migrator",
     "laravel-package",
     "laravel",
+    "mysql",
+    "sql",
     "php"
   ],
   "support": {

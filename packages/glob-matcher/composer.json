@@ -7,6 +7,8 @@
   "type": "library",
   "keywords": [
     "glob",
+    "glob pattern",
+    "glob matcher",
     "php"
   ],
   "support": {

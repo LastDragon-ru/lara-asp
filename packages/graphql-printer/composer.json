@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/graphql-printer",
   "homepage": "https://github.com/LastDragon-ru/php-packages",
-  "description": "The Awesome Set of Packages for Laravel - The GraphQL Printer.",
+  "description": "The package allows you to print GraphQL Schema and Queries in a highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives and even check which types/directives are used in the Schema/Query.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",

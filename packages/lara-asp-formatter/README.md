@@ -1,6 +1,6 @@
 # (Laravel) Intl Formatter
 
-This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application. And also allows defining own.
+This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application. And also allows defining your own formats.
 
 [include:artisan]: <lara-asp-documentator:requirements "{$directory}">
 [//]: # (start: preprocess/78cfc4c7c7c55577)

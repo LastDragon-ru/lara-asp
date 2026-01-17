@@ -1,51 +1,16 @@
-# Awesome Set of Packages for Laravel
+# PHP Packages
 
-The set provides best practices to make development more fun and classes/services that I found very useful while working on big extensible applications.
+One day I found that in every of my Laravel projects I need to write/copy-paste the same code to make development more fun and make me happy. It was annoying. To avoid it in the future, I extracted most of the general code into this repository/project. Previously, the project was called "Awesome Set of Packages for Laravel". Today the project became bigger and contains packages not only for Laravel. So, I renamed it to "PHP Projects".
 
-[include:artisan]: <lara-asp-documentator:requirements "{$directory}">
-[//]: # (start: preprocess/78cfc4c7c7c55577)
-[//]: # (warning: Generated automatically. Do not edit.)
-
-# Requirements
-
-| Requirement  | Constraint          | Supported by |
-|--------------|---------------------|------------------|
-|  PHP  | `^8.4` |   `HEAD ⋯ 8.0.0`   |
-|  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
-|  | `^8.2` |   `7.2.0 ⋯ 2.0.0`   |
-|  | `^8.1` |   `6.4.2 ⋯ 2.0.0`   |
-|  | `^8.0` |   `4.6.0 ⋯ 2.0.0`   |
-|  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
-|  | `>=8.0.0` |   `0.11.0 ⋯ 0.4.0`   |
-|  | `>=7.4.0` |   `0.3.0 ⋯ 0.1.0`   |
-|  Laravel  | `^12.0.1` |   `HEAD ⋯ 9.0.0`   |
-|  | `^11.0.8` |   `8.1.1 ⋯ 8.0.0`   |
-|  | `^11.0.0` |   `7.2.0 ⋯ 6.2.0`   |
-|  | `^10.34.0` |   `7.2.0 ⋯ 6.2.0`   |
-|  | `^10.0.0` |   `6.1.0 ⋯ 2.1.0`   |
-|  | `^9.21.0` |   `5.6.0 ⋯ 5.0.0-beta.1`   |
-|  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
-|  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
-|  | `^8.0` |  `0.1.0`   |
-
-[//]: # (end: preprocess/78cfc4c7c7c55577)
-
-# Installation
-
-Installation of the root `lastdragon-ru/lara-asp` package is not recommended because it will install all packages, but some of them are intended to use while dev only (and may want dependencies like `phpunit`/`phpstan`/etc). So select the desired package and install it. You can find requirements and installation instructions (if any) inside package documentation.
-
-```shell
-# General case (where "<package>" the package name).
-composer require lastdragon-ru/lara-asp-<package>
-```
+Laravel's packages are still here, and still prefixed via `lara-asp-*`. Projects without this prefix are fully independent of Laravel and "illuminate/*" packages.
 
 # Packages
 
 | 🐝 | Package intended to use in dev. |
 |:--:|---------------------------------|
 
-[include:document-list]: ./packages ({"include": ["*/README.md"]})
-[//]: # (start: preprocess/2814e5e8c6b59bac)
+[include:document-list]: ./packages ({"include": ["*/README.md"], "exclude": ["lara-asp-dev/README.md"]})
+[//]: # (start: preprocess/aa66c8cc3fe9e36b)
 [//]: # (warning: Generated automatically. Do not edit.)
 
 ## [(Laravel) Core](<packages/lara-asp-core/README.md>)
@@ -80,7 +45,7 @@ Useful assertions for PHPUnit to check printed/exported type/queries and more wi
 
 ## [(Laravel) Intl Formatter](<packages/lara-asp-formatter/README.md>)
 
-This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application. And also allows defining own.
+This package provides a customizable wrapper around [Intl](https://www.php.net/manual/en/book.intl) formatters to use it inside Laravel application. And also allows defining your own formats.
 
 [Read more](<packages/lara-asp-formatter/README.md>).
 
@@ -106,18 +71,6 @@ This package provides various useful asserts for [PHPUnit](https://phpunit.de/) 
 
 [Read more](<packages/lara-asp-testing/README.md>).
 
-## [Dev 🐝](<packages/lara-asp-dev/README.md>)
-
-Various internal tools and helpers to develop the package itself.
-
-[Read more](<packages/lara-asp-dev/README.md>).
-
-## [DIY Parser](<packages/text-parser/README.md>)
-
-There are several tools to generate full-featured parsers even for PHP. They are overkill when you just need to parse something simple. In such cases, you might decide to create your own parser. There are a lot of articles/examples on the web, and actually it is not too difficult as you may think. This is yet another package to simplify writing fast and memory-effective parsers that can parse infinite strings.
-
-[Read more](<packages/text-parser/README.md>).
-
 ## [Glob](<packages/glob-matcher/README.md>)
 
 Full-featured well-tested glob pattern parser and matcher: basic matching (`?`, `*`), globstar (`**`), extglob (`?(pattern-list)`, `*(pattern-list)`, `+(pattern-list)`, `@(pattern-list)`, `!(pattern-list)`), brace expansion (`{a,b,c}.txt`, `{1..3}.txt`, etc), dotglob, nocasematch, POSIX Named character classes (`[:alnum:]`, etc), POSIX Collating symbols (`[.ch.]`, etc), POSIX Equivalence class expressions (`[=a=]`, etc), and escaping. Everything supported 😎
@@ -126,15 +79,9 @@ Full-featured well-tested glob pattern parser and matcher: basic matching (`?`, 
 
 ## [GraphQL Printer](<packages/graphql-printer/README.md>)
 
-Independent (from Laravel and Lighthouse) package that allow you to print GraphQL Schema and Queries in highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
+The package allows you to print GraphQL Schema and Queries in a highly customized way eg you can choose indent size, print only used/wanted/all types, print only one type, print used/wanted/all directives ([it is not possible with standard printer](https://github.com/webonyx/graphql-php/issues/552)) and even check which types/directives are used in the Schema/Query.
 
 [Read more](<packages/graphql-printer/README.md>).
-
-## [GraphQL Testing Assertions 🐝](<packages/phpunit-graphql/README.md>)
-
-PHPUnit assertions for GraphQL to check printed/exported type/queries.
-
-[Read more](<packages/phpunit-graphql/README.md>).
 
 ## [Path](<packages/path/README.md>)
 
@@ -148,7 +95,59 @@ Various useful assertions/extensions for PHPUnit.
 
 [Read more](<packages/phpunit-extensions/README.md>).
 
-[//]: # (end: preprocess/2814e5e8c6b59bac)
+## [PHPUnit GraphQL Assertions 🐝](<packages/phpunit-graphql/README.md>)
+
+PHPUnit assertions for GraphQL to check printed/exported type/queries.
+
+[Read more](<packages/phpunit-graphql/README.md>).
+
+## [Text Parser](<packages/text-parser/README.md>)
+
+There are several tools to generate full-featured parsers even for PHP. They are overkill when you just need to parse something simple. In such cases, you might decide to create your own parser. There are a lot of articles/examples on the web, and actually it is not too difficult as you may think. This is yet another package to simplify writing fast and memory-effective parsers that can parse infinite strings.
+
+[Read more](<packages/text-parser/README.md>).
+
+[//]: # (end: preprocess/aa66c8cc3fe9e36b)
+
+# Support policy
+
+Project following to the [semver](https://semver.org/) including parameter names, but except code marked as `private`/`@internal`.
+
+* **Self**
+  * `main` branch - new features and any Breaking Changes (non BC things can be back-ported to the last stable)
+  * current stable - bug fixes
+  * previous stable - PRs with bug fixes will be accepted if no BC
+* **PHP** - last two active versions (eg `8.3` and `8.4`)
+* **Laravel** - last version
+* **Lighthouse** - last version
+
+[include:artisan]: <lara-asp-documentator:requirements "{$directory}">
+[//]: # (start: preprocess/78cfc4c7c7c55577)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+# Requirements
+
+| Requirement  | Constraint          | Supported by |
+|--------------|---------------------|------------------|
+|  PHP  | `^8.4` |   `HEAD ⋯ 8.0.0`   |
+|  | `^8.3` |   `HEAD ⋯ 5.0.0`   |
+|  | `^8.2` |   `7.2.0 ⋯ 2.0.0`   |
+|  | `^8.1` |   `6.4.2 ⋯ 2.0.0`   |
+|  | `^8.0` |   `4.6.0 ⋯ 2.0.0`   |
+|  | `^8.0.0` |   `1.1.2 ⋯ 0.12.0`   |
+|  | `>=8.0.0` |   `0.11.0 ⋯ 0.4.0`   |
+|  | `>=7.4.0` |   `0.3.0 ⋯ 0.1.0`   |
+|  Laravel  | `^12.0.1` |   `HEAD ⋯ 9.0.0`   |
+|  | `^11.0.8` |   `8.1.1 ⋯ 8.0.0`   |
+|  | `^11.0.0` |   `7.2.0 ⋯ 6.2.0`   |
+|  | `^10.34.0` |   `7.2.0 ⋯ 6.2.0`   |
+|  | `^10.0.0` |   `6.1.0 ⋯ 2.1.0`   |
+|  | `^9.21.0` |   `5.6.0 ⋯ 5.0.0-beta.1`   |
+|  | `^9.0.0` |   `5.0.0-beta.0 ⋯ 0.12.0`   |
+|  | `^8.22.1` |   `3.0.0 ⋯ 0.2.0`   |
+|  | `^8.0` |  `0.1.0`   |
+
+[//]: # (end: preprocess/78cfc4c7c7c55577)
 
 # Upgrading
 
@@ -157,25 +156,14 @@ Please follow [Upgrade Guide](UPGRADE.md).
 # Development
 
 1. Fork & clone
-2. `docker compose up`
-3. Write the code
-4. `composer run validate:commit`
-5. `composer run rebuild:docs` (if docs changed)
-6. Push & PR
-7. ...
-8. Enjoy
-
-# Support policy
-
-Project following to the [semver](https://semver.org/) including parameter names, but except code marked as `private`/`@internal`.
-
-* **Lara ASP**
-  * `main` branch - new features and any Breaking Changes (non BC things can be back-ported to the last stable)
-  * current stable - bug fixes
-  * previous stable - PRs with bug fixes will be accepted if no BC
-* **PHP** - last two active versions (eg `8.3` and `8.4`)
-* **Laravel** - last version
-* **Lighthouse** - last version
+2. `1# docker compose up` (in the first terminal)
+3. `2# docker-compose exec app bash` (in the second terminal)
+4. Write the code
+5. `2# composer run validate:commit`
+6. `2# composer run rebuild:docs` (if docs changed)
+7. Push & PR
+8. ...
+9. Enjoy
 
 [include:file]: ./docs/Legend.md
 [//]: # (start: preprocess/5488d85d082e47fb)

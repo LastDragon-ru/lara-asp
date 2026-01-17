@@ -8,6 +8,7 @@
   "keywords": [
     "GraphQL",
     "GraphQL Printer",
+    "GraphQL Assertions",
     "GraphQL Schema Printer",
     "PHPUnit",
     "php"

@@ -309,7 +309,7 @@ The `/`, `.` and `..` always match explicitly. Thus, the `a/**` will not match `
 
 # Gratitude
 
-Huge thanks to @micromatch and especially [picomatch](https://github.com/micromatch/picomatch/) project for a vast set of tests of all features of glob.
+Huge thanks to [micromatch](https://github.com/micromatch/) and especially [picomatch](https://github.com/micromatch/picomatch/) project for a vast set of tests of all features of glob.
 
 # Upgrading
 

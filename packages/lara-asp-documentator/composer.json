@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/lara-asp-documentator",
   "homepage": "https://github.com/LastDragon-ru/php-packages",
-  "description": "The Awesome Set of Packages for Laravel - The Documentator.",
+  "description": "Provides various utilities for documentation generation such as Markdown Preprocessor, Requirements Dumper and more.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
@@ -10,6 +10,8 @@
     "utils",
     "laravel-package",
     "laravel",
+    "markdown",
+    "preprocessor",
     "php"
   ],
   "support": {

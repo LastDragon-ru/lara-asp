@@ -1,13 +1,14 @@
 {
   "name": "lastdragon-ru/lara-asp-eloquent",
   "homepage": "https://github.com/LastDragon-ru/php-packages",
-  "description": "The Awesome Set of Packages for Laravel - Eloquent Helpers.",
+  "description": "Contains useful extensions and mixins for Eloquent.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
   "keywords": [
     "laravel-eloquent",
     "laravel-package",
+    "eloquent",
     "laravel",
     "php"
   ],

@@ -34,7 +34,7 @@ Most similar packages consider file/directory paths as strings. It is work until
 * `/path/to/directory/file.md` + `../file.txt` = `/path/to/file.txt`
 * `/path/to/directory` + `../file.txt` = `/path/to/file.txt`
 
-The strings (in general case) don't allow us to distinguish the directory path from the file path, and so resolve the path of `file.txt` correctly. Strings also cannot ensure type safety - there is no way to disallow passing a directory path where only a file path is wanted, and vice versa. Etc. To solve all these problems, the package defines [`DirectoryPath`][code-links/eff996e6f7f5e6b3] and [`FilePath`][code-links/43d8e2c832b53052].
+The strings (in general case) don't allow us to distinguish the directory path from the file path, and so resolve the path of `file.txt` correctly. Strings also cannot ensure type safety - there is no way to disallow passing a directory path where only a file path is wanted, and vice versa. To solve all these problems, the package defines [`DirectoryPath`][code-links/eff996e6f7f5e6b3] and [`FilePath`][code-links/43d8e2c832b53052].
 
 [include:example]: ./docs/Examples/Usage.php
 [//]: # (start: preprocess/4c2bcd97f5d25b12)
