@@ -158,12 +158,7 @@
       "bin-links": false,
       "forward-command": false
     },
-    "lara-asp": {
-      "ci": {
-        "optional-packages": [
-          "laravel/scout"
-        ]
-      },
+    "project": {
       "sync-packages": {
         "lara-asp-core": [
           "core"
