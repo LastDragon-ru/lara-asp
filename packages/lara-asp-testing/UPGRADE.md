@@ -27,6 +27,10 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 
 [//]: # (end: preprocess/aa9fc458898c7c1c)
 
+# Upgrade from v10
+
+* [ ] Class [`💀WithTempFile`][code-links/1e768fc484194d84] deprecated, the [`TempFile`][code-links/2ed0bfaade389715] should be used instead 🤝
+
 # Upgrade from v9
 
 * [ ] Extension [`💀\LastDragon_ru\LaraASP\Testing\Requirements\PhpUnit\Extension`][code-links/26cc04e820d354b1] deprecated, please use [`\LastDragon_ru\PhpUnit\Extensions\Requirements\Extension`][code-links/7e51b51dd292df33] instead 🤝
@@ -106,6 +110,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 [code-links/84706d7f00aadc5e]: src/Utils/TestData.php
     "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
 
+[code-links/1e768fc484194d84]: src/Utils/WithTempFile.php
+    "\LastDragon_ru\LaraASP\Testing\Utils\WithTempFile"
+
 [code-links/c1153ff984856b36]: src/Utils/WithTestData.php
     "\LastDragon_ru\LaraASP\Testing\Utils\WithTestData"
 
@@ -117,6 +124,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 
 [code-links/50cb69b702caae36]: ../phpunit-extensions/src/Extensions/StrictScalarCompare/Extension.php
     "\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension"
+
+[code-links/2ed0bfaade389715]: ../phpunit-extensions/src/Utils/TempFile.php
+    "\LastDragon_ru\PhpUnit\Utils\TempFile"
 
 [code-links/ded4ad00d1ea1842]: ../phpunit-extensions/src/Utils/TestData.php
     "\LastDragon_ru\PhpUnit\Utils\TestData"

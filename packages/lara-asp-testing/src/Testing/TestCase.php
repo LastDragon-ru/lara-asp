@@ -6,7 +6,6 @@ use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Testing\Assertions\Assertions;
 use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempDirectory;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTempFile;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
 use LogicException;
@@ -26,7 +25,6 @@ abstract class TestCase extends TestbenchTestCase {
     use WithFaker;
     use WithConfig;
     use WithTestData;
-    use WithTempFile;
     use WithTempDirectory;
     use WithTranslations;
 
