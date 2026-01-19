@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Testing\Testing;
 use Illuminate\Contracts\Config\Repository;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\Configuration;
 use LastDragon_ru\LaraASP\Core\Application\Configuration\ConfigurationResolver;
+use LastDragon_ru\PhpUnit\Utils\TempFile;
 
 use function is_array;
 use function is_callable;
@@ -57,7 +58,8 @@ trait WithConfig {
         $config   = $resolver::getDefaultConfig();
         $exported = var_export($config, true);
         $exported = "<?php declare(strict_types = 1);\n\nreturn {$exported};";
-        $imported = require static::getTempFile($exported)->getPathname();
+        $imported = new TempFile($exported);
+        $imported = require $imported->path->path;
 
         self::assertEquals($config, $imported);
     }
