@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Testing\Constraints\Json;
 
 use Exception;
 use LastDragon_ru\LaraASP\Testing\Testing\TestCase;
+use LastDragon_ru\PhpUnit\Utils\TempFile;
 use OutOfBoundsException;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -36,8 +37,9 @@ final class ProtocolTest extends TestCase {
             self::expectExceptionObject($expected);
         }
 
-        $file   = self::getTempFile($content);
-        $uri    = Protocol::getUri($file, $parameters);
+        $file   = new TempFile($content);
+        $info   = new SplFileInfo($file->path->path);
+        $uri    = Protocol::getUri($info, $parameters);
         $actual = (new Protocol())($uri);
 
         self::assertEquals($expected, $actual);

@@ -108,6 +108,17 @@ Small helper to load data associated with test.
 
 [//]: # (end: preprocess/882c71f1b5a04671)
 
+## [`TempFile`][code-links/2ed0bfaade389715]
+
+[include:docblock]: src/Utils/TempFile.php
+[//]: # (start: preprocess/4daefce210284202)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Creates a temporary file in the system temp directory. The file will be
+removed after the instance removal.
+
+[//]: # (end: preprocess/4daefce210284202)
+
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
@@ -127,6 +138,9 @@ Please use the [main repository](https://github.com/LastDragon-ru/php-packages) 
 
 [code-links/62e94c1c0fe743de]: src/Extensions/StrictScalarCompare/Comparator.php
     "\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Comparator"
+
+[code-links/2ed0bfaade389715]: src/Utils/TempFile.php
+    "\LastDragon_ru\PhpUnit\Utils\TempFile"
 
 [code-links/ded4ad00d1ea1842]: src/Utils/TestData.php
     "\LastDragon_ru\PhpUnit\Utils\TestData"
