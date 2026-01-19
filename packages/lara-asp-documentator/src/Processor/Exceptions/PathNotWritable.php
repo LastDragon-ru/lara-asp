@@ -15,7 +15,7 @@ class PathNotWritable extends FileSystemError {
     ) {
         parent::__construct(
             sprintf(
-                'File `%s` is not writable (outside output?).',
+                'Path `%s` is not writable (outside output?).',
                 $this->target,
             ),
             $previous,
