@@ -21,18 +21,17 @@ final class SqlMigrationTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     #[DataProvider('dataProviderHandle')]
-    public function testHandle(string $command): void {
+    public function testHandle(string $command, string $path): void {
         // Pre test
         $temp   = new TempDirectory();
-        $path   = $temp->path->path;
-        $finder = Finder::create()->in($path);
+        $finder = Finder::create()->in($temp->path->path);
 
         self::assertCount(0, $finder->files());
 
         // Call
         $this->artisan($command, [
             'name'   => 'SqlMigration',
-            '--path' => $path,
+            '--path' => "{$temp->path}{$path}",
         ]);
 
         // Test
@@ -54,12 +53,13 @@ final class SqlMigrationTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array{string}>
+     * @return array<string, array{string, string}>
      */
     public static function dataProviderHandle(): array {
         return [
-            'name'  => [Package::Name.':sql-migration'],
-            'alias' => ['make:sql-migration'],
+            'name'             => [Package::Name.':sql-migration', 'path'],
+            'path ends with /' => [Package::Name.':sql-migration', 'path/'],
+            'alias'            => ['make:sql-migration', ''],
         ];
     }
     // </editor-fold>

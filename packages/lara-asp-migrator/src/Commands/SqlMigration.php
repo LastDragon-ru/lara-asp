@@ -42,7 +42,7 @@ class SqlMigration extends BaseCommand {
             $this->fail('Migration path cannot be empty.');
         }
 
-        $path = (new DirectoryPath($this->laravel->basePath()))->file($path);
+        $path = (new DirectoryPath($this->laravel->basePath()))->directory($path);
         $path = (string) $path;
         $file = $creator->create($name, $path);
 
