@@ -30,6 +30,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 # Upgrade from v10
 
 * [ ] Class [`💀WithTempFile`][code-links/1e768fc484194d84] deprecated, the [`TempFile`][code-links/2ed0bfaade389715] should be used instead 🤝
+* [ ] Trait [`💀FileSystemAssertions`][code-links/f05d4c94687fa6e8] deprecated, the [`Assertions`][code-links/d3222cbf284d2c91] should be used instead 🤝
 
 # Upgrade from v9
 
@@ -95,6 +96,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 [code-links/5bf3a6e818e8ec48]: src/Assertions/Application/ScheduleAssertions.php
     "\LastDragon_ru\LaraASP\Testing\Assertions\Application\ScheduleAssertions"
 
+[code-links/f05d4c94687fa6e8]: src/Assertions/FileSystemAssertions.php
+    "\LastDragon_ru\LaraASP\Testing\Assertions\FileSystemAssertions"
+
 [code-links/a5e57679c3a947a6]: src/Concerns/Override.php
     "\LastDragon_ru\LaraASP\Testing\Concerns\Override"
 
@@ -124,6 +128,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 
 [code-links/50cb69b702caae36]: ../phpunit-extensions/src/Extensions/StrictScalarCompare/Extension.php
     "\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Extension"
+
+[code-links/d3222cbf284d2c91]: ../phpunit-extensions/src/Filesystem/Assertions.php
+    "\LastDragon_ru\PhpUnit\Filesystem\Assertions"
 
 [code-links/2ed0bfaade389715]: ../phpunit-extensions/src/Utils/TempFile.php
     "\LastDragon_ru\PhpUnit\Utils\TempFile"

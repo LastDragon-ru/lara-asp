@@ -2,6 +2,7 @@
 
 namespace LastDragon_ru\LaraASP\Testing\Constraints\FileSystem;
 
+use LastDragon_ru\PhpUnit\Filesystem\Constraints\DirectoryEquals;
 use Override;
 use PHPUnit\Framework\Constraint\Constraint;
 use PHPUnit\Util\Exporter;
@@ -16,6 +17,11 @@ use function is_string;
 use function ksort;
 use function sprintf;
 
+/**
+ * @deprecated %{VERSION} The {@see DirectoryEquals} should be used instead.
+ *
+ * @see DirectoryEquals
+ */
 class DirectoryMatchesDirectory extends Constraint {
     public function __construct(
         protected string $expected,
