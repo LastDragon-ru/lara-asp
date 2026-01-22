@@ -8,6 +8,7 @@ use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTempDirectory;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
+use LastDragon_ru\PhpUnit\Assertions as PhpUnitAssertions;
 use LogicException;
 use Orchestra\Testbench\TestCase as TestbenchTestCase;
 use Override;
@@ -27,6 +28,10 @@ abstract class TestCase extends TestbenchTestCase {
     use WithTestData;
     use WithTempDirectory;
     use WithTranslations;
+
+    use PhpUnitAssertions {
+        PhpUnitAssertions::assertDirectoryEquals insteadof Assertions;
+    }
 
     #[Override]
     protected function app(): Application {

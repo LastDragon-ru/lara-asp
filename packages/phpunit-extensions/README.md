@@ -96,6 +96,28 @@ final class RequirementsExtensionTest extends TestCase {
 
 [//]: # (end: preprocess/a201179110b693b9)
 
+# Assertions
+
+> [!NOTE]
+> You can include all available assertions via `use` [`\LastDragon_ru\PhpUnit\Assertions`][code-links/8ddbbc27bf46e25a] or only needed via individual traits like [`\LastDragon_ru\PhpUnit\Filesystem\Assertions`][code-links/d3222cbf284d2c91].
+
+* [`\LastDragon_ru\PhpUnit\Filesystem\Assertions::assertDirectoryEquals()`][code-links/c6a20e117a6f2c45] - Asserts that Directory equals Directory.
+
+# Constraints
+
+## [`DirectoryEquals`][code-links/e645f74c9dd01bc1]
+
+[include:docblock]: src/Filesystem/Constraints/DirectoryEquals.php
+[//]: # (start: preprocess/280bafbe4f4b8167)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Compares two directories. By default, directories are equal if the list of
+their children is the same, and files have the same content. Permissions are
+ignored. You can override `\self::properties()` and `\self::equal()`
+to customize comparison logic.
+
+[//]: # (end: preprocess/280bafbe4f4b8167)
+
 # Utilities
 
 ## [`TestData`][code-links/ded4ad00d1ea1842]
@@ -136,8 +158,20 @@ Please use the [main repository](https://github.com/LastDragon-ru/php-packages) 
 [//]: # (start: code-links)
 [//]: # (warning: Generated automatically. Do not edit.)
 
+[code-links/8ddbbc27bf46e25a]: src/Assertions.php
+    "\LastDragon_ru\PhpUnit\Assertions"
+
 [code-links/62e94c1c0fe743de]: src/Extensions/StrictScalarCompare/Comparator.php
     "\LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare\Comparator"
+
+[code-links/d3222cbf284d2c91]: src/Filesystem/Assertions.php
+    "\LastDragon_ru\PhpUnit\Filesystem\Assertions"
+
+[code-links/c6a20e117a6f2c45]: src/Filesystem/Assertions.php#L15-L31
+    "\LastDragon_ru\PhpUnit\Filesystem\Assertions::assertDirectoryEquals()"
+
+[code-links/e645f74c9dd01bc1]: src/Filesystem/Constraints/DirectoryEquals.php
+    "\LastDragon_ru\PhpUnit\Filesystem\Constraints\DirectoryEquals"
 
 [code-links/2ed0bfaade389715]: src/Utils/TempFile.php
     "\LastDragon_ru\PhpUnit\Utils\TempFile"
