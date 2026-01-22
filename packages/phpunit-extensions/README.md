@@ -102,6 +102,7 @@ final class RequirementsExtensionTest extends TestCase {
 > You can include all available assertions via `use` [`\LastDragon_ru\PhpUnit\Assertions`][code-links/8ddbbc27bf46e25a] or only needed via individual traits like [`\LastDragon_ru\PhpUnit\Filesystem\Assertions`][code-links/d3222cbf284d2c91].
 
 * [`\LastDragon_ru\PhpUnit\Filesystem\Assertions::assertDirectoryEquals()`][code-links/c6a20e117a6f2c45] - Asserts that Directory equals Directory.
+* [`\LastDragon_ru\PhpUnit\Filesystem\Assertions::assertDirectoryEmpty()`][code-links/faed13c93f9ed240] - Asserts that Directory empty.
 
 # Constraints
 
@@ -167,7 +168,10 @@ Please use the [main repository](https://github.com/LastDragon-ru/php-packages) 
 [code-links/d3222cbf284d2c91]: src/Filesystem/Assertions.php
     "\LastDragon_ru\PhpUnit\Filesystem\Assertions"
 
-[code-links/c6a20e117a6f2c45]: src/Filesystem/Assertions.php#L15-L31
+[code-links/faed13c93f9ed240]: src/Filesystem/Assertions.php#L34-L47
+    "\LastDragon_ru\PhpUnit\Filesystem\Assertions::assertDirectoryEmpty()"
+
+[code-links/c6a20e117a6f2c45]: src/Filesystem/Assertions.php#L16-L32
     "\LastDragon_ru\PhpUnit\Filesystem\Assertions::assertDirectoryEquals()"
 
 [code-links/e645f74c9dd01bc1]: src/Filesystem/Constraints/DirectoryEquals.php
