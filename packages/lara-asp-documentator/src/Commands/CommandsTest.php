@@ -6,7 +6,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
-use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\PhpUnit\Utils\TempDirectory;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
 use Symfony\Component\Console\Attribute\AsCommand;
@@ -39,19 +39,19 @@ final class CommandsTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     public function testInvoke(): void {
-        $directory = (new DirectoryPath(self::getTempDirectory()))->normalized();
+        $directory = new TempDirectory();
 
         self::assertNotFalse(
-            file_put_contents((string) $directory->file('file.txt'), self::class),
+            file_put_contents($directory->path->file('file.txt')->path, self::class),
         );
 
         $result = $this
             ->withoutMockingConsoleOutput()
-            ->artisan("lara-asp-documentator:commands test-namespace {$directory}");
+            ->artisan("lara-asp-documentator:commands test-namespace {$directory->path}");
 
         self::assertEquals(Command::SUCCESS, $result);
 
-        $files = iterator_to_array(Finder::create()->in((string) $directory)->files(), false);
+        $files = iterator_to_array(Finder::create()->in($directory->path->path)->files(), false);
         $files = array_reduce($files, static function (array $combined, SplFileInfo $file): array {
             return array_merge($combined, [
                 $file->getFilename() => $file->getContents(),

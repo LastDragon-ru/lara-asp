@@ -142,6 +142,17 @@ removed after the instance removal.
 
 [//]: # (end: preprocess/4daefce210284202)
 
+## [`TempDirectory`][code-links/988d0b3180c21a3f]
+
+[include:docblock]: src/Utils/TempDirectory.php
+[//]: # (start: preprocess/337f8e1f2ed8e4ba)
+[//]: # (warning: Generated automatically. Do not edit.)
+
+Creates a temporary directory in the system temp directory. The directory will
+be removed after the instance removal.
+
+[//]: # (end: preprocess/337f8e1f2ed8e4ba)
+
 # Upgrading
 
 Please follow [Upgrade Guide](UPGRADE.md).
@@ -176,6 +187,9 @@ Please use the [main repository](https://github.com/LastDragon-ru/php-packages) 
 
 [code-links/e645f74c9dd01bc1]: src/Filesystem/Constraints/DirectoryEquals.php
     "\LastDragon_ru\PhpUnit\Filesystem\Constraints\DirectoryEquals"
+
+[code-links/988d0b3180c21a3f]: src/Utils/TempDirectory.php
+    "\LastDragon_ru\PhpUnit\Utils\TempDirectory"
 
 [code-links/2ed0bfaade389715]: src/Utils/TempFile.php
     "\LastDragon_ru\PhpUnit\Utils\TempFile"
