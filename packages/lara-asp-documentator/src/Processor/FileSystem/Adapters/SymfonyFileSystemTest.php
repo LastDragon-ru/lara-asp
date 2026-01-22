@@ -5,6 +5,7 @@ namespace LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters;
 use LastDragon_ru\LaraASP\Documentator\Package\TestCase;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
+use LastDragon_ru\PhpUnit\Utils\TempDirectory;
 use LastDragon_ru\PhpUnit\Utils\TempFile;
 use PHPUnit\Framework\Attributes\CoversClass;
 
@@ -137,9 +138,9 @@ final class SymfonyFileSystemTest extends TestCase {
     public function testDelete(): void {
         // Prepare
         $adapter = new SymfonyFileSystem();
-        $path    = new DirectoryPath(self::getTempDirectory());
-        $file    = $path->file('file.txt');
-        $dir     = $path->directory('dir/a/b/c');
+        $temp    = new TempDirectory();
+        $file    = $temp->path->file('file.txt');
+        $dir     = $temp->path->directory('dir/a/b/c');
 
         self::assertNotFalse(file_put_contents($file->path, 'content'));
         self::assertTrue(mkdir($dir->path, 0777, true));

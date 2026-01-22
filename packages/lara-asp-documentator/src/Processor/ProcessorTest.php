@@ -38,6 +38,7 @@ use LastDragon_ru\LaraASP\Documentator\Processor\Executor\Resolver;
 use LastDragon_ru\LaraASP\Documentator\Processor\FileSystem\Adapters\SymfonyFileSystem;
 use LastDragon_ru\Path\DirectoryPath;
 use LastDragon_ru\Path\FilePath;
+use LastDragon_ru\PhpUnit\Utils\TempDirectory;
 use Mockery;
 use Override;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -969,7 +970,8 @@ final class ProcessorTest extends TestCase {
     }
 
     public function testRunDelete(): void {
-        $input = (new DirectoryPath(self::getTempDirectory()))->normalized();
+        $temp  = new TempDirectory();
+        $input = $temp->path;
         $taskA = new class() implements FileTask {
             #[Override]
             public static function glob(): string {

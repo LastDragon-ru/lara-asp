@@ -4,6 +4,7 @@ namespace LastDragon_ru\LaraASP\Migrator\Commands;
 
 use LastDragon_ru\LaraASP\Migrator\Package;
 use LastDragon_ru\LaraASP\Migrator\Package\TestCase;
+use LastDragon_ru\PhpUnit\Utils\TempDirectory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use Symfony\Component\Finder\Finder;
@@ -18,7 +19,8 @@ final class SqlSeederTest extends TestCase {
     #[DataProvider('dataProviderHandle')]
     public function testHandle(string $command): void {
         // Pre test
-        $path   = self::getTempDirectory();
+        $temp   = new TempDirectory();
+        $path   = $temp->path->path;
         $finder = Finder::create()->in($path);
 
         self::assertCount(0, $finder->files());
