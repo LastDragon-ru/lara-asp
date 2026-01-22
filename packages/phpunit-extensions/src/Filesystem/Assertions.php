@@ -3,6 +3,7 @@
 namespace LastDragon_ru\PhpUnit\Filesystem;
 
 use LastDragon_ru\Path\DirectoryPath;
+use LastDragon_ru\PhpUnit\Filesystem\Constraints\DirectoryEmpty;
 use LastDragon_ru\PhpUnit\Filesystem\Constraints\DirectoryEquals;
 use PHPUnit\Framework\Assert;
 
@@ -28,5 +29,20 @@ trait Assertions {
         static::assertDirectoryExists($expected->path);
         static::assertDirectoryExists($actual->path);
         static::assertThat($actual, new DirectoryEquals($expected), $message);
+    }
+
+    /**
+     * Asserts that Directory empty.
+     *
+     * @see DirectoryEmpty
+     */
+    public static function assertDirectoryEmpty(
+        DirectoryPath|string $directory,
+        string $message = '',
+    ): void {
+        $directory = is_string($directory) ? new DirectoryPath($directory) : $directory;
+
+        static::assertDirectoryExists($directory->path);
+        static::assertThat($directory, new DirectoryEmpty(), $message);
     }
 }
