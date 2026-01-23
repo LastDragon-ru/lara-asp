@@ -30,6 +30,7 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 # Upgrade from v10
 
 * [ ] Class [`💀WithTempFile`][code-links/1e768fc484194d84] deprecated, the [`TempFile`][code-links/2ed0bfaade389715] should be used instead 🤝
+* [ ] Class [`💀WithTempDirectory`][code-links/8ccb455c0defa9b1] deprecated, the [`TempDirectory`][code-links/988d0b3180c21a3f] should be used instead 🤝
 * [ ] Trait [`💀FileSystemAssertions`][code-links/f05d4c94687fa6e8] deprecated, the [`Assertions`][code-links/d3222cbf284d2c91] should be used instead 🤝
 
 # Upgrade from v9
@@ -114,6 +115,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 [code-links/84706d7f00aadc5e]: src/Utils/TestData.php
     "\LastDragon_ru\LaraASP\Testing\Utils\TestData"
 
+[code-links/8ccb455c0defa9b1]: src/Utils/WithTempDirectory.php
+    "\LastDragon_ru\LaraASP\Testing\Utils\WithTempDirectory"
+
 [code-links/1e768fc484194d84]: src/Utils/WithTempFile.php
     "\LastDragon_ru\LaraASP\Testing\Utils\WithTempFile"
 
@@ -131,6 +135,9 @@ Please also see [changelog](https://github.com/LastDragon-ru/php-packages/releas
 
 [code-links/d3222cbf284d2c91]: ../phpunit-extensions/src/Filesystem/Assertions.php
     "\LastDragon_ru\PhpUnit\Filesystem\Assertions"
+
+[code-links/988d0b3180c21a3f]: ../phpunit-extensions/src/Utils/TempDirectory.php
+    "\LastDragon_ru\PhpUnit\Utils\TempDirectory"
 
 [code-links/2ed0bfaade389715]: ../phpunit-extensions/src/Utils/TempFile.php
     "\LastDragon_ru\PhpUnit\Utils\TempFile"

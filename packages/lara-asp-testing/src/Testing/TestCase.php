@@ -5,7 +5,6 @@ namespace LastDragon_ru\LaraASP\Testing\Testing;
 use Illuminate\Contracts\Foundation\Application;
 use LastDragon_ru\LaraASP\Testing\Assertions\Assertions;
 use LastDragon_ru\LaraASP\Testing\Concerns\Concerns;
-use LastDragon_ru\LaraASP\Testing\Utils\WithTempDirectory;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTestData;
 use LastDragon_ru\LaraASP\Testing\Utils\WithTranslations;
 use LastDragon_ru\PhpUnit\Assertions as PhpUnitAssertions;
@@ -26,7 +25,6 @@ abstract class TestCase extends TestbenchTestCase {
     use WithFaker;
     use WithConfig;
     use WithTestData;
-    use WithTempDirectory;
     use WithTranslations;
 
     use PhpUnitAssertions {
