@@ -25,6 +25,7 @@ use LastDragon_ru\GraphQLPrinter\Blocks\Block;
 use LastDragon_ru\GraphQLPrinter\Blocks\Document\DirectiveDefinition;
 use LastDragon_ru\GraphQLPrinter\Blocks\Document\Directives;
 use LastDragon_ru\GraphQLPrinter\Blocks\NamedBlock;
+use LastDragon_ru\GraphQLPrinter\Feature;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use Override;
@@ -277,9 +278,8 @@ abstract class DefinitionBlock extends Block implements NamedBlock {
         $definition  = $this->getDefinition();
         $description = null;
 
-        if ($definition instanceof Schema) {
-            // It is part of October2021 spec but not yet supported
-            // https://github.com/webonyx/graphql-php/issues/1027
+        if ($definition instanceof Schema && Feature::SchemaDescription->available()) {
+            $description = $definition->description;
         } elseif ($definition instanceof NamedType) {
             $description = $definition->description();
         } elseif (property_exists($definition, 'description')) {

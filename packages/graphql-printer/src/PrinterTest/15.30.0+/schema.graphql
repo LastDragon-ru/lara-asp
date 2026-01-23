@@ -1,5 +1,14 @@
 # Based on https://github.com/graphql/graphql-spec/blob/84ec33914393bb46e49e5d7a7fb05e0626daa7a8/spec/Appendix%20B%20--%20Grammar%20Summary.md
 
+"""
+Schema description
+"""
+schema @directive(location: "schema") {
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+}
+
 # """
 # Schema description is not supported by graphql-php yet.
 # -> https://github.com/webonyx/graphql-php/issues/1027
@@ -7,10 +16,6 @@
 # Schema extensions is not supported in v15 yet
 # -> https://github.com/webonyx/graphql-php/commit/0bd57173c08e73847ed2eb227ef33c156922349b
 # """
-# schema @directive(location: "schema") {
-#     query: Query
-# }
-#
 # extend schema @directive(location: "extend") {
 #     mutation: Mutation
 # }

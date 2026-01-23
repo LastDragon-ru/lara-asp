@@ -2,20 +2,21 @@
 
 namespace LastDragon_ru\GraphQLPrinter\Blocks\Document;
 
+use Closure;
 use GraphQL\Language\AST\SchemaDefinitionNode;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Schema;
 use GraphQL\Utils\BuildSchema;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\GraphQLPrinter\Feature;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Package\RequiresFeature;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
-
-use function str_starts_with;
 
 /**
  * @internal
@@ -39,8 +40,32 @@ final class SchemaDefinitionTest extends TestCase {
         $context   = new Context($settings, null, $schema);
         $actual    = (new SchemaDefinition($context, $definition))->serialize($collector, $level, $used);
 
-        if ($expected !== '' && !str_starts_with($actual, '"""')) {
-            // https://github.com/webonyx/graphql-php/issues/1027
+        if ($expected !== '') {
+            Parser::schemaDefinition($actual);
+        }
+
+        self::assertSame($expected, $actual);
+    }
+
+    /**
+     * @param Closure(): (SchemaDefinitionNode|Schema) $definitionFactory
+     */
+    #[DataProvider('dataProviderSerializeDescription')]
+    #[RequiresFeature(Feature::SchemaDescription)]
+    public function testSerializeDescription(
+        string $expected,
+        Settings $settings,
+        int $level,
+        int $used,
+        Closure $definitionFactory,
+        ?Schema $schema,
+    ): void {
+        $definition = $definitionFactory();
+        $collector  = new Collector();
+        $context    = new Context($settings, null, $schema);
+        $actual     = (new SchemaDefinition($context, $definition))->serialize($collector, $level, $used);
+
+        if ($expected !== '') {
             Parser::schemaDefinition($actual);
         }
 
@@ -356,6 +381,118 @@ final class SchemaDefinitionTest extends TestCase {
                     }
                     GRAPHQL,
                 ),
+            ],
+        ];
+    }
+
+    /**
+     * @return array<string,array{string, Settings, int, int, Closure(): (SchemaDefinitionNode|Schema), ?Schema}>
+     */
+    public static function dataProviderSerializeDescription(): array {
+        $settings = (new PrinterSettings())
+            ->setPrintDirectives(false)
+            ->setNormalizeFields(false);
+
+        return [
+            'standard names with description'          => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                schema {
+                    query: Query
+                    mutation: Mutation
+                    subscription: Subscription
+                }
+                GRAPHQL,
+                $settings,
+                0,
+                0,
+                static fn () => new Schema([
+                    'query'        => new ObjectType(['name' => 'Query', 'fields' => []]),
+                    'mutation'     => new ObjectType(['name' => 'Mutation', 'fields' => []]),
+                    'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
+                    'description'  => 'Description',
+                ]),
+                null,
+            ],
+            'non standard names with description'      => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                schema {
+                    query: MyQuery
+                    mutation: Mutation
+                    subscription: Subscription
+                }
+                GRAPHQL,
+                $settings,
+                0,
+                0,
+                static fn () => new Schema([
+                    'query'        => new ObjectType(['name' => 'MyQuery', 'fields' => []]),
+                    'mutation'     => new ObjectType(['name' => 'Mutation', 'fields' => []]),
+                    'subscription' => new ObjectType(['name' => 'Subscription', 'fields' => []]),
+                    'description'  => 'Description',
+                ]),
+                null,
+            ],
+            'ast: standard names with description'     => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                schema {
+                    query: Query
+                    mutation: Mutation
+                    subscription: Subscription
+                }
+                GRAPHQL,
+                $settings,
+                0,
+                0,
+                static fn () => Parser::schemaDefinition(
+                    <<<'GRAPHQL'
+                    """
+                    Description
+                    """
+                    schema {
+                        query: Query
+                        mutation: Mutation
+                        subscription: Subscription
+                    }
+                    GRAPHQL,
+                ),
+                null,
+            ],
+            'ast: non standard names with description' => [
+                <<<'GRAPHQL'
+                """
+                Description
+                """
+                schema {
+                    query: MyQuery
+                    mutation: Mutation
+                    subscription: Subscription
+                }
+                GRAPHQL,
+                $settings,
+                0,
+                0,
+                static fn () => Parser::schemaDefinition(
+                    <<<'GRAPHQL'
+                    """
+                    Description
+                    """
+                    schema {
+                        query: MyQuery
+                        mutation: Mutation
+                        subscription: Subscription
+                    }
+                    GRAPHQL,
+                ),
+                null,
             ],
         ];
     }

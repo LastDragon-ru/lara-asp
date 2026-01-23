@@ -103,8 +103,11 @@ final class PrinterTest extends TestCase {
      */
     public static function dataProviderPrintSchema(): array {
         $data             = TestData::get();
-        $schemaFactory    = static function () use ($data): Schema {
-            return BuildSchema::build($data->content('schema.graphql'));
+        $directory        = Feature::SchemaDescription->available()
+            ? Feature::SchemaDescription->since().'+'
+            : 'lowest';
+        $schemaFactory    = static function () use ($data, $directory): Schema {
+            return BuildSchema::build($data->content("{$directory}/schema.graphql"));
         };
         $printableFactory = static function (TestCase $test, ?Schema $schema): ?Schema {
             return $schema;
@@ -113,7 +116,7 @@ final class PrinterTest extends TestCase {
         return [
             'null'                                      => [
                 new Expected(
-                    $data->content('print/DefaultSettings.graphql'),
+                    $data->content("{$directory}/print/DefaultSettings.graphql"),
                 ),
                 null,
                 0,
@@ -123,7 +126,7 @@ final class PrinterTest extends TestCase {
             ],
             'DefaultSettings'                           => [
                 new Expected(
-                    value     : $data->content('print/DefaultSettings.graphql'),
+                    value     : $data->content("{$directory}/print/DefaultSettings.graphql"),
                     types     : [
                         'Query',
                         'String',
@@ -157,7 +160,7 @@ final class PrinterTest extends TestCase {
             ],
             'GraphQLSettings'                           => [
                 new Expected(
-                    value     : $data->content('print/GraphQLSettings.graphql'),
+                    value     : $data->content("{$directory}/print/GraphQLSettings.graphql"),
                     types     : [
                         'Query',
                         'String',
@@ -196,7 +199,7 @@ final class PrinterTest extends TestCase {
             ],
             'PrinterSettings'                           => [
                 new Expected(
-                    value     : $data->content('print/PrinterSettings.graphql'),
+                    value     : $data->content("{$directory}/print/PrinterSettings.graphql"),
                     types     : [
                         'Int',
                         'Query',
@@ -230,7 +233,7 @@ final class PrinterTest extends TestCase {
             ],
             'PrinterSettings-NoDirectivesDefinitions'   => [
                 new Expected(
-                    value     : $data->content('print/PrinterSettings-NoDirectivesDefinitions.graphql'),
+                    value     : $data->content("{$directory}/print/PrinterSettings-NoDirectivesDefinitions.graphql"),
                     types     : [
                         'Query',
                         'String',
@@ -265,7 +268,7 @@ final class PrinterTest extends TestCase {
             ],
             'PrinterSettings-NoNormalization'           => [
                 new Expected(
-                    value     : $data->content('print/PrinterSettings-NoNormalization.graphql'),
+                    value     : $data->content("{$directory}/print/PrinterSettings-NoNormalization.graphql"),
                     types     : [
                         'Int',
                         'Query',
@@ -310,7 +313,7 @@ final class PrinterTest extends TestCase {
             ],
             'PrinterSettings-DirectiveDefinitionFilter' => [
                 new Expected(
-                    value     : $data->content('print/PrinterSettings-DirectiveDefinitionFilter.graphql'),
+                    value     : $data->content("{$directory}/print/PrinterSettings-DirectiveDefinitionFilter.graphql"),
                     types     : [
                         'Query',
                         'String',
@@ -349,7 +352,7 @@ final class PrinterTest extends TestCase {
             ],
             'PrinterSettings-TypeDefinitionFilter'      => [
                 new Expected(
-                    value     : $data->content('print/PrinterSettings-TypeDefinitionFilter.graphql'),
+                    value     : $data->content("{$directory}/print/PrinterSettings-TypeDefinitionFilter.graphql"),
                     types     : [
                         'Query',
                         'String',
@@ -389,7 +392,7 @@ final class PrinterTest extends TestCase {
             ],
             'PrinterSettings-TypeFilter'                => [
                 new Expected(
-                    value     : $data->content('print/PrinterSettings-TypeFilter.graphql'),
+                    value     : $data->content("{$directory}/print/PrinterSettings-TypeFilter.graphql"),
                     types     : [
                         'Query',
                         'String',
@@ -426,7 +429,7 @@ final class PrinterTest extends TestCase {
             ],
             'PrinterSettings-Everything'                => [
                 new Expected(
-                    value     : $data->content('print/PrinterSettings-Everything.graphql'),
+                    value     : $data->content("{$directory}/print/PrinterSettings-Everything.graphql"),
                     types     : [
                         'Int',
                         'Query',
@@ -732,14 +735,17 @@ final class PrinterTest extends TestCase {
      */
     public static function dataProviderExport(): array {
         $data          = TestData::get();
-        $schemaFactory = static function () use ($data): Schema {
-            return BuildSchema::build($data->content('schema.graphql'));
+        $directory     = Feature::SchemaDescription->available()
+            ? Feature::SchemaDescription->since().'+'
+            : 'lowest';
+        $schemaFactory = static function () use ($data, $directory): Schema {
+            return BuildSchema::build($data->content("{$directory}/schema.graphql"));
         };
 
         return [
             'UnionType'                 => [
                 new Expected(
-                    value     : $data->content('export/UnionType.graphql'),
+                    value     : $data->content("{$directory}/export/UnionType.graphql"),
                     types     : [
                         'String',
                         'InterfaceA',
@@ -779,7 +785,7 @@ final class PrinterTest extends TestCase {
             ],
             'ObjectType'                => [
                 new Expected(
-                    value     : $data->content('export/ObjectType.graphql'),
+                    value     : $data->content("{$directory}/export/ObjectType.graphql"),
                     types     : [
                         'String',
                         'InterfaceC',
@@ -810,7 +816,7 @@ final class PrinterTest extends TestCase {
             ],
             'InterfaceType'             => [
                 new Expected(
-                    value     : $data->content('export/InterfaceType.graphql'),
+                    value     : $data->content("{$directory}/export/InterfaceType.graphql"),
                     types     : [
                         'String',
                         'Int',
@@ -838,7 +844,7 @@ final class PrinterTest extends TestCase {
             ],
             'UnionTypeDefinitionNode'   => [
                 new Expected(
-                    value     : $data->content('export/UnionTypeDefinitionNode.graphql'),
+                    value     : $data->content("{$directory}/export/UnionTypeDefinitionNode.graphql"),
                     types     : [
                         'String',
                         'InterfaceA',
@@ -868,7 +874,7 @@ final class PrinterTest extends TestCase {
             ],
             'InputObjectTypeDefinition' => [
                 new Expected(
-                    value     : $data->content('export/InputObjectTypeDefinition.graphql'),
+                    value     : $data->content("{$directory}/export/InputObjectTypeDefinition.graphql"),
                     types     : [
                         'String',
                         'Int',

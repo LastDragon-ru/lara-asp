@@ -1,0 +1,292 @@
+"""
+Schema description
+"""
+schema
+@directive(
+    location: "schema"
+)
+{
+    mutation: Mutation
+    query: Query
+    subscription: Subscription
+}
+
+"""
+Marks an element of a GraphQL schema as no longer supported.
+"""
+directive @deprecated(
+    """
+    Explains why this element was deprecated, usually also including a suggestion for how to access supported similar data. Formatted using the Markdown syntax, as specified by [CommonMark](https://commonmark.org/).
+    """
+    reason: String = "No longer supported"
+)
+on
+    | ARGUMENT_DEFINITION
+    | ENUM_VALUE
+    | FIELD_DEFINITION
+    | INPUT_FIELD_DEFINITION
+
+"""
+Directive description
+"""
+directive @directive(
+    location: String
+    hidden: InputHidden
+)
+repeatable on
+    | ARGUMENT_DEFINITION
+    | ENUM
+    | ENUM_VALUE
+    | FIELD
+    | FIELD_DEFINITION
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | INPUT_FIELD_DEFINITION
+    | INPUT_OBJECT
+    | INTERFACE
+    | MUTATION
+    | OBJECT
+    | QUERY
+    | SCALAR
+    | SCHEMA
+    | SUBSCRIPTION
+    | UNION
+    | VARIABLE_DEFINITION
+
+"""
+Enum description.
+"""
+enum Enum
+@directive(
+    location: "enum"
+)
+@directive(
+    location: "extend"
+)
+{
+    """
+    Enum value description
+    """
+    A
+
+    B
+    @directive(
+        location: "enum value"
+    )
+
+    C
+}
+
+"""
+Input description.
+"""
+input InputA
+@directive(
+    location: "input"
+)
+@directive(
+    location: "extend"
+)
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "extend"
+    )
+
+    c: [Float!]!
+    @directive(
+        location: "field"
+    )
+}
+
+input InputHidden {
+    a: Int
+}
+
+"""
+Interface description.
+"""
+interface InterfaceA
+@directive(
+    location: "interface"
+)
+@directive(
+    location: "extend"
+)
+{
+    a: Int
+}
+
+interface InterfaceB
+implements
+    & InterfaceA
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+interface InterfaceC
+implements
+    & InterfaceA
+{
+    a: Int
+    b: [String!]
+    c: [Float!]!
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
+}
+
+"""
+The `Float` scalar type represents signed double-precision fractional
+values as specified by
+[IEEE 754](http://en.wikipedia.org/wiki/IEEE_floating_point).
+"""
+scalar Float
+
+"""
+The `Int` scalar type represents non-fractional signed whole numeric
+values. Int can represent values between -(2^31) and 2^31 - 1.
+"""
+scalar Int
+
+"""
+Scalar description.
+"""
+scalar Scalar
+@directive(
+    location: "scalar"
+)
+@directive(
+    location: "extend"
+)
+
+"""
+The `String` scalar type represents textual data, represented as UTF-8
+character sequences. The String type is most often used by GraphQL to
+represent free-form human-readable text.
+"""
+scalar String
+
+type Mutation {
+    mutate(
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+
+        a: InputA
+    ): [TypeB!]
+}
+
+type Query {
+    enum(
+        enum: Enum = A
+        hidden: [InputHidden!]!
+    ): TypeB
+
+    hidden(
+        scalar: Int! = 123
+    ): TypeHidden
+
+    scalar: Scalar
+
+    type(
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+            hidden: null
+        )
+
+        a: InputA
+    ): TypeA!
+
+    union: Union
+}
+
+type Subscription {
+    subscribe: TypeC
+}
+
+"""
+Type description.
+"""
+type TypeA
+implements
+    & InterfaceA
+    & InterfaceB
+    & InterfaceC
+@directive(
+    location: "type"
+)
+@directive(
+    location: "extend"
+)
+{
+    a: Int
+    @deprecated
+
+    """
+    Field description.
+    """
+    b: [String!]
+
+    c: [Float!]!
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
+
+    f: [String!]
+    @directive(
+        location: "extend"
+    )
+}
+
+type TypeB {
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+type TypeC {
+    c: [Float!]!
+}
+
+type TypeHidden {
+    a: Int
+}
+
+"""
+Union description.
+"""
+union Union
+@directive(
+    location: "union"
+)
+@directive(
+    location: "extend"
+)
+=
+    | TypeA
+    | TypeB
+    | TypeC

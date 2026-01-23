@@ -7,10 +7,11 @@ use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
+use LastDragon_ru\GraphQLPrinter\Feature;
 use LastDragon_ru\GraphQLPrinter\Misc\Collector;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
+use LastDragon_ru\GraphQLPrinter\Package\RequiresFeature;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
-use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
@@ -43,7 +44,7 @@ final class InputObjectTypeDefinitionTest extends TestCase {
     }
 
     #[DataProvider('dataProviderSerializeOneOf')]
-    #[RequiresPackage('webonyx/graphql-php', '>=15.21.0')]
+    #[RequiresFeature(Feature::OneOfDirective)]
     public function testSerializeOneOf(
         string $expected,
         Settings $settings,
