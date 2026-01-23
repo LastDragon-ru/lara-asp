@@ -4,9 +4,9 @@ namespace LastDragon_ru\PhpUnit\Extensions\StrictScalarCompare;
 
 use Override;
 use PHPUnit\Framework\Assert;
+use PHPUnit\Util\Exporter;
 use SebastianBergmann\Comparator\Comparator as AbstractComparator;
 use SebastianBergmann\Comparator\ComparisonFailure;
-use SebastianBergmann\Exporter\Exporter;
 
 use function is_scalar;
 use function is_string;
@@ -54,13 +54,11 @@ class Comparator extends AbstractComparator {
         }
 
         // Nope
-        $exporter = new Exporter();
-
         throw new ComparisonFailure(
             $expected,
             $actual,
-            $exporter->export($expected),
-            $exporter->export($actual),
+            Exporter::export($expected),
+            Exporter::export($actual),
             'Failed asserting that two values are equal.',
         );
     }

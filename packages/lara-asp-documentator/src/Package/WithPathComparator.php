@@ -5,9 +5,9 @@ namespace LastDragon_ru\LaraASP\Documentator\Package;
 use LastDragon_ru\Path\Path;
 use Override;
 use PHPUnit\Framework\Attributes\Before;
+use PHPUnit\Util\Exporter;
 use SebastianBergmann\Comparator\Comparator;
 use SebastianBergmann\Comparator\ComparisonFailure;
-use SebastianBergmann\Exporter\Exporter;
 
 /**
  * @phpstan-require-extends TestCase
@@ -36,13 +36,11 @@ trait WithPathComparator {
                     }
 
                     // Nope
-                    $exporter = new Exporter();
-
                     throw new ComparisonFailure(
                         $expected,
                         $actual,
-                        $exporter->export($expected),
-                        $exporter->export($actual),
+                        Exporter::export($expected),
+                        Exporter::export($actual),
                         'Failed asserting that two values are equal.',
                     );
                 }

@@ -22,7 +22,7 @@
   "require-dev": {
     "lastdragon-ru/phpunit-extensions": "self.version",
     "mockery/mockery": "^1.6.6",
-    "phpunit/phpunit": "^11.2.0|^12.0.0"
+    "phpunit/phpunit": "^11.3.0|^12.0.0"
   },
   "autoload": {
     "psr-4": {
