@@ -35,6 +35,8 @@ parameters:
     generalizeEnvReturnType: false
     checkConfigTypes: false
     checkAuthCallsWhenInRequestScope: false
+    parseModelCastsMethod: false
+    enableMigrationCache: false
 
 parametersSchema:
     checkOctaneCompatibility: bool()
@@ -59,6 +61,8 @@ parametersSchema:
     generalizeEnvReturnType: bool()
     checkConfigTypes: bool()
     checkAuthCallsWhenInRequestScope: bool()
+    parseModelCastsMethod: bool()
+    enableMigrationCache: bool()
 
 conditionalTags:
     Larastan\Larastan\Rules\NoEnvCallsOutsideOfConfigRule:
@@ -475,6 +479,15 @@ services:
 
     -
         class: Larastan\Larastan\Properties\ModelCastHelper
+        arguments:
+            parser: @currentPhpVersionSimpleDirectParser
+            parseModelCastsMethod: %parseModelCastsMethod%
+
+    -
+        class: Larastan\Larastan\Properties\MigrationCache
+        arguments:
+            cacheDirectory: %tmpDir%
+            enabled: %enableMigrationCache%
 
     -
         class: Larastan\Larastan\Properties\ModelPropertyHelper
