@@ -3,6 +3,7 @@
 namespace LastDragon_ru\LaraASP\Testing\Utils;
 
 use LastDragon_ru\LaraASP\Testing\Package;
+use LastDragon_ru\PhpUnit\Utils\TempDirectory;
 use Symfony\Component\Filesystem\Filesystem;
 
 use function register_shutdown_function;
@@ -11,6 +12,9 @@ use function sys_get_temp_dir;
 /**
  * Allows to create a temporary directory. The directory will be removed
  * automatically after script shutdown.
+ *
+ * @deprecated %{VERSION} The {@see TempDirectory} should be used instead.
+ * @see TempDirectory
  */
 trait WithTempDirectory {
     public static function getTempDirectory(): string {
