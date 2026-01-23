@@ -6,7 +6,6 @@ use GraphQL\Type\Schema;
 use LastDragon_ru\GraphQLPrinter\Contracts\Settings;
 use LastDragon_ru\GraphQLPrinter\Package\TestCase;
 use LastDragon_ru\GraphQLPrinter\Settings\GraphQLSettings;
-use LastDragon_ru\PhpUnit\Extensions\Requirements\Attributes\RequiresPackage;
 use LastDragon_ru\PhpUnit\GraphQL\PrinterSettings;
 use LastDragon_ru\PhpUnit\Utils\TestData;
 use PHPUnit\Framework\Attributes\CoversClass;
@@ -23,12 +22,12 @@ final class IntrospectionPrinterTest extends TestCase {
      * @param non-empty-string $expected
      */
     #[DataProvider('dataProviderPrint')]
-    #[RequiresPackage('webonyx/graphql-php', '>=15.22.0')]
     public function testPrint(string $expected, Settings $settings, int $level): void {
-        $expected = TestData::get()->content($expected);
-        $printer  = (new IntrospectionPrinter())->setSettings($settings);
-        $schema   = new Schema([]);
-        $actual   = $printer->print($schema, $level);
+        $directory = Feature::SchemaDescription->available() ? Feature::SchemaDescription->since().'+' : 'lowest';
+        $expected  = TestData::get()->content("{$directory}/{$expected}");
+        $printer   = (new IntrospectionPrinter())->setSettings($settings);
+        $schema    = new Schema([]);
+        $actual    = $printer->print($schema, $level);
 
         self::assertSame($expected, (string) $actual);
     }

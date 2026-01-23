@@ -2,14 +2,13 @@
 
 namespace LastDragon_ru\GraphQLPrinter\Blocks\Document;
 
-use Composer\InstalledVersions;
-use Composer\Semver\VersionParser;
 use GraphQL\Language\AST\InputObjectTypeDefinitionNode;
 use GraphQL\Language\AST\NodeList;
 use GraphQL\Language\Parser;
 use GraphQL\Type\Definition\Directive;
 use GraphQL\Type\Definition\InputObjectType;
 use LastDragon_ru\GraphQLPrinter\Blocks\Types\InputObjectDefinitionBlock;
+use LastDragon_ru\GraphQLPrinter\Feature;
 use LastDragon_ru\GraphQLPrinter\Misc\Context;
 use LastDragon_ru\GraphQLPrinter\Package\GraphQLAstNode;
 use LastDragon_ru\GraphQLPrinter\Package\GraphQLDefinition;
@@ -38,11 +37,15 @@ class InputObjectTypeDefinition extends InputObjectDefinitionBlock {
     #[Override]
     protected function getDefinitionDirectives(): NodeList {
         // Is `@oneOf` supported?
-        $definition            = $this->getDefinition();
-        $directives            = parent::getDefinitionDirectives();
-        static $oneOfSupported = InstalledVersions::satisfies(new VersionParser(), 'webonyx/graphql-php', '>=15.21.0');
+        $definition = $this->getDefinition();
+        $directives = parent::getDefinitionDirectives();
 
-        if (!$oneOfSupported || !($definition instanceof InputObjectType) || !$definition->isOneOf) {
+        if (
+            !Feature::OneOfDirective->available()
+            || !($definition instanceof InputObjectType)
+            || !isset($definition->isOneOf)
+            || !$definition->isOneOf
+        ) {
             return $directives;
         }
 

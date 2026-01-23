@@ -1,0 +1,244 @@
+"""
+Schema description
+"""
+schema
+@directive(
+    location: "schema"
+)
+{
+    query: Query
+    mutation: Mutation
+    subscription: Subscription
+}
+
+type Subscription {
+    subscribe: TypeC
+}
+
+type TypeC {
+    c: [Float!]!
+}
+
+type Mutation {
+    mutate(
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+        )
+
+        a: InputA
+    ): [TypeB!]
+}
+
+type TypeB {
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+"""
+Input description.
+"""
+input InputA
+@directive(
+    location: "input"
+)
+@directive(
+    location: "extend"
+)
+{
+    """
+    Field description.
+    """
+    a: Int
+
+    c: [Float!]!
+    @directive(
+        location: "field"
+    )
+
+    b: [String!]
+    @directive(
+        location: "extend"
+    )
+}
+
+type Query {
+    type(
+        scalar: Int! = 123
+        @directive(
+            location: "argument"
+            hidden: null
+        )
+
+        a: InputA
+    ): TypeA!
+
+    enum(
+        enum: Enum = A
+        hidden: [InputHidden!]!
+    ): TypeB
+
+    union: Union
+    scalar: Scalar
+
+    hidden(
+        scalar: Int! = 123
+    ): TypeHidden
+}
+
+type TypeHidden {
+    a: Int
+}
+
+"""
+Scalar description.
+"""
+scalar Scalar
+@directive(
+    location: "scalar"
+)
+@directive(
+    location: "extend"
+)
+
+"""
+Union description.
+"""
+union Union
+@directive(
+    location: "union"
+)
+@directive(
+    location: "extend"
+)
+= TypeB | TypeC | TypeA
+
+"""
+Enum description.
+"""
+enum Enum
+@directive(
+    location: "enum"
+)
+@directive(
+    location: "extend"
+)
+{
+    """
+    Enum value description
+    """
+    A
+
+    C
+
+    B
+    @directive(
+        location: "enum value"
+    )
+}
+
+"""
+Type description.
+"""
+type TypeA implements InterfaceA & InterfaceC & InterfaceB
+@directive(
+    location: "type"
+)
+@directive(
+    location: "extend"
+)
+{
+    """
+    Field description.
+    """
+    b: [String!]
+
+    c: [Float!]!
+
+    a: Int
+    @deprecated
+
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
+
+    f: [String!]
+    @directive(
+        location: "extend"
+    )
+}
+
+interface InterfaceB implements InterfaceA {
+    """
+    Field description.
+    """
+    a: Int
+
+    b: [String!]
+    @directive(
+        location: "field"
+    )
+}
+
+interface InterfaceC implements InterfaceA {
+    b: [String!]
+    c: [Float!]!
+    a: Int
+    d: TypeHidden!
+
+    e(
+        a: Int
+        b: InputHidden
+    ): Int
+}
+
+"""
+Interface description.
+"""
+interface InterfaceA
+@directive(
+    location: "interface"
+)
+@directive(
+    location: "extend"
+)
+{
+    a: Int
+}
+
+input InputHidden {
+    a: Int
+}
+
+"""
+Directive description
+"""
+directive @directive(
+    location: String
+    hidden: InputHidden
+)
+repeatable on
+    | QUERY
+    | MUTATION
+    | SUBSCRIPTION
+    | FIELD
+    | FRAGMENT_DEFINITION
+    | FRAGMENT_SPREAD
+    | INLINE_FRAGMENT
+    | VARIABLE_DEFINITION
+    | SCHEMA
+    | SCALAR
+    | OBJECT
+    | FIELD_DEFINITION
+    | ARGUMENT_DEFINITION
+    | INTERFACE
+    | UNION
+    | ENUM
+    | ENUM_VALUE
+    | INPUT_OBJECT
+    | INPUT_FIELD_DEFINITION

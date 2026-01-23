@@ -1,0 +1,141 @@
+"""
+Enum description.
+"""
+enum Enum {
+  """
+  Enum value description
+  """
+  A
+
+  C
+  B
+}
+
+enum EnumUnused {
+  A
+  C
+  B
+}
+
+"""
+Input description.
+"""
+input InputA {
+  """
+  Field description.
+  """
+  a: Int
+
+  c: [Float!]!
+  b: [String!]
+}
+
+input InputHidden {
+  a: Int
+}
+
+input InputUnused {
+  a: Int
+}
+
+"""
+Interface description.
+"""
+interface InterfaceA {
+  a: Int
+}
+
+interface InterfaceB implements InterfaceA {
+  """
+  Field description.
+  """
+  a: Int
+
+  b: [String!]
+}
+
+interface InterfaceC implements InterfaceA {
+  b: [String!]
+  c: [Float!]!
+  a: Int
+  d: TypeHidden!
+  e(a: Int, b: InputHidden): Int
+}
+
+interface InterfaceUnused {
+  a: Int
+}
+
+"""
+Scalar description.
+"""
+scalar Scalar
+
+scalar ScalarUnused
+
+"""
+Schema description
+"""
+schema {
+  query: Query
+  mutation: Mutation
+  subscription: Subscription
+}
+
+type Mutation {
+  mutate(scalar: Int! = 123, a: InputA): [TypeB!]
+}
+
+type Query {
+  type(scalar: Int! = 123, a: InputA): TypeA!
+  enum(enum: Enum = A, hidden: [InputHidden!]!): TypeB
+  union: Union
+  scalar: Scalar
+  hidden(scalar: Int! = 123): TypeHidden
+}
+
+type Subscription {
+  subscribe: TypeC
+}
+
+"""
+Type description.
+"""
+type TypeA implements InterfaceA & InterfaceC & InterfaceB {
+  """
+  Field description.
+  """
+  b: [String!]
+
+  c: [Float!]!
+
+  a: Int
+  @deprecated
+
+  d: TypeHidden!
+  e(a: Int, b: InputHidden): Int
+  f: [String!]
+}
+
+type TypeB {
+  b: [String!]
+}
+
+type TypeC {
+  c: [Float!]!
+}
+
+type TypeHidden {
+  a: Int
+}
+
+type TypeUnused {
+  a: Int
+}
+
+"""
+Union description.
+"""
+union Union = TypeB | TypeC | TypeA
+
+union UnionUnused = TypeA | TypeB
