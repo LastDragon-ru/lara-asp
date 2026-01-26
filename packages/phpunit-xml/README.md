@@ -60,7 +60,7 @@ abstract class Usage extends TestCase {
 
 # Assertions
 
-* [`Assertions::assertXmlMatchesSchema()`][code-links/ac544120a9c38590] - Asserts that Directory empty.
+* [`Assertions::assertXmlMatchesSchema()`][code-links/ac544120a9c38590] - Asserts that XML matches schema.
 
 [include:file]: ../../docs/Shared/Contributing.md
 [//]: # (start: preprocess/c4ba75080f5a48b7)
