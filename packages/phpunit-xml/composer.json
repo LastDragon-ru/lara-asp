@@ -1,7 +1,7 @@
 {
   "name": "lastdragon-ru/phpunit-xml",
   "homepage": "https://github.com/LastDragon-ru/php-packages",
-  "description": "PHPUnit XML assertions.",
+  "description": "PHPUnit XML / XML Schema assertions.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
