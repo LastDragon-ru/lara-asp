@@ -15,7 +15,8 @@
     "forum": "https://github.com/LastDragon-ru/php-packages/discussions"
   },
   "suggest": {
-    "lastdragon-ru/phpunit-graphql": "PHPUnit assertions for GraphQL to check printed/exported type/queries."
+    "lastdragon-ru/phpunit-graphql": "PHPUnit assertions for GraphQL to check printed/exported type/queries.",
+    "lastdragon-ru/phpunit-xml": "PHPUnit XML assertions."
   },
   "require": {
     "php": "^8.3|^8.4",
