@@ -105,6 +105,7 @@
       "LastDragon_ru\\Path\\": "packages/path/src/",
       "LastDragon_ru\\PhpUnit\\": "packages/phpunit-extensions/src/",
       "LastDragon_ru\\PhpUnit\\GraphQL\\": "packages/phpunit-graphql/src/",
+      "LastDragon_ru\\PhpUnit\\Xml\\": "packages/phpunit-xml/src/",
       "LastDragon_ru\\TextParser\\": "packages/text-parser/src/"
     }
   },
@@ -126,6 +127,7 @@
       "packages/path/docs/",
       "packages/phpunit-extensions/docs/",
       "packages/phpunit-graphql/docs/",
+      "packages/phpunit-xml/docs/",
       "packages/text-parser/docs/",
       "packages/**/*Test/"
     ],
@@ -146,6 +148,7 @@
       "LastDragon_ru\\Path\\Docs\\": "packages/path/docs",
       "LastDragon_ru\\PhpUnit\\Docs\\": "packages/phpunit-extensions/docs",
       "LastDragon_ru\\PhpUnit\\GraphQL\\Docs\\": "packages/phpunit-graphql/docs",
+      "LastDragon_ru\\PhpUnit\\Xml\\Docs\\": "packages/phpunit-xml/docs",
       "LastDragon_ru\\TextParser\\Docs\\": "packages/text-parser/docs"
     }
   },
@@ -292,6 +295,7 @@
     "lastdragon-ru/path": "self.version",
     "lastdragon-ru/phpunit-extensions": "self.version",
     "lastdragon-ru/phpunit-graphql": "self.version",
+    "lastdragon-ru/phpunit-xml": "self.version",
     "lastdragon-ru/text-parser": "self.version"
   }
 }

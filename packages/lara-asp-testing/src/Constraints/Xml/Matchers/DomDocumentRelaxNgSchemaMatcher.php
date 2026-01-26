@@ -7,6 +7,7 @@ use Override;
 use SplFileInfo;
 
 /**
+ * @deprecated %{VERSION}
  * @internal
  */
 class DomDocumentRelaxNgSchemaMatcher extends DomDocumentSchemaMatcher {

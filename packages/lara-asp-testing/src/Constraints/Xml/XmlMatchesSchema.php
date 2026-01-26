@@ -24,6 +24,9 @@ use const LIBXML_ERR_FATAL;
 use const LIBXML_ERR_WARNING;
 use const PHP_EOL;
 
+/**
+ * @deprecated %{VERSION} The {@see \LastDragon_ru\PhpUnit\Xml\Constraints\XmlMatchesSchema} should be used instead.
+ */
 class XmlMatchesSchema extends Constraint {
     protected SplFileInfo $schema;
     /**

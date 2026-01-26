@@ -8,6 +8,7 @@ use PHPUnit\Framework\Attributes\CoversClass;
 use SplFileInfo;
 
 /**
+ * @deprecated %{VERSION}
  * @internal
  */
 #[CoversClass(DomDocumentRelaxNgSchemaMatcher::class)]

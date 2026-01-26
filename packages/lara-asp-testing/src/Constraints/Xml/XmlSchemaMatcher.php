@@ -6,6 +6,7 @@ use DOMDocument;
 use SplFileInfo;
 
 /**
+ * @deprecated %{VERSION}
  * @internal
  */
 interface XmlSchemaMatcher {

@@ -1,47 +1,49 @@
 {
-  "name": "lastdragon-ru/phpunit-extensions",
+  "name": "lastdragon-ru/phpunit-xml",
   "homepage": "https://github.com/LastDragon-ru/php-packages",
-  "description": "Various useful assertions/extensions for PHPUnit.",
+  "description": "PHPUnit XML / XML Schema assertions.",
   "readme": "README.md",
   "license": "MIT",
   "type": "library",
   "keywords": [
-    "PHPUnit",
-    "php"
+    "phpunit",
+    "php",
+    "xml",
+    "xml asserts",
+    "xml assertions",
+    "phpunit xml asserts",
+    "phpunit xml assertions"
   ],
   "support": {
     "issues": "https://github.com/LastDragon-ru/php-packages/issues",
     "source": "https://github.com/LastDragon-ru/php-packages",
     "forum": "https://github.com/LastDragon-ru/php-packages/discussions"
   },
-  "suggest": {
-    "lastdragon-ru/phpunit-graphql": "PHPUnit assertions for GraphQL to check printed/exported type/queries.",
-    "lastdragon-ru/phpunit-xml": "PHPUnit XML assertions."
-  },
   "require": {
     "php": "^8.3|^8.4",
-    "ext-mbstring": "*",
-    "composer/semver": "^3.2",
+    "ext-libxml": "*",
+    "ext-dom": "*",
+    "ext-xmlreader": "*",
     "lastdragon-ru/path": "self.version",
+    "lastdragon-ru/phpunit-extensions": "self.version",
     "phpunit/phpunit": "^11.3.0|^12.0.0",
-    "sebastian/comparator": "^6.0.0|^7.0.0"
-  },
-  "require-dev": {
-    "mockery/mockery": "^1.6.6",
     "symfony/polyfill-php84": "^1.31"
   },
   "autoload": {
     "psr-4": {
-      "LastDragon_ru\\PhpUnit\\": "src/"
+      "LastDragon_ru\\PhpUnit\\XML\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "LastDragon_ru\\PhpUnit\\Docs\\": "docs"
+      "LastDragon_ru\\PhpUnit\\XML\\Docs\\": "docs/"
     },
     "exclude-from-classmap": [
       "docs/"
     ]
+  },
+  "conflict": {
+    "thecodingmachine/safe": "<3.0.0"
   },
   "config": {
     "sort-packages": true,

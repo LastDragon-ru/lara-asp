@@ -209,7 +209,6 @@ Disable models events during make/create.
 | [`assertContentType()`](./docs/Assertions/AssertPsrResponse.md)             | Asserts that a response has a specified content type.          |
 | [`assertStatusCode()`](./docs/Assertions/AssertPsrResponse.md)              | Asserts that a response has a specified status code.           |
 | [`assertJsonMatchesSchema()`](./docs/Assertions/AssertJsonMatchesSchema.md) | Asserts that a response contains JSON that matches the schema. |
-| [`assertXmlMatchesSchema()`](./docs/Assertions/AssertXmlMatchesSchema.md)   | Asserts that a response contains XML that matches the schema.  |
 
 # Assertions
 
@@ -252,12 +251,6 @@ Asserts that Schedule contains task.
 Asserts that Scout Query equals Scout Query.
 
 [Read more](<docs/Assertions/AssertScoutQueryEquals.md>).
-
-## [`assertXmlMatchesSchema`](<docs/Assertions/AssertXmlMatchesSchema.md>)
-
-Asserts that XML matches schema [XSD](https://en.wikipedia.org/wiki/XML_Schema_(W3C)) or [Relax NG](https://en.wikipedia.org/wiki/RELAX_NG). Validation based on the standard methods of [`DOMDocument`](https://www.php.net/manual/en/class.domdocument.php) class.
-
-[Read more](<docs/Assertions/AssertXmlMatchesSchema.md>).
 
 [//]: # (end: preprocess/c79a463462fd8331)
 
