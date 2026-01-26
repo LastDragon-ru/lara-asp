@@ -23,6 +23,7 @@ body:
         - path
         - phpunit-extensions
         - phpunit-graphql
+        - phpunit-xml
         - text-parser
   - type: textarea
     attributes:

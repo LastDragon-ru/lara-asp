@@ -1,0 +1,49 @@
+{
+  "name": "lastdragon-ru/phpunit-xml",
+  "homepage": "https://github.com/LastDragon-ru/php-packages",
+  "description": "PHPUnit XML assertions.",
+  "readme": "README.md",
+  "license": "MIT",
+  "type": "library",
+  "keywords": [
+    "phpunit",
+    "php",
+    "xml",
+    "xml asserts",
+    "xml assertions",
+    "phpunit xml asserts",
+    "phpunit xml assertions"
+  ],
+  "support": {
+    "issues": "https://github.com/LastDragon-ru/php-packages/issues",
+    "source": "https://github.com/LastDragon-ru/php-packages",
+    "forum": "https://github.com/LastDragon-ru/php-packages/discussions"
+  },
+  "require": {
+    "php": "^8.3|^8.4",
+    "phpunit/phpunit": "^11.3.0|^12.0.0"
+  },
+  "require-dev": {
+    "lastdragon-ru/phpunit-extensions": "self.version"
+  },
+  "autoload": {
+    "psr-4": {
+      "LastDragon_ru\\PhpUnit\\XML\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "LastDragon_ru\\PhpUnit\\XML\\Docs\\": "docs/"
+    },
+    "exclude-from-classmap": [
+      "docs/"
+    ]
+  },
+  "conflict": {
+    "thecodingmachine/safe": "<3.0.0"
+  },
+  "config": {
+    "sort-packages": true,
+    "optimize-autoloader": true
+  }
+}
