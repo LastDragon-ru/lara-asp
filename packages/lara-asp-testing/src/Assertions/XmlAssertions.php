@@ -8,6 +8,7 @@ use PHPUnit\Framework\Assert;
 use SplFileInfo;
 
 /**
+ * @deprecated %{VERSION} The {@see \LastDragon_ru\PhpUnit\Xml\Assertions} should be used instead.
  * @mixin Assert
  */
 trait XmlAssertions {

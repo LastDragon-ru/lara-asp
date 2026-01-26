@@ -8,6 +8,7 @@ use Override;
 use SplFileInfo;
 
 /**
+ * @deprecated %{VERSION}
  * @internal
  */
 abstract class DomDocumentSchemaMatcher implements XmlSchemaMatcher {

@@ -7,6 +7,7 @@ use SplFileInfo;
 use XMLReader;
 
 /**
+ * @deprecated %{VERSION}
  * @internal
  */
 class XmlFileXsdSchemaMatcher extends XmlFileSchemaMatcher {

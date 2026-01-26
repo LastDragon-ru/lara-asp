@@ -12,6 +12,7 @@ use SplFileInfo;
 use function is_string;
 
 /**
+ * @deprecated %{VERSION}
  * @internal
  */
 #[CoversClass(XmlMatchesSchema::class)]

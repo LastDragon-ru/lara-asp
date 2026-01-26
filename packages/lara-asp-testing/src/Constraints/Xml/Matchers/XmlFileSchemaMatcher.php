@@ -12,6 +12,7 @@ use XMLReader;
 use function sprintf;
 
 /**
+ * @deprecated %{VERSION}
  * @internal
  */
 abstract class XmlFileSchemaMatcher implements XmlSchemaMatcher {
