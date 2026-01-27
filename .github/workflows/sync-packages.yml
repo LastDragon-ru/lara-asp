@@ -128,3 +128,64 @@ jobs:
         working-directory: package
         run: |
           git push --mirror origin
+
+      - name: Sync properties
+        env:
+          GITHUB_TOKEN: ${{ secrets[steps.secret.outputs.name] }}
+        run: |
+          # First we need to get current properties of repository
+          gh repo view "git@github.com:${{ steps.package.outputs.value }}.git" --json repositoryTopics --json description --json url > repository.json
+
+          # Url & Description
+          PKG_URL="$(jq '.homepage // ""' -c -r package/composer.json)"
+          PKG_DESC="$(jq '.description // ""' -c -r package/composer.json)"
+
+          REPO_URL="$(jq '.url // ""' -c -r repository.json)"
+          REPO_DESC="$(jq '.description // ""' -c -r repository.json)"
+
+          # Topics must be lowercase and without white-spaces. Unfortunately,
+          # `jq` doesn't have Unicode support to change case, so `sed` is used.
+          #
+          # - https://github.com/jqlang/jq/issues/492
+
+          jq '(.keywords // []) | unique | .[]' -c -r package/composer.json | sort | sed -e 's/\s\+/-/g' | sed -e 's/\(.*\)/\L\1/' > package-topics.txt
+          jq '(.repositoryTopics // []) | map(.name) | .[]' -c -r repository.json | sort > repository-topics.txt
+
+          TOPICS_REMOVE=$(comm -23 "repository-topics.txt" "package-topics.txt")
+          TOPICS_ADD=$(comm -13 "repository-topics.txt" "package-topics.txt")
+
+          # Build the command
+          ARGUMENTS=()
+
+          if [[ "$PKG_URL" != "$REPO_URL" ]]; then
+            ARGUMENTS+=("--homepage")
+            ARGUMENTS+=("$PKG_URL")
+          fi
+
+          if [[ "$PKG_DESC" != "$REPO_DESC" ]]; then
+            ARGUMENTS+=("--description")
+            ARGUMENTS+=("$PKG_DESC")
+          fi
+
+          while IFS= read -r TOPIC
+          do
+            if [[ -n "${TOPIC}" ]]; then
+              ARGUMENTS+=("--remove-topic")
+              ARGUMENTS+=("${TOPIC}")
+            fi
+          done <<< "${TOPICS_REMOVE}"
+
+          while IFS= read -r TOPIC
+          do
+            if [[ -n "${TOPIC}" ]]; then
+              ARGUMENTS+=("--add-topic")
+              ARGUMENTS+=("${TOPIC}")
+            fi
+          done <<< "${TOPICS_ADD}"
+
+          # Run
+          if [[ "${ARGUMENTS[@]}" ]]
+          then
+            # gh repo edit "git@github.com:${{ steps.package.outputs.value }}.git" "${ARGUMENTS[@]}"
+            echo "${ARGUMENTS[@]}" >> $GITHUB_STEP_SUMMARY
+          fi
