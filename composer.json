@@ -79,7 +79,7 @@
     "orchestra/testbench": "^10.0.0",
     "phpstan/phpstan": "2.1.36",
     "phpstan/phpstan-mockery": "^2.0.0",
-    "phpstan/phpstan-phpunit": "2.0.9",
+    "phpstan/phpstan-phpunit": "^2.0.9",
     "phpstan/phpstan-strict-rules": "^2.0.1",
     "spaze/phpstan-disallowed-calls": "^4.0.1"
   },
