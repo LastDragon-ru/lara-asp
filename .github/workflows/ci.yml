@@ -81,6 +81,10 @@ jobs:
         with:
           version: "lowest"
           dependencies: false
+      - name: Check composer.json
+        working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
+        run: |
+          composer validate
       - name: Prepare
         shell: bash
         working-directory: ${{ needs.settings.outputs.packages-directory }}/${{ matrix.package }}
