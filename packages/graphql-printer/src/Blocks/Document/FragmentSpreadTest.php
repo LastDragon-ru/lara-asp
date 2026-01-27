@@ -31,10 +31,12 @@ final class FragmentSpreadTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        FragmentSpreadNode $definition,
+        InlineFragmentNode|FragmentSpreadNode $definition,
         (TypeNode&Node)|Type|null $type,
         ?Schema $schema,
     ): void {
+        self::assertInstanceOf(FragmentSpreadNode::class, $definition);
+
         $collector = new Collector();
         $context   = new Context($settings, null, $schema);
         $actual    = (new FragmentSpread($context, $definition, $type))->serialize($collector, $level, $used);
@@ -52,10 +54,12 @@ final class FragmentSpreadTest extends TestCase {
     #[DataProvider('dataProviderStatistics')]
     public function testStatistics(
         array $expected,
-        FragmentSpreadNode $definition,
+        InlineFragmentNode|FragmentSpreadNode $definition,
         (TypeNode&Node)|Type|null $type,
         ?Schema $schema,
     ): void {
+        self::assertInstanceOf(FragmentSpreadNode::class, $definition);
+
         $collector = new Collector();
         $context   = new Context(new PrinterSettings(), null, $schema);
         $block     = new FragmentSpread($context, $definition, $type);

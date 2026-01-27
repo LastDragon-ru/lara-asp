@@ -106,12 +106,20 @@ final class PrinterTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<string, array<array-key, mixed>>
+     * @return array<string, array{
+     *      Expected,
+     *      ?Settings,
+     *      int,
+     *      int,
+     *      Closure(static): (Schema|string),
+     *      Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema),
+     *      Closure(static, Schema): ((TypeNode&Node)|Type|null)|null,
+     *      }>
      */
     public static function dataProviderPrintSchema(): array {
         $data             = TestData::get();
         $schemaFactory    = self::getSchemaFactory($data);
-        $printableFactory = static function (TestCase $test, ?Schema $schema): ?Schema {
+        $printableFactory = static function (TestCase $test, Schema $schema): Schema {
             return $schema;
         };
 
@@ -155,6 +163,7 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
             'Schema-DefaultSettings'                           => [
                 new Expected(
@@ -195,6 +204,7 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
             'Schema-GraphQLSettings'                           => [
                 new Expected(
@@ -232,6 +242,7 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
             'Schema-PrinterSettings'                           => [
                 new Expected(
@@ -272,6 +283,7 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
             'Schema-PrinterSettings-NoDirectivesDefinitions'   => [
                 new Expected(
@@ -308,6 +320,7 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
             'Schema-PrinterSettings-NoNormalization'           => [
                 new Expected(
@@ -359,6 +372,7 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
             'Schema-PrinterSettings-DirectiveDefinitionFilter' => [
                 new Expected(
@@ -403,6 +417,7 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
             'Schema-PrinterSettings-TypeDefinitionFilter'      => [
                 new Expected(
@@ -448,6 +463,7 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
             'Schema-PrinterSettings-Everything'                => [
                 new Expected(
@@ -491,12 +507,21 @@ final class PrinterTest extends TestCase {
                 0,
                 $schemaFactory,
                 $printableFactory,
+                null,
             ],
         ];
     }
 
     /**
-     * @return array<string, array<array-key, mixed>>
+     * @return array<string, array{
+     *      Expected,
+     *      ?Settings,
+     *      int,
+     *      int,
+     *      Closure(static): (Schema|string),
+     *      Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema),
+     *      Closure(static, Schema): ((TypeNode&Node)|Type|null)|null,
+     *      }>
      */
     public static function dataProviderExportType(): array {
         $data          = TestData::get();
@@ -535,6 +560,7 @@ final class PrinterTest extends TestCase {
                         ],
                     ]);
                 },
+                null,
             ],
             'CodeInput'  => [
                 new Expected(
@@ -559,6 +585,7 @@ final class PrinterTest extends TestCase {
 
                     return $type;
                 },
+                null,
             ],
             'SchemaType' => [
                 new Expected(
@@ -592,12 +619,21 @@ final class PrinterTest extends TestCase {
 
                     return $type;
                 },
+                null,
             ],
         ];
     }
 
     /**
-     * @return array<string, array<array-key, mixed>>
+     * @return array<string, array{
+     *      Expected,
+     *      ?Settings,
+     *      int,
+     *      int,
+     *      Closure(static): (Schema|string),
+     *      Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema),
+     *      Closure(static, Schema): ((TypeNode&Node)|Type|null)|null,
+     *      }>
      */
     public static function dataProviderPrintType(): array {
         $data          = TestData::get();
@@ -634,6 +670,7 @@ final class PrinterTest extends TestCase {
                         ],
                     ]);
                 },
+                null,
             ],
             'InputObjectType' => [
                 new Expected(
@@ -671,6 +708,7 @@ final class PrinterTest extends TestCase {
                         ],
                     ]);
                 },
+                null,
             ],
             'InterfaceType'   => [
                 new Expected(
@@ -705,12 +743,21 @@ final class PrinterTest extends TestCase {
                         ],
                     ]);
                 },
+                null,
             ],
         ];
     }
 
     /**
-     * @return array<string, array<array-key, mixed>>
+     * @return array<string, array{
+     *      Expected,
+     *      ?Settings,
+     *      int,
+     *      int,
+     *      Closure(static): (Schema|string),
+     *      Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema),
+     *      Closure(static, Schema): ((TypeNode&Node)|Type|null)|null,
+     *      }>
      */
     public static function dataProviderPrintNode(): array {
         $data          = TestData::get();
@@ -737,6 +784,7 @@ final class PrinterTest extends TestCase {
                         'union CodeUnion = CodeType',
                     );
                 },
+                null,
             ],
             'InputObjectTypeDefinition' => [
                 new Expected(
@@ -767,12 +815,21 @@ final class PrinterTest extends TestCase {
                         '"Description" input CodeInput @schemaDirective { a: Boolean }',
                     );
                 },
+                null,
             ],
         ];
     }
 
     /**
-     * @return array<string, array<array-key, mixed>>
+     * @return array<string, array{
+     *      Expected,
+     *      ?Settings,
+     *      int,
+     *      int,
+     *      Closure(static): (Schema|string),
+     *      Closure(static, Schema): (Node|Type|Directive|FieldDefinition|Argument|EnumValueDefinition|InputObjectField|Schema),
+     *      Closure(static, Schema): ((TypeNode&Node)|Type|null)|null,
+     *      }>
      */
     public static function dataProviderExportNode(): array {
         $data          = TestData::get();
@@ -801,6 +858,7 @@ final class PrinterTest extends TestCase {
                         'union SchemaUnion = CodeType',
                     );
                 },
+                null,
             ],
             'InputObjectTypeDefinition' => [
                 new Expected(
@@ -824,6 +882,7 @@ final class PrinterTest extends TestCase {
                         '"Description" input SchemaInput { a: CodeInput }',
                     );
                 },
+                null,
             ],
         ];
     }

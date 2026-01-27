@@ -21,7 +21,7 @@ final class ListBlockTest extends TestCase {
     // <editor-fold desc="Tests">
     // =========================================================================
     /**
-     * @param array<string, Block> $blocks
+     * @param array<array-key, Block> $blocks
      */
     #[DataProvider('dataProviderSerialize')]
     public function testSerialize(
@@ -78,7 +78,19 @@ final class ListBlockTest extends TestCase {
     // <editor-fold desc="DataProviders">
     // =========================================================================
     /**
-     * @return array<array-key, array<array-key, mixed>>
+     * @return array<string, array{
+     *      string,
+     *      Settings,
+     *      int,
+     *      int,
+     *      bool,
+     *      bool,
+     *      string,
+     *      string,
+     *      string,
+     *      string,
+     *      array<array-key, Block>,
+     *      }>
      */
     public static function dataProviderSerialize(): array {
         $settings = new PrinterSettings();
@@ -713,7 +725,7 @@ final class ListBlockTest extends TestCase {
  */
 class ListBlockTest__ListBlock extends ListBlock {
     /**
-     * @param iterable<string, Block> $items
+     * @param iterable<array-key, Block> $items
      */
     public function __construct(
         Context $context,

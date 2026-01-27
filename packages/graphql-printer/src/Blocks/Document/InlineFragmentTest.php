@@ -31,10 +31,12 @@ final class InlineFragmentTest extends TestCase {
         Settings $settings,
         int $level,
         int $used,
-        InlineFragmentNode $definition,
+        InlineFragmentNode|FragmentSpreadNode $definition,
         (TypeNode&Node)|Type|null $type,
         ?Schema $schema,
     ): void {
+        self::assertInstanceOf(InlineFragmentNode::class, $definition);
+
         $collector = new Collector();
         $context   = new Context($settings, null, $schema);
         $actual    = (new InlineFragment($context, $definition, $type))->serialize($collector, $level, $used);
@@ -52,10 +54,12 @@ final class InlineFragmentTest extends TestCase {
     #[DataProvider('dataProviderStatistics')]
     public function testStatistics(
         array $expected,
-        InlineFragmentNode $definition,
+        InlineFragmentNode|FragmentSpreadNode $definition,
         (TypeNode&Node)|Type|null $type,
         ?Schema $schema,
     ): void {
+        self::assertInstanceOf(InlineFragmentNode::class, $definition);
+
         $collector = new Collector();
         $context   = new Context(new PrinterSettings(), null, $schema);
         $block     = new InlineFragment($context, $definition, $type);
